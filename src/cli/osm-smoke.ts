@@ -1,7 +1,10 @@
 /**
  * Asks OpenStreetMap about the venues around one public point and writes a redacted report.
  *
- *   npm run osm:smoke -- --lat 40.7580 --lon -73.9855 --radius 400
+ *   npm run osm:smoke -- --lat 40.7580 --lon -73.9855 --radius 400 --points 1
+ *
+ * With --points above 1 it queries a grid of points at once, the way a search does, so the time it
+ * takes can be judged.
  *
  * It needs no credential. The report holds counts and tag values only, never venue names.
  */
@@ -23,6 +26,7 @@ async function main(): Promise<void> {
   const lat = Number(option(args, '--lat', '40.7580'));
   const lon = Number(option(args, '--lon', '-73.9855'));
   const radiusM = Number(option(args, '--radius', '400'));
+  const points = Number(option(args, '--points', '1'));
   if (
     !Number.isFinite(lat) ||
     !Number.isFinite(lon) ||
@@ -30,9 +34,14 @@ async function main(): Promise<void> {
     Math.abs(lon) > 180 ||
     !Number.isFinite(radiusM) ||
     radiusM < 50 ||
-    radiusM > 1500
+    radiusM > 1500 ||
+    !Number.isInteger(points) ||
+    points < 1 ||
+    points > 40
   ) {
-    console.error('Use --lat and --lon for a point and --radius between 50 and 1500 metres.');
+    console.error(
+      'Use --lat and --lon for a point, --radius between 50 and 1500 metres, and --points from 1 to 40.',
+    );
     process.exitCode = 2;
     return;
   }
@@ -41,7 +50,7 @@ async function main(): Promise<void> {
     timeoutMs: config.OVERPASS_TIMEOUT_MS,
     userAgent: 'afterglow-hackathon-demo (+https://github.com/hudasol/afterglow)',
   });
-  const report = await runOsmSmoke(client, { lat, lon, radiusM }, new Date());
+  const report = await runOsmSmoke(client, { lat, lon, radiusM, points }, new Date());
   for (const check of report.checks)
     console.log(`${check.ok ? 'PASS' : 'FAIL'}  ${check.name}: ${check.detail}`);
   console.log(`\nVerdict: ${report.verdict}`);

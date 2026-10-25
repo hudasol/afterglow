@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { OverpassClient } from '../../src/openstreetmap/overpass.js';
-import { runOsmSmoke } from '../../src/openstreetmap/smoke.js';
+import { gridAround, runOsmSmoke } from '../../src/openstreetmap/smoke.js';
 
 /* Invented responses. The real ones are recorded by `npm run osm:smoke`. */
 
@@ -75,5 +75,29 @@ describe('runOsmSmoke', () => {
     expect(report.verdict).toBe('no_go');
     expect(report.checks[0]).toMatchObject({ ok: false });
     expect(report.reasons[0]).toContain('OSM_NETWORK');
+  });
+});
+
+describe('gridAround', () => {
+  it('returns the requested number of distinct points around the centre', () => {
+    const points = gridAround({ lat: 40.758, lon: -73.9855 }, 9, 300);
+    expect(points).toHaveLength(9);
+    expect(new Set(points.map((p) => `${p.lat.toFixed(5)},${p.lon.toFixed(5)}`)).size).toBe(9);
+    const meanLat = points.reduce((sum, p) => sum + p.lat, 0) / points.length;
+    expect(meanLat).toBeCloseTo(40.758, 4);
+  });
+});
+
+describe('runOsmSmoke over several points', () => {
+  it('merges venues seen from more than one point and reports how long it took', async () => {
+    const report = await runOsmSmoke(
+      clientReturning([venue(1, { opening_hours: 'Mo-Su 10:00-22:00' })]),
+      { ...area, points: 4 },
+      NOW,
+    );
+    expect(report.area.points).toBe(4);
+    expect(report.venues).toBe(1);
+    expect(report.durationMs).not.toBeNull();
+    expect(report.checks.map((check) => check.name)).toContain('Answered in a reasonable time');
   });
 });
