@@ -4,11 +4,16 @@ This document describes how AFTERGLOW reads practical facts about venues from Op
 
 ## Status
 
-The reader, matcher, client and integration are implemented and tested against invented responses. They have **not yet been run against real OpenStreetMap data** from this project. The check that does so is `npm run osm:smoke`, or the **OpenStreetMap smoke test** workflow in GitHub Actions. It needs no key. Until its result is recorded here, treat every statement about how much real data AFTERGLOW can read as unverified.
+The reader, matcher, client and integration are implemented and tested against invented responses. They have **not yet been run successfully against real OpenStreetMap data** from this project.
+
+What happened when the real check was tried: on 25 October 2026 the **OpenStreetMap smoke test** workflow was run five times from GitHub Actions. Every public Overpass endpoint it tried either timed out or answered with a 502 within a second, including a query for a single node, and two mirrors did not answer at all. Direct requests with a plain command line client got a 406 from the main server. That points to an overloaded or restrictive public service, or to one that limits requests from GitHub's address range, and it says nothing about whether the query itself is right. No real response has been parsed yet.
+
+The product is built to cope with this. When the lookup fails, the affected facts stay unknown and the person is asked, the case says what happened, and after two failed lookups in a row the lookup pauses for five minutes so that a service that is down never slows a search. The **Evidence** page has an **Ask OpenStreetMap now** button that runs a small real query from the server itself, so what it shows is what the hosted application can actually reach. The check can also be run with `npm run osm:smoke` from any machine, or from the workflow, and needs no key. Until a real answer is recorded here, treat every statement about how much real data AFTERGLOW can read as unverified.
 
 | Check                                              | Result      |
 | -------------------------------------------------- | ----------- |
 | Overpass query accepted and parsed on real data    | Not yet run |
+| Time taken for a search sized query                | Not yet run |
 | Share of real opening hours values read in full    | Not yet run |
 | Share of venues that carry wheelchair or diet tags | Not yet run |
 
@@ -39,7 +44,7 @@ For each place Qloo returned, with a known location and at least one needed fact
 - A fact that Qloo or the person has already supplied is never replaced.
 - The feasibility gate treats an OpenStreetMap value like any other known fact. A venue shut for the whole day of the plan fails. A venue whose hours do not cover the plan fails.
 - The person always has the last word. Checking a fact in the interface overrides the map for that place.
-- Any failure, whether a timeout, a rate limit, a bad answer or an unreadable tag, leaves the facts unknown. The search carries on and a note on the case says what happened.
+- Any failure, whether a timeout, a rate limit, a bad answer or an unreadable tag, leaves the facts unknown. The search carries on and a note on the case says what happened. After two failed lookups in a row, further lookups pause for five minutes and say so, so that a service that is down does not slow every search. Answers already kept are still used while paused.
 
 ## What is sent
 
@@ -57,7 +62,7 @@ OpenStreetMap data is available under the Open Database Licence and must be cred
 | --------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `AFTERGLOW_OSM_FACTS` | `true`                                                                                  | Turns the lookup off when set to `false`. It also needs a Qloo key.                       |
 | `OVERPASS_URL`        | `https://overpass-api.de/api/interpreter,https://overpass.kumi.systems/api/interpreter` | One endpoint, or several separated by commas that are tried in order. Each must be https. |
-| `OVERPASS_TIMEOUT_MS` | `12000`                                                                                 | How long to wait for each endpoint.                                                       |
+| `OVERPASS_TIMEOUT_MS` | `6000`                                                                                  | How long to wait for each endpoint.                                                       |
 
 The public Overpass services are shared and have fair use limits. The first real data run from this project met a timeout and then a 502 from the main public server, so the client moves to the next endpoint when one is overloaded, times out or limits the rate, and records which host answered. It does not move on when a query is refused, because another server would refuse it too. A busy public demo should run its own instance or turn the lookup off. The lookup runs at the same time as the Qloo ranking, so it adds waiting time only when it is the slower of the two.
 

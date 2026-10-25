@@ -80,7 +80,7 @@ To use live Qloo, copy `.env.example` to `.env`, set `QLOO_API_KEY`, run `npm ru
 ## 6. Known limitations and what the results do not establish
 
 - The live Qloo path has not yet been verified with a real key.
-- In live mode Qloo is not read for opening hours, dietary options, accessibility, capacity or covered seating. For live cases AFTERGLOW looks some of them up on OpenStreetMap, which volunteers edit, and that lookup has not yet been run against real data. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
+- In live mode Qloo is not read for opening hours, dietary options, accessibility, capacity or covered seating. For live cases AFTERGLOW looks some of them up on OpenStreetMap, which volunteers edit, and that lookup has not yet been run successfully against real data, because the public Overpass servers did not answer when it was tried. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
 - The offline evaluation uses an invented, hand authored catalogue. In it, a plain top three broke at least one requirement in 12 of 17 scenarios, and the gated shortlists broke none as judged by an independent oracle. These figures show how the pipeline behaves on that catalogue. They are not a rate in the real world and they say nothing about how well Qloo predicts what people enjoy.
 - No people took part in any evaluation.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
