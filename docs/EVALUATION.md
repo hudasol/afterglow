@@ -37,7 +37,9 @@ It shows that the gate rules out places that break requirements, that the oracle
 
 ## Live evaluation
 
-`npm run eval -- --live scenarios.json` runs the same comparison against Qloo for scenarios you supply, validated by the same schema as the intake form. It needs `QLOO_API_KEY`. Live venues lack opening hours, dietary options, accessibility and capacity in Qloo responses, and the live evaluation does not use the OpenStreetMap lookup, so the oracle is switched off and violations are only those the gate can establish from facts the provider returned. The report says so. The live evaluation has not yet been run.
+`npm run eval -- --live scenarios.json` runs the same comparison against Qloo for scenarios you supply, validated by the same schema as the intake form. It needs `QLOO_API_KEY`.
+
+The preregistered run is `npm run eval:live`, over the frozen scenarios in `evaluation/live-scenarios.json`. Its design and twelve numeric predictions were committed in [PREREGISTRATION.md](PREREGISTRATION.md) before any scenario was ranked, and its registered results are in [EVALUATION_LIVE.md](EVALUATION_LIVE.md), rendered from `results/live-qloo.json`. The first run exposed two product defects, which were fixed and recorded as a dated amendment, and a second run on the same scenarios, predictions, thresholds and seed is in [EVALUATION_LIVE_SECOND_RUN.md](EVALUATION_LIVE_SECOND_RUN.md). It is not independent of the first. Both runs met 9 of the 12 predictions and missed the same three. [EVALUATION_LIVE_NOTES.md](EVALUATION_LIVE_NOTES.md) explains every miss and records what a read only look at the pools found. The live run does not use the OpenStreetMap lookup. The gate and the independent oracle both work from the facts Qloo returned, so a fact Qloo does not state is unknown to both.
 
 ## Reproducing
 

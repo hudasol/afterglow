@@ -19,7 +19,7 @@ The product is built to cope with this. When the lookup fails, the affected fact
 
 ## Why a second source
 
-Qloo describes what groups of people tend to like. It does not supply opening hours, dietary options, step free access or group capacity in a form AFTERGLOW reads. Without another source, a live plan that insists on any of those requirements would show every place as needing a check. OpenStreetMap is an open map that volunteers edit, and many venues carry tags for exactly those facts.
+Qloo describes what groups of people tend to like. Its place entities carry opening hours, a wheelchair accessible entrance tag and dietary option tags for part of the places, and AFTERGLOW reads those first (see [QLOO_INTEGRATION.md](QLOO_INTEGRATION.md)). It does not state group capacity or covered seating, and it leaves many places without the other facts. Without another source, a live plan that insists on any of those requirements would show every place as needing a check. OpenStreetMap is an open map that volunteers edit, and many venues carry tags for exactly those facts.
 
 ## What is read
 

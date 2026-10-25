@@ -10,7 +10,7 @@ Source code: https://github.com/hudasol/afterglow (MIT License, shown in the rep
 | Public repository with visible license | Published, MIT                                                                          |
 | Hosted demo                            | https://afterglow-gsc4.onrender.com in demo mode. Live Qloo is not configured on it yet |
 | Demo video                             | Not made. Screenshots are provided instead                                              |
-| Live Qloo verification                 | Not yet run. See the honest status in the sections below                                |
+| Live Qloo verification                 | Smoke test (verdict go) and a preregistered evaluation, run twice, on 25 October 2026   |
 
 ## 1. Product problem statement
 
@@ -31,7 +31,7 @@ Qloo fits because the product question is not which place is popular but which p
 
 Qloo results are used as evidence inside a product flow. They never override a hard requirement: a place that fails a requirement is ruled out however well it matches taste. Full detail is in [QLOO_INTEGRATION.md](QLOO_INTEGRATION.md).
 
-**Honest status.** The live Qloo path is implemented and tested against a synthetic stand in. It has not yet been run against the real API because the personal key has not arrived. The command `npm run qloo:smoke` runs the first live experiment and records a go, conditional or no go verdict. Nothing in this submission claims that verdict has been reached.
+**Honest status.** The live Qloo path was run against the real API on 25 October 2026. A smoke test of 16 requests gave the verdict go ([report](../data/evaluation/smoke-2026-10-25.json)). A preregistered evaluation over 20 scenarios in five cities then met 9 of its 12 predictions and missed 3 ([registered result](EVALUATION_LIVE.md)). The first run exposed two defects in the product, which were fixed and recorded as a dated amendment, and a second run on the same scenarios gave the same 9 and 3 ([second run](EVALUATION_LIVE_SECOND_RUN.md), [notes on the misses](EVALUATION_LIVE_NOTES.md)). The scenarios, the cities and the signals were chosen by the team that built the method, and no people took part.
 
 ## 3. Redacted request to result explanation
 
@@ -45,7 +45,7 @@ Every case has an Evidence tab that lists, for that case:
 
 **Entity and tag choices.** A name that matches exactly one entry by normalised name resolves. Anything else is ambiguous, and the person chooses among up to five candidates or skips the signal. A fuzzy match is never used downstream. The simulated scenario "Jazz night, one signal needs a choice" demonstrates this: the word jazz matches two simulated tags, the search does not run, and the person is asked which one is meant.
 
-The shape of the ranking request is documented in [QLOO_INTEGRATION.md](QLOO_INTEGRATION.md). A real redacted request and response pair from a live run will be added once the key arrives.
+The shape of the ranking request is documented in [QLOO_INTEGRATION.md](QLOO_INTEGRATION.md). The Evidence tab of any live case lists that case's own redacted requests, and the redacted report of the live smoke test is committed at [data/evaluation/smoke-2026-10-25.json](../data/evaluation/smoke-2026-10-25.json).
 
 ## 4. Demo and screenshots
 
@@ -75,12 +75,13 @@ npm start
 
 Open http://127.0.0.1:8788. With no key the application runs in demo mode only.
 
-To use live Qloo, copy `.env.example` to `.env`, set `QLOO_API_KEY`, run `npm run qloo:smoke`, then restart the server. To reproduce the offline evaluation run `npm run eval`. To run the browser tests run `npm run test:e2e`.
+To use live Qloo, copy `.env.example` to `.env`, set `QLOO_API_KEY`, run `npm run qloo:smoke`, then restart the server. To reproduce the offline evaluation run `npm run eval`. To repeat the live evaluation run `npm run eval:live`, which needs a key and sends real requests. To run the browser tests run `npm run test:e2e`.
 
 ## 6. Known limitations and what the results do not establish
 
-- The live Qloo path has not yet been verified with a real key.
-- In live mode Qloo is not read for opening hours, dietary options, accessibility, capacity or covered seating. For live cases AFTERGLOW looks some of them up on OpenStreetMap, which volunteers edit, and that lookup has not yet been run successfully against real data, because the public Overpass servers did not answer when it was tried. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
+- Three of the 12 preregistered predictions were missed in both live runs: how much the ranking changes when the signals are swapped (P4, P5) and how often the Taste On top choice differs from the nearest place (P9). A read only look at the pools showed why in part. When a plan sends only vibe tags, Qloo gave all 40 places the same taste score in all five such scenarios, so the order follows distance, and the application says so beside the shortlist. The registered result is not changed.
+- Qloo states opening hours for about 70 percent of the places in the evaluation pools, step free access for about 74 percent and a dietary fact for about 63 percent where one was needed. It never states group capacity or covered seating. For facts that stay unknown AFTERGLOW can look at OpenStreetMap, which volunteers edit, and that lookup has not yet been run successfully against real data, because the public Overpass servers did not answer when it was tried. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
+- The live evaluation measures how the pipeline behaves on real Qloo data for plans the team chose. It does not measure whether Qloo affinity predicts what a person will enjoy, and the hours, access and dietary facts Qloo states were not checked against the venues.
 - The offline evaluation uses an invented, hand authored catalogue. In it, a plain top three broke at least one requirement in 12 of 17 scenarios, and the gated shortlists broke none as judged by an independent oracle. These figures show how the pipeline behaves on that catalogue. They are not a rate in the real world and they say nothing about how well Qloo predicts what people enjoy.
 - No people took part in any evaluation.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
@@ -104,7 +105,7 @@ TypeScript with a layered design: a pure domain layer, an application layer behi
 
 ### Challenges
 
-Designing for unknown facts. Qloo gives rich taste data but not opening hours or accessibility, so the gate has three outcomes, unknown never passes, and a second, labelled source fills in only what it can state clearly. Building a fair Taste On against Taste Off comparison, where only the ordering rule differs. Staying honest in a demo, where invented data must never look like live data.
+Designing for unknown facts. Qloo states opening hours, step free access and dietary options for only part of the places it returns, and never group capacity, so the gate has three outcomes, unknown never passes, and a second, labelled source fills in only what it can state clearly. Learning from the live data too: the first evaluation run showed that a venue name can match a place in another country and that Qloo slows sharply when five or more tag signals are sent, and both are now handled and recorded. Building a fair Taste On against Taste Off comparison, where only the ordering rule differs. Staying honest in a demo, where invented data must never look like live data.
 
 ### Accomplishments
 
@@ -116,7 +117,7 @@ That the most useful behaviour is often refusal: refusing to rank a place that c
 
 ### What is next
 
-Run the live smoke test and evaluation, check the OpenStreetMap place facts against real data, and test the recovery flow with real people.
+Check the OpenStreetMap place facts against real data, ask Qloo why vibe tags alone give every place the same score, check the facts Qloo states against the venues for a sample, and test the recovery flow with real people.
 
 ### Built with
 

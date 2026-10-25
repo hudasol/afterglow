@@ -32,8 +32,8 @@ SQLite through `node:sqlite` with SQL migrations and synchronous transactions. C
 
 ## Taste providers
 
-- `QlooTasteProvider` calls the Qloo API through `QlooClient`.
-- `OsmPlaceFactsProvider` is not a taste provider. It implements a separate `PlaceFactsProvider` port and runs after the pool is fetched, for live cases only. It reads opening hours, diet, wheelchair and capacity tags from OpenStreetMap for the facts a plan insists on, through `OverpassClient`, and fills only facts that are still unknown. Each value it sets carries the source `openstreetmap` and the tag it was read from. See [OPENSTREETMAP.md](OPENSTREETMAP.md).
+- `QlooTasteProvider` calls the Qloo API through `QlooClient`. It reads opening hours, a wheelchair accessible entrance and dietary options from the place entities it returns, using the readers in `src/qloo/facts.ts`, and gives each fact the source Qloo with the evidence it was read from. The plan's weekday, time and dietary requirements reach it through a small `FactContext`, so the readers never guess.
+- `OsmPlaceFactsProvider` is not a taste provider. It implements a separate `PlaceFactsProvider` port and runs after the pool is fetched, for live cases only. It reads opening hours, diet, wheelchair and capacity tags from OpenStreetMap for the facts a plan insists on, through `OverpassClient`, and fills only facts that are still unknown after Qloo has been read. Each value it sets carries the source `openstreetmap` and the tag it was read from. See [OPENSTREETMAP.md](OPENSTREETMAP.md).
 - `SimulatedTasteProvider` serves an invented city, Harbourvale, with 32 invented venues and a simulated affinity formula. Every screen that uses it says so. It exists for demonstration and tests and is never presented as Qloo data.
 
 ## HTTP interface
