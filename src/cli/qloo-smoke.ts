@@ -46,6 +46,7 @@ async function main(): Promise<void> {
     console.log(`${check.ok ? 'PASS' : 'FAIL'}  ${check.name}: ${check.detail}`);
   console.log(`\nVerdict: ${report.verdict}`);
   for (const reason of report.reasons) console.log(`- ${reason}`);
+  for (const note of report.notes) console.log(`Note: ${note}`);
   const outDir = resolve(import.meta.dirname, '../../data/evaluation');
   mkdirSync(outDir, { recursive: true });
   const file = resolve(outDir, `smoke-${report.generatedAt.slice(0, 10)}.json`);

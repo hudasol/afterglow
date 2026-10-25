@@ -15,6 +15,7 @@ import {
   toTagRef,
   toTasteScores,
 } from './normalize.js';
+import { normaliseName } from '../domain/venue.js';
 import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
 
 export interface SmokeOptions {
@@ -56,6 +57,8 @@ export interface SmokeReport {
   checks: SmokeCheck[];
   verdict: SmokeVerdict;
   reasons: string[];
+  /** Observations that do not change the verdict. */
+  notes: string[];
   observed: {
     poolSize: number;
     withLocation: number;
@@ -72,6 +75,10 @@ export interface SmokeReport {
     hoursLikeKeys: string[];
     withHours: number;
     withGoodFor: number;
+    /** Places in the pool that carry the category tag, when one was used. */
+    withCategoryTag: number | null;
+    /** Places Qloo marks as closed. The reader does not rely on this field. */
+    markedClosed: number;
     /** Qloo's own taxonomy labels seen across the pool, counted. These are labels, not venue data. */
     taxonomy: {
       goodFor: Array<{ name: string; count: number }>;
@@ -192,6 +199,7 @@ export async function runSmoke(
 ): Promise<SmokeReport> {
   const checks: SmokeCheck[] = [];
   const reasons: string[] = [];
+  const notes: string[] = [];
   const traces: CallTrace[] = [];
   const observed: SmokeReport['observed'] = {
     poolSize: 0,
@@ -209,6 +217,8 @@ export async function runSmoke(
     tagLookups: [],
     withHours: 0,
     withGoodFor: 0,
+    withCategoryTag: null,
+    markedClosed: 0,
     taxonomy: { goodFor: [], tags: [] },
     nestedShapes: {},
     probes: [],
@@ -220,7 +230,7 @@ export async function runSmoke(
   const finish = (verdict: SmokeVerdict): SmokeReport => {
     observed.callCount = traces.length;
     observed.callErrors = traces.filter((t) => t.error).map((t) => `${t.endpoint}: ${t.error}`);
-    return { generatedAt: now.toISOString(), options, checks, verdict, reasons, observed };
+    return { generatedAt: now.toISOString(), options, checks, verdict, reasons, notes, observed };
   };
 
   // 1. Reachability and authentication.
@@ -249,13 +259,22 @@ export async function runSmoke(
   // never does this: it asks the person to choose.
   const entityA = resolutions[0]?.selected ?? resolutions[0]?.candidates?.[0];
   const entityB = resolutions[1]?.selected ?? resolutions[1]?.candidates?.[0];
+  // A name that several entries share is not a failure. The product asks the person to choose.
+  // Only a name that matched nothing exactly, or nothing at all, means the lookup does not work.
+  const sharedName = (r: TasteResolution) =>
+    r.status === 'ambiguous' &&
+    (r.candidates?.length ?? 0) > 0 &&
+    (r.candidates ?? []).every((c) => normaliseName(c.name) === normaliseName(r.input));
   check(
     'entity resolution',
-    resolutions.every((r) => r.status === 'resolved'),
+    resolutions.every((r) => r.status === 'resolved' || sharedName(r)),
     resolutions
-      .map(
-        (r) =>
-          `${r.input}: ${r.status}${r.status === 'ambiguous' ? ` (${r.candidates?.length ?? 0} candidates)` : ''}`,
+      .map((r) =>
+        r.status === 'resolved'
+          ? `${r.input}: one exact entry`
+          : sharedName(r)
+            ? `${r.input}: ${r.candidates?.length ?? 0} exact entries, the person chooses`
+            : `${r.input}: ${r.status}`,
       )
       .join('; '),
   );
@@ -294,8 +313,8 @@ export async function runSmoke(
   if (!entityA || !entityB) {
     reasons.push('A probe entity returned no candidate, so the ranking checks were skipped.');
   } else if (resolutions.some((r) => r.status !== 'resolved')) {
-    reasons.push(
-      'A probe name matched more than one entry, so the ranking checks used the first candidate. The product asks the person to choose in this case.',
+    notes.push(
+      'A probe name matched more than one entry. The ranking checks used the first candidate. The product asks the person to choose in this case.',
     );
   }
 
@@ -400,6 +419,15 @@ export async function runSmoke(
     ),
     tags: tally(records.flatMap((r) => asArrayOf(r['tags']))),
   };
+  if (category.selected) {
+    const wantedId = category.selected.id;
+    observed.withCategoryTag = records.filter((r) =>
+      asArrayOf(r['tags']).some((tag) => asRecord(tag)?.['id'] === wantedId),
+    ).length;
+  }
+  observed.markedClosed = records.filter(
+    (r) => asRecord(r['properties'])?.['is_closed'] === true,
+  ).length;
   const first = asRecord(rawPlaces[0]);
   observed.entityKeys = keysOf(first);
   observed.propertyKeys = keysOf(first?.['properties']);
@@ -434,6 +462,14 @@ export async function runSmoke(
   ]) {
     const value = first?.[key];
     if (value !== undefined) observed.nestedShapes[key] = skeletonOf(value);
+  }
+  if (category.selected) {
+    const share = records.length === 0 ? 0 : (observed.withCategoryTag ?? 0) / records.length;
+    check(
+      'category filter narrows the pool',
+      share >= 0.5,
+      `${observed.withCategoryTag} of ${records.length} places carry the tag ${category.selected.id}.`,
+    );
   }
   check(
     'place pool for the city',

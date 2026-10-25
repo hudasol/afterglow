@@ -77,3 +77,89 @@ export function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
     ...init,
   });
 }
+
+/**
+ * RECORDED taxonomy, not venue data. These tag ids, names, types and parent types were read from
+ * a live Qloo response on 25 October 2026 (the first twelve results for the phrase "restaurant",
+ * without a parent filter). They show that one phrase can exist under several taxonomies, and that
+ * only some of them apply to places.
+ */
+export const recordedRestaurantTags = {
+  results: {
+    tags: [
+      [
+        'urn:tag:product_service:qloo:restaurant_dining',
+        'Restaurant Dining',
+        'urn:tag:product_service:qloo',
+        'brand',
+      ],
+      [
+        'urn:tag:product_service:qloo:restaurant',
+        'Restaurant',
+        'urn:tag:product_service:qloo',
+        'brand',
+      ],
+      ['urn:tag:amenity:qloo:restaurant', 'Restaurant', 'urn:tag:amenity:qloo', 'place'],
+      ['urn:tag:genre:place:restaurant', 'Restaurant', 'urn:tag:genre:place', 'place'],
+      [
+        'urn:tag:amenity:qloo:restaurant_dining',
+        'Restaurant Dining',
+        'urn:tag:amenity:qloo',
+        'place',
+      ],
+      [
+        'urn:tag:dining_option:qloo:restaurant',
+        'Restaurant',
+        'urn:tag:dining_option:qloo',
+        'place',
+      ],
+      ['urn:tag:amenities:place:restaurant', 'Restaurant', 'urn:tag:amenities:place', 'place'],
+      ['urn:tag:amenity:qloo:eatery', 'Eatery', 'urn:tag:amenity:qloo', 'place'],
+    ].map(([id, name, type, parent]) => ({
+      id,
+      name,
+      type,
+      parents: [{ type: `urn:entity:${parent}` }],
+    })),
+  },
+};
+
+/** RECORDED taxonomy: "jazz" with the parent filter urn:entity:place returned exactly one tag. */
+export const recordedJazzPlaceTags = {
+  results: {
+    tags: [
+      {
+        id: 'urn:tag:interests:qloo:jazz',
+        name: 'Jazz',
+        type: 'urn:tag:interests:qloo',
+        parents: [
+          { type: 'urn:entity:place' },
+          { type: 'urn:entity:movie' },
+          { type: 'urn:entity:tv_show' },
+        ],
+      },
+    ],
+  },
+};
+
+/** RECORDED taxonomy: "jazz" without a parent filter, where every tag but one is for artists. */
+export const recordedJazzAnyTags = {
+  results: {
+    tags: [
+      ['urn:tag:genre:qloo:jazz', 'urn:tag:genre:qloo'],
+      ['urn:tag:genre:music:jazz', 'urn:tag:genre:music'],
+      ['urn:tag:music:qloo:jazz', 'urn:tag:music:qloo'],
+    ].map(([id, type]) => ({ id, name: 'Jazz', type, parents: [{ type: 'urn:entity:artist' }] })),
+  },
+};
+
+/**
+ * RECORDED shape: a search for a musician's name returns one entry per kind of thing that carries
+ * the name. The names are public figures; no other field is kept.
+ */
+export const recordedMusicianSearch = {
+  results: [
+    { entity_id: 'recorded-artist', name: 'Miles Davis', type: 'urn:entity:artist' },
+    { entity_id: 'recorded-person', name: 'Miles Davis', type: 'urn:entity:person' },
+  ],
+};

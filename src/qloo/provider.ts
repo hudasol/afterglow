@@ -53,13 +53,8 @@ export class QlooTasteProvider implements TasteProvider {
       if (kind === 'entity' || kind === 'original_venue') {
         return await resolveEntity(client, kind, input, ctx.city ?? '', ctx.traces);
       }
-      return await resolveTag(
-        client,
-        kind,
-        input,
-        ctx.traces,
-        kind === 'category' ? PLACE_TYPE : undefined,
-      );
+      // Both kinds of tag are used to rank places, so only tags that apply to places are wanted.
+      return await resolveTag(client, kind, input, ctx.traces, PLACE_TYPE);
     } catch (error) {
       throw translate(error);
     }

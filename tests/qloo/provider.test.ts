@@ -4,6 +4,10 @@ import { toCandidate, toTasteScores, readPoint, resultArray } from '../../src/ql
 import { QlooTasteProvider } from '../../src/qloo/provider.js';
 import {
   jsonResponse,
+  recordedJazzAnyTags,
+  recordedJazzPlaceTags,
+  recordedMusicianSearch,
+  recordedRestaurantTags,
   syntheticPlaceResponse,
   syntheticSearchResponse,
   syntheticTagResponse,
@@ -84,14 +88,62 @@ describe('QlooTasteProvider', () => {
     });
   });
 
-  it('asks the person to choose when a tag name matches more than one tag', async () => {
+  it('asks the person to choose when several tags for places share a name', async () => {
     const { provider } = providerWith(() => jsonResponse(syntheticTagResponse));
-    const result = await provider.resolve('tag', 'jazz', { traces: [] });
+    const twoPlaceTags = {
+      results: {
+        tags: [
+          {
+            id: 'urn:tag:a:jazz',
+            name: 'Jazz',
+            type: 'urn:tag:a',
+            parents: [{ type: 'urn:entity:place' }],
+          },
+          {
+            id: 'urn:tag:b:jazz',
+            name: 'Jazz',
+            type: 'urn:tag:b',
+            parents: [{ type: 'urn:entity:place' }],
+          },
+        ],
+      },
+    };
+    const both = providerWith(() => jsonResponse(twoPlaceTags)).provider;
+    const result = await both.resolve('tag', 'jazz', { traces: [] });
     expect(result.status).toBe('ambiguous');
-    expect(result.candidates?.map((c) => c.id)).toEqual([
-      'urn:tag:genre:media:jazz',
-      'urn:tag:genre:place:jazz',
-    ]);
+    expect(result.candidates?.map((c) => c.id)).toEqual(['urn:tag:a:jazz', 'urn:tag:b:jazz']);
+    // The tags that apply to artists only are left out of the choice.
+    const mixed = await provider.resolve('tag', 'jazz', { traces: [] });
+    expect(mixed.status).toBe('resolved');
+    expect(mixed.selected?.id).toBe('urn:tag:genre:place:jazz');
+  });
+
+  it('asks Qloo for tags that apply to places and resolves the one it returns', async () => {
+    const { provider, seen } = providerWith(() => jsonResponse(recordedJazzPlaceTags));
+    const result = await provider.resolve('tag', 'jazz', { traces: [] });
+    expect(seen[0]?.searchParams.get('filter.parents.types')).toBe('urn:entity:place');
+    expect(result.status).toBe('resolved');
+    expect(result.selected?.id).toBe('urn:tag:interests:qloo:jazz');
+  });
+
+  it('falls back to a wider search once when no tag applies to places, and says so', async () => {
+    const { provider, seen } = providerWith((url) =>
+      url.searchParams.has('filter.parents.types')
+        ? jsonResponse({ results: { tags: [] } })
+        : jsonResponse(recordedJazzAnyTags),
+    );
+    const result = await provider.resolve('tag', 'jazz', { traces: [] });
+    expect(seen).toHaveLength(2);
+    expect(result.status).toBe('ambiguous');
+    expect(result.warnings?.join(' ')).toContain('another domain');
+  });
+
+  it('uses the place genre tag for a category that exists under several taxonomies', async () => {
+    const { provider } = providerWith(() => jsonResponse(recordedRestaurantTags));
+    const result = await provider.resolve('category', 'restaurant', { traces: [] });
+    expect(result.status).toBe('resolved');
+    expect(result.selected?.id).toBe('urn:tag:genre:place:restaurant');
+    expect(result.warnings?.join(' ')).toContain('4 tags are called');
   });
 
   it('scopes a category tag to the place type and resolves an exact match', async () => {
@@ -99,6 +151,16 @@ describe('QlooTasteProvider', () => {
     const result = await provider.resolve('category', 'jazz', { traces: [] });
     expect(result.status).toBe('resolved');
     expect(result.selected?.id).toBe('urn:tag:genre:place:jazz');
+  });
+
+  it('asks the person to choose between a musician and a person of the same name', async () => {
+    const { provider } = providerWith(() => jsonResponse(recordedMusicianSearch));
+    const result = await provider.resolve('entity', 'Miles Davis', { traces: [] });
+    expect(result.status).toBe('ambiguous');
+    expect(result.candidates?.map((c) => c.type)).toEqual([
+      'urn:entity:artist',
+      'urn:entity:person',
+    ]);
   });
 
   it('never resolves a non exact entity match on its own', async () => {

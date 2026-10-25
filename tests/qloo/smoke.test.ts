@@ -14,6 +14,7 @@ function fakeQloo(options: {
     name: `Fixture Place ${i}`,
     location: { lat: 10 + i / 100, lon: 10 },
     properties: { price_level: (i % 4) + 1, address: `${i} Test Road` },
+    tags: [{ id: 'urn:tag:restaurant', name: 'restaurant' }],
   }));
   return (async (input: Request | URL | string) => {
     const url = new URL(String(input));
@@ -134,10 +135,30 @@ describe('qloo smoke experiment', () => {
       return base(input, init);
     }) as typeof fetch;
     const report = await runSmoke(client(twoMatches), options, new Date());
-    expect(report.checks.find((c) => c.name === 'entity resolution')?.ok).toBe(false);
+    // Two entries that share a name are a normal outcome. The person chooses between them.
+    expect(report.checks.find((c) => c.name === 'entity resolution')?.ok).toBe(true);
+    expect(report.checks.find((c) => c.name === 'entity resolution')?.detail).toContain(
+      'the person chooses',
+    );
     expect(report.checks.find((c) => c.name === 'signal sensitivity')).toBeDefined();
-    expect(report.reasons.join(' ')).toContain('first candidate');
-    expect(report.verdict).toBe('conditional');
+    expect(report.notes.join(' ')).toContain('first candidate');
+    expect(report.verdict).toBe('go');
+  });
+
+  it('fails the entity check when a name matches nothing exactly', async () => {
+    const base = fakeQloo({ poolSize: 20, sensitive: true });
+    const loose = (async (input: Request | URL | string, init?: RequestInit) => {
+      const url = new URL(String(input));
+      if (url.pathname === '/search' && url.searchParams.get('query') === 'Metallica') {
+        return jsonResponse({
+          results: [{ entity_id: 'x', name: 'Metallica Tribute', types: ['urn:entity:artist'] }],
+        });
+      }
+      return base(input, init);
+    }) as typeof fetch;
+    const report = await runSmoke(client(loose), options, new Date());
+    expect(report.checks.find((c) => c.name === 'entity resolution')?.ok).toBe(false);
+    expect(report.verdict).not.toBe('go');
   });
 
   it('returns no go when different signals give the same ranking', async () => {
@@ -195,12 +216,11 @@ describe('response shape helpers', () => {
       rating: 4.5,
     });
     expect(shape).toEqual({
-      Monday: { array: 1, first: { close: 'string 99:99', open: 'string 99:99' } },
+      Monday: { array: 1, first: { close: 'time 22:30', open: 'time 11:00' } },
       closed: 'boolean',
       note: 'null',
       rating: 'number',
     });
-    expect(JSON.stringify(shape)).not.toContain('22:30');
   });
 
   it('stops at a fixed depth', () => {

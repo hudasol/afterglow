@@ -6,6 +6,13 @@ import type { CallTrace } from '../domain/case.js';
 
 export const PLACE_TYPE = 'urn:entity:place';
 
+/**
+ * Qloo files a venue category such as "Restaurant" under several taxonomies at once: amenity,
+ * dining option, cuisine and place genre. The place genre tag is the one that says what kind of
+ * place a venue is, so a category lookup prefers it. The others describe something a place offers.
+ */
+export const CATEGORY_TAG_TYPE = 'urn:tag:genre:place';
+
 function stripTag(tag: TagRef): ResolvedRef {
   const ref: ResolvedRef = { id: tag.id, name: tag.name };
   if (tag.type !== undefined) ref.type = tag.type;
@@ -82,24 +89,40 @@ export async function resolveTag(
   traces: CallTrace[],
   parentType?: string,
 ): Promise<TasteResolution> {
-  const response = await client.get(
-    '/v2/tags',
-    { 'filter.query': input, 'feature.semantic_search': true, take: 20 },
-    traces,
-  );
-  const ranked = resultArray(response, 'tags')
-    .map(toTagRef)
-    .filter((tag): tag is TagRef => tag !== undefined);
+  const search = async (scope: string | undefined): Promise<TagRef[]> => {
+    const response = await client.get(
+      '/v2/tags',
+      {
+        'filter.query': input,
+        'feature.semantic_search': true,
+        take: 20,
+        ...(scope ? { 'filter.parents.types': scope } : {}),
+      },
+      traces,
+    );
+    return resultArray(response, 'tags')
+      .map(toTagRef)
+      .filter((tag): tag is TagRef => tag !== undefined);
+  };
+
+  let ranked = await search(parentType);
+  const warnings: string[] = [];
+  // A phrase with no tag that applies to places may still exist in another domain. Qloo relates
+  // domains to each other, so the wider search is tried once and the person is told.
+  if (ranked.length === 0 && parentType && kind === 'tag') {
+    ranked = await search(undefined);
+    if (ranked.length > 0) {
+      warnings.push(
+        'Qloo has no tag with this name that applies to places. A tag from another domain was found instead.',
+      );
+    }
+  }
 
   const withParents = ranked.filter((tag) => tag.parentTypes.length > 0);
   const scoped =
-    parentType && withParents.length > 0
+    parentType && withParents.length > 0 && warnings.length === 0
       ? ranked.filter((tag) => tag.parentTypes.includes(parentType))
       : ranked;
-  const warnings: string[] =
-    parentType && withParents.length === 0 && ranked.length > 0
-      ? [`Qloo did not return parent types, so tags could not be limited to ${parentType}.`]
-      : [];
 
   if (scoped.length === 0) {
     return outcome(kind, input, 'not_found', {
@@ -114,6 +137,19 @@ export async function resolveTag(
       method: 'exact',
       ...(warnings.length > 0 ? { warnings } : {}),
     });
+  }
+  if (kind === 'category' && exact.length > 1) {
+    const genre = exact.filter((tag) => tag.type === CATEGORY_TAG_TYPE);
+    if (genre.length === 1 && genre[0]) {
+      return outcome(kind, input, 'resolved', {
+        selected: stripTag(genre[0]),
+        method: 'exact',
+        warnings: [
+          ...warnings,
+          `${exact.length} tags are called "${genre[0].name}". The place genre tag was used because it says what kind of place a venue is.`,
+        ],
+      });
+    }
   }
   return outcome(kind, input, 'ambiguous', {
     candidates: (exact.length > 0 ? exact : scoped).slice(0, 5).map(stripTag),
