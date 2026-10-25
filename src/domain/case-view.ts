@@ -3,6 +3,7 @@ import {
   pendingChoices,
   resolutionKey,
   type CallTrace,
+  type CaseEvent,
   type CaseMode,
   type CaseState,
   type CaseStatus,
@@ -335,66 +336,53 @@ export function buildCaseView(
   };
 }
 
+/** One plain language sentence for an event. Shared by the history list and the agent trace. */
+export function describeEvent(event: CaseEvent, nameOf: (candidateId: string) => string): string {
+  switch (event.type) {
+    case 'case_opened':
+      return `Case opened for "${event.anchor.title}". The intent anchor was recorded and will not change.`;
+    case 'taste_resolution_recorded':
+      return event.resolution.status === 'resolved'
+        ? `Resolved "${event.resolution.input}" to ${event.resolution.selected?.name ?? 'a match'}.`
+        : event.resolution.status === 'ambiguous'
+          ? `"${event.resolution.input}" matched several entries. A choice is needed.`
+          : `"${event.resolution.input}" was not found and is not used.`;
+    case 'taste_choice_made':
+      return `You chose ${event.chosen.name} for an ambiguous signal.`;
+    case 'disruption_recorded':
+      return `Disruption recorded: ${describeDisruption(event.disruption)}.`;
+    case 'search_completed':
+      return `Search ${event.run.runId} completed over ${event.run.pool.length} places. Taste ranking: ${event.run.tasteStatus}.`;
+    case 'search_failed':
+      return `Search failed (${event.code}): ${event.message}`;
+    case 'fact_attested':
+      return `You checked "${event.constraintKey}" for ${nameOf(event.candidateId)}: ${event.attestation.satisfied ? 'satisfied' : 'not satisfied'}.`;
+    case 'constraint_relaxed':
+      return `You agreed to give up the constraint "${event.constraintKey}". The anchor is unchanged.`;
+    case 'option_rejected':
+      return `You declined ${nameOf(event.candidateId)}.`;
+    case 'attempt_started':
+      return `You started trying ${nameOf(event.candidateId)}.`;
+    case 'attempt_confirmed':
+      return `You confirmed ${nameOf(event.candidateId)}. This is your attestation, not an automatic booking.`;
+    case 'attempt_failed':
+      return `${nameOf(event.candidateId)} did not work out.`;
+    case 'case_closed':
+      return event.outcome === 'recovered'
+        ? 'Case closed as recovered.'
+        : 'Case closed without a recovery.';
+  }
+}
+
 function buildHistory(events: readonly StoredEvent[], pool: readonly Candidate[]): HistoryEntry[] {
   const nameOf = (candidateId: string): string =>
     pool.find((candidate) => candidate.id === candidateId)?.name ?? 'an option';
-  const entries: HistoryEntry[] = [];
-  for (const { seq, at, event } of events) {
-    let kind: string = event.type;
-    let text: string;
-    switch (event.type) {
-      case 'case_opened':
-        text = `Case opened for "${event.anchor.title}". The intent anchor was recorded and will not change.`;
-        break;
-      case 'taste_resolution_recorded':
-        text =
-          event.resolution.status === 'resolved'
-            ? `Resolved "${event.resolution.input}" to ${event.resolution.selected?.name ?? 'a match'}.`
-            : event.resolution.status === 'ambiguous'
-              ? `"${event.resolution.input}" matched several entries. A choice is needed.`
-              : `"${event.resolution.input}" was not found and is not used.`;
-        break;
-      case 'taste_choice_made':
-        text = `You chose ${event.chosen.name} for an ambiguous signal.`;
-        break;
-      case 'disruption_recorded':
-        text = `Disruption recorded: ${describeDisruption(event.disruption)}.`;
-        break;
-      case 'search_completed':
-        text = `Search ${event.run.runId} completed over ${event.run.pool.length} places. Taste ranking: ${event.run.tasteStatus}.`;
-        break;
-      case 'search_failed':
-        text = `Search failed (${event.code}): ${event.message}`;
-        break;
-      case 'fact_attested':
-        text = `You checked "${event.constraintKey}" for ${nameOf(event.candidateId)}: ${event.attestation.satisfied ? 'satisfied' : 'not satisfied'}.`;
-        break;
-      case 'constraint_relaxed':
-        text = `You agreed to give up the constraint "${event.constraintKey}". The anchor is unchanged.`;
-        break;
-      case 'option_rejected':
-        text = `You declined ${nameOf(event.candidateId)}.`;
-        break;
-      case 'attempt_started':
-        text = `You started trying ${nameOf(event.candidateId)}.`;
-        break;
-      case 'attempt_confirmed':
-        text = `You confirmed ${nameOf(event.candidateId)}. This is your attestation, not an automatic booking.`;
-        break;
-      case 'attempt_failed':
-        text = `${nameOf(event.candidateId)} did not work out.`;
-        break;
-      case 'case_closed':
-        kind = 'case_closed';
-        text =
-          event.outcome === 'recovered'
-            ? 'Case closed as recovered.'
-            : 'Case closed without a recovery.';
-        break;
-    }
-    entries.push({ seq, at, kind, text });
-  }
-  return entries;
+  return events.map(({ seq, at, event }) => ({
+    seq,
+    at,
+    kind: event.type,
+    text: describeEvent(event, nameOf),
+  }));
 }
 
 export { pendingChoices };

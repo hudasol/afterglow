@@ -51,6 +51,21 @@ describe('http interface', () => {
     expect(list.cases[0].status).toBe('recovering');
   });
 
+  it('serves the agent trace for a case and keeps it private to the session', async () => {
+    const server = await startServer();
+    closer = server.close;
+    const view = await (
+      await server.request('/api/cases', { method: 'POST', body: openBody() })
+    ).json();
+    const trace = await (await server.request(`/api/cases/${view.id}/trace`)).json();
+    expect(trace.cycles).toHaveLength(1);
+    expect(trace.cycles[0].steps.map((step: { phase: string }) => step.phase)).toContain('decide');
+    const other = await server.request(`/api/cases/${view.id}/trace`, {
+      headers: { [SESSION_HEADER]: 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz' },
+    });
+    expect(other.status).toBe(404);
+  });
+
   it('runs the attempt and confirm flow over the API', async () => {
     const server = await startServer();
     closer = server.close;

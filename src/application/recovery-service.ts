@@ -22,6 +22,7 @@ import {
   type IntentAnchor,
 } from '../domain/intent.js';
 import { disruptionSchema } from '../domain/plan.js';
+import { buildTrace, type AgentTrace } from '../domain/trace.js';
 import { normaliseName, type Candidate } from '../domain/venue.js';
 import { AppError, statusForProviderCode } from './errors.js';
 import { ProviderError, type ProviderContext, type TasteProvider } from './ports.js';
@@ -102,6 +103,12 @@ export class RecoveryService {
 
   purgeExpired(): number {
     return this.#repo.purgeExpired(this.#clock().toISOString());
+  }
+
+  /** What the agent observed, planned, did and decided in each cycle, rebuilt from the events. */
+  getTrace(sessionKey: string, caseId: string): AgentTrace {
+    const { events } = this.#load(sessionKey, caseId);
+    return buildTrace(caseId, events);
   }
 
   /** The redacted request to result explanation. It lists what left the server and what came back. */

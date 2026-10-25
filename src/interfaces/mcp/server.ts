@@ -176,6 +176,24 @@ export function createMcpServer(options: McpServerOptions): McpServer {
   );
 
   server.registerTool(
+    'afterglow_get_trace',
+    {
+      title: 'Get the agent trace',
+      description:
+        'Returns each search cycle of a case as what was observed, planned, done and decided, and where the decision was handed back to the person. It is rebuilt from the recorded events.',
+      inputSchema: { caseId },
+      annotations: readOnly,
+    },
+    async ({ caseId: id }) => {
+      try {
+        return textResult(service.getTrace(sessionKey, id));
+      } catch (error) {
+        return failure(error);
+      }
+    },
+  );
+
+  server.registerTool(
     'afterglow_choose_signal',
     {
       title: 'Settle an ambiguous taste signal',

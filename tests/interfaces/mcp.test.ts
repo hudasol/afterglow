@@ -259,6 +259,16 @@ describe('mcp interface', () => {
     expect(failed.body['removed'].count).toBeGreaterThan(0);
   });
 
+  it('returns the agent trace of a case', async () => {
+    const { client } = await connect();
+    const opened = await call(client, 'afterglow_open_case', openArgs());
+    const trace = (await call(client, 'afterglow_get_trace', { caseId: opened.body['caseId'] }))
+      .body as unknown as { cycles: { heading: string; steps: { phase: string }[] }[] };
+    expect(trace.cycles).toHaveLength(1);
+    expect(trace.cycles[0]?.heading).toBe('First search');
+    expect(trace.cycles[0]?.steps.map((step) => step.phase)).toContain('hand_over');
+  });
+
   it('returns the redacted provenance of a case', async () => {
     const { client } = await connect();
     const opened = await call(client, 'afterglow_open_case', openArgs());

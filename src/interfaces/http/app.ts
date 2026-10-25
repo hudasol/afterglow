@@ -314,6 +314,11 @@ export function createApp(options: AppOptions): express.Express {
     ),
   );
 
+  api.get(
+    '/cases/:id/trace',
+    wrap((req, res) => res.json(service.getTrace(sessionKeyOf(req), String(req.params['id'])))),
+  );
+
   api.post(
     '/cases/:id/choices',
     wrap(async (req, res) => {
