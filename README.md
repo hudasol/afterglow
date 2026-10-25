@@ -15,6 +15,7 @@ This table states what has and has not been verified. It is updated whenever the
 | Unit and integration tests                    | Passing (`npm test`)                                                                                      |
 | Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                              |
 | Type check, lint, formatting                  | Passing (`npm run check`)                                                                                 |
+| Continuous integration                        | Workflow in `.github/workflows/ci.yml`. **Not yet confirmed.** The first run result will be recorded here |
 | Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                  |
 | Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which has been requested and has not arrived               |
 | Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                                             |
