@@ -47,6 +47,29 @@ describe('agent trace', () => {
     expect(decision?.join(' ')).toContain(topName ?? 'missing');
     expect(cycle?.steps.some((step) => step.text.includes(view.providerLabel))).toBe(true);
     expect(trace.since).toEqual([]);
+    const observed = cycle?.steps.filter((step) => step.phase === 'observe').map((s) => s.text);
+    expect(observed?.some((text) => /^Matched \d+ names and phrases/u.test(text))).toBe(true);
+    expect(observed?.some((text) => text.startsWith('Resolved'))).toBe(false);
+  });
+
+  it('waits for a choice before any cycle, then records the choice in the first one', async () => {
+    const { service } = makeService();
+    const spec = scenario('s00-jazz-needs-a-choice');
+    const opened = await open(service, spec.id);
+    expect(opened.status).toBe('needs_choices');
+    const waiting = service.getTrace(SESSION, opened.id);
+    expect(waiting.cycles).toEqual([]);
+    expect(waiting.since.join(' ')).toMatch(/matched several entries/u);
+
+    const pending = opened.pendingChoices[0];
+    await service.chooseResolution(SESSION, opened.id, {
+      key: pending?.key ?? '',
+      chosenId: spec.choices?.['jazz'] ?? '',
+    });
+    const trace = service.getTrace(SESSION, opened.id);
+    expect(trace.cycles).toHaveLength(1);
+    const observed = trace.cycles[0]?.steps.filter((s) => s.phase === 'observe').map((s) => s.text);
+    expect(observed?.some((text) => text.startsWith('You chose'))).toBe(true);
   });
 
   it('adds a cycle for a new disruption and leaves earlier cycles unchanged', async () => {

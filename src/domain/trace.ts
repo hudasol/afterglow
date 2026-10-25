@@ -263,9 +263,21 @@ function recheckCycle(
   };
 }
 
+/**
+ * Matches that went smoothly are summarised in one line, because the Evidence tab lists each one.
+ * Anything that needed the person, or failed, keeps its own line.
+ */
+function withMatchSummary(pending: readonly string[], matched: number): string[] {
+  if (matched === 0) return [...pending];
+  const summary = `Matched ${count(matched, 'name or phrase', 'names and phrases')} to taste entries.`;
+  const [first, ...rest] = pending;
+  return first?.startsWith('Case opened') ? [first, summary, ...rest] : [summary, ...pending];
+}
+
 export function buildTrace(caseId: string, events: readonly StoredEvent[]): AgentTrace {
   const cycles: TraceCycle[] = [];
   let pending: string[] = [];
+  let matched = 0;
 
   events.forEach((stored, index) => {
     const { event } = stored;
@@ -282,14 +294,19 @@ export function buildTrace(caseId: string, events: readonly StoredEvent[]): Agen
           cycles.length + 1,
           stored.at,
           view,
-          pending,
+          withMatchSummary(pending, matched),
           event.type === 'search_failed' ? { code: event.code, message: event.message } : null,
         ),
       );
       pending = [];
+      matched = 0;
       return;
     }
 
+    if (event.type === 'taste_resolution_recorded' && event.resolution.status === 'resolved') {
+      matched += 1;
+      return;
+    }
     pending.push(describeEvent(event, nameOf));
     // Giving up several requirements at once records one event per requirement. They are one
     // change from the person's side, so the re-check waits for the last of them.
@@ -298,11 +315,17 @@ export function buildTrace(caseId: string, events: readonly StoredEvent[]): Agen
     const state = foldEvents(upTo);
     if (RECHECK_EVENTS.has(event.type) && !partOfBatch && state.runs.length > 0) {
       cycles.push(
-        recheckCycle(cycles.length + 1, stored.at, buildCaseView(caseId, state, upTo), pending),
+        recheckCycle(
+          cycles.length + 1,
+          stored.at,
+          buildCaseView(caseId, state, upTo),
+          withMatchSummary(pending, matched),
+        ),
       );
       pending = [];
+      matched = 0;
     }
   });
 
-  return { cycles, since: pending };
+  return { cycles, since: withMatchSummary(pending, matched) };
 }
