@@ -1,0 +1,23 @@
+# Render blueprint for the AFTERGLOW demo. It contains no secrets.
+# QLOO_API_KEY is declared with sync: false, so it is entered in the Render dashboard and never stored here.
+services:
+  - type: web
+    name: afterglow
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.23.4
+      - key: HOST
+        value: 0.0.0.0
+      - key: AFTERGLOW_PUBLIC_DEMO
+        value: 'true'
+      - key: DATABASE_PATH
+        value: /tmp/afterglow.db
+      - key: QLOO_DAILY_CALL_CAP
+        value: '1500'
+      - key: QLOO_API_KEY
+        sync: false
