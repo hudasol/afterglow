@@ -1,0 +1,47 @@
+# Checks the OpenStreetMap place facts reader against real data. It needs no secret.
+# It runs only when started by hand.
+name: OpenStreetMap smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      lat:
+        description: Latitude of a public point
+        default: '40.7580'
+      lon:
+        description: Longitude of a public point
+        default: '-73.9855'
+      radius:
+        description: Radius in metres, 50 to 1500
+        default: '400'
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Real data check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LAT: ${{ inputs.lat }}
+      LON: ${{ inputs.lon }}
+      RADIUS: ${{ inputs.radius }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Run the check
+        run: npm run osm:smoke -- --lat "$LAT" --lon "$LON" --radius "$RADIUS"
+      - name: Show the redacted report
+        if: always()
+        run: cat data/evaluation/osm-smoke-*.json 2>/dev/null || echo "No report was written."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: osm-smoke-report
+          path: data/evaluation/osm-smoke-*.json
+          if-no-files-found: ignore
