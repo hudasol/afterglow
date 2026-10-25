@@ -16,7 +16,7 @@ A blueprint is included in `render.yaml`.
 
 1. Push the repository to GitHub.
 2. In Render, create a new Blueprint from the repository, or create a Web Service with these settings:
-   - Build command: `npm ci && npm run build`
+   - Build command: `npm ci --include=dev && npm run build`
    - Start command: `npm start`
    - Health check path: `/api/health`
 3. Set the environment variables below.
@@ -35,7 +35,7 @@ Render sets `PORT` and `RENDER`. When `RENDER` is `true` the server trusts the f
 
 ## Other hosts
 
-Any host that runs Node.js 22.13 or newer works. Build with `npm ci && npm run build`, start with `npm start`, bind `HOST=0.0.0.0` and set `AFTERGLOW_PUBLIC_DEMO=true` or `AFTERGLOW_ACCESS_TOKEN` to a value of 16 or more characters. A static only host is not suitable because the Qloo key must stay on a server.
+Any host that runs Node.js 22.13 or newer works. Build with `npm ci --include=dev && npm run build`, start with `npm start`, bind `HOST=0.0.0.0` and set `AFTERGLOW_PUBLIC_DEMO=true` or `AFTERGLOW_ACCESS_TOKEN` to a value of 16 or more characters. A static only host is not suitable because the Qloo key must stay on a server.
 
 Note that the built interface does not send the access token. A token protects the API for private or scripted use. A hosted demo for judges should use public demo mode, with the daily cap as the safeguard.
 

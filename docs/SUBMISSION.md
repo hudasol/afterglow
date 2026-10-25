@@ -5,12 +5,12 @@
 Team Kanban: Huda Mueen Qureshi, Awaiz Ahmed.
 Source code: https://github.com/hudasol/afterglow (MIT License, shown in the repository About panel).
 
-| Item                                   | Status                                                   |
-| -------------------------------------- | -------------------------------------------------------- |
-| Public repository with visible license | Published, MIT                                           |
-| Hosted demo                            | Not yet deployed. The link is added here once it is live |
-| Demo video                             | Not made. Screenshots are provided instead               |
-| Live Qloo verification                 | Not yet run. See the honest status in the sections below |
+| Item                                   | Status                                                                                  |
+| -------------------------------------- | --------------------------------------------------------------------------------------- |
+| Public repository with visible license | Published, MIT                                                                          |
+| Hosted demo                            | https://afterglow-gsc4.onrender.com in demo mode. Live Qloo is not configured on it yet |
+| Demo video                             | Not made. Screenshots are provided instead                                              |
+| Live Qloo verification                 | Not yet run. See the honest status in the sections below                                |
 
 ## 1. Product problem statement
 
