@@ -1,0 +1,869 @@
+{
+  "kind": "offline_simulated",
+  "generatedAt": "2026-10-24T20:48:22.945Z",
+  "provider": {
+    "mode": "demo",
+    "label": "Simulated demo catalogue (not Qloo data, not real venues)"
+  },
+  "scenarioCount": 17,
+  "results": [
+    {
+      "id": "s01-anniversary-venue-closed",
+      "title": "Anniversary dinner, the restaurant closes",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 4,
+      "feasible": 6,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Quillfeather Supper Room",
+          "The Verdant Table",
+          "Saffron Courtyard"
+        ],
+        "violationCount": 0,
+        "violators": []
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Paper Crane Noodle Bar",
+        "Quillfeather Supper Room",
+        "The Verdant Table"
+      ],
+      "tasteOnTop": [
+        "Quillfeather Supper Room",
+        "The Verdant Table",
+        "Saffron Courtyard"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.3333333333333333,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7083333333333334,
+        "tasteOff": 0.5416666666666666
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 0.6666666666666666
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s00-jazz-needs-a-choice",
+      "title": "Jazz night, one signal needs a choice",
+      "ok": true,
+      "poolSize": 5,
+      "tasteStatus": "applied",
+      "rejected": 1,
+      "feasible": 4,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Cinder & Reed",
+          "Cartographers Club",
+          "Harbour Annex Stage"
+        ],
+        "violationCount": 0,
+        "violators": []
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Lamplighter Stage",
+        "Cartographers Club",
+        "Cinder & Reed"
+      ],
+      "tasteOnTop": [
+        "Cinder & Reed",
+        "Lamplighter Stage",
+        "Cartographers Club"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.3333333333333333,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s02-vegan-date-budget",
+      "title": "Vegan dinner on a budget",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 6,
+      "feasible": 4,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "The Verdant Table",
+          "Quillfeather Supper Room",
+          "Harbour Lamp Kitchen"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Quillfeather Supper Room",
+          "Harbour Lamp Kitchen"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Verdant Table",
+        "Paper Crane Noodle Bar",
+        "Tidewrack Social"
+      ],
+      "tasteOnTop": [
+        "The Verdant Table",
+        "Saffron Courtyard",
+        "Paper Crane Noodle Bar"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.3333333333333333,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.4285666666666666,
+        "tasteOff": 0.2857
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.6666666666666666,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s03-rain-birthday-bar",
+      "title": "Birthday drinks, rain forces the group indoors",
+      "ok": true,
+      "poolSize": 6,
+      "tasteStatus": "applied",
+      "rejected": 2,
+      "feasible": 4,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Salt & Static",
+          "Dockside Taps",
+          "The Velvet Ledger"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Dockside Taps"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Reading Lounge",
+        "Salt & Static",
+        "The Velvet Ledger"
+      ],
+      "tasteOnTop": [
+        "Salt & Static",
+        "The Velvet Ledger",
+        "The Reading Lounge"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.3333333333333333,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.4285666666666666,
+        "tasteOff": 0.4285666666666666
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.6666666666666666,
+        "tasteOff": 0.6666666666666666
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s04-late-arrival-live-music",
+      "title": "Running late to a live music night",
+      "ok": true,
+      "poolSize": 5,
+      "tasteStatus": "applied",
+      "rejected": 3,
+      "feasible": 2,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Cinder & Reed",
+          "Cartographers Club",
+          "Harbour Annex Stage"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Harbour Annex Stage"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Cartographers Club",
+        "Cinder & Reed"
+      ],
+      "tasteOnTop": [
+        "Cinder & Reed",
+        "Cartographers Club"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": -1,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.6000000000000001,
+        "tasteOff": 0.6000000000000001
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s05-family-lunch-halal",
+      "title": "Family lunch for eight, halal",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 8,
+      "feasible": 2,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Nine Fathoms Oyster House",
+          "Paper Crane Noodle Bar",
+          "Tidewrack Social"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Nine Fathoms Oyster House"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Tidewrack Social",
+        "Paper Crane Noodle Bar"
+      ],
+      "tasteOnTop": [
+        "Tidewrack Social",
+        "Paper Crane Noodle Bar"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 1,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.5,
+        "tasteOff": 0.5
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s06-quiet-cafe-gluten-free",
+      "title": "Quiet morning cafe, gluten free",
+      "ok": true,
+      "poolSize": 5,
+      "tasteStatus": "applied",
+      "rejected": 4,
+      "feasible": 1,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Foxglove Cafe",
+          "Ember & Bean",
+          "Night Owl Espresso"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Ember & Bean",
+          "Night Owl Espresso"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Foxglove Cafe"
+      ],
+      "tasteOnTop": [
+        "Foxglove Cafe"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s07-dessert-after-the-show",
+      "title": "Dessert after the show, late start",
+      "ok": true,
+      "poolSize": 3,
+      "tasteStatus": "applied",
+      "rejected": 2,
+      "feasible": 1,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Salted Fig Atelier",
+          "Midnight Scoop"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Salted Fig Atelier"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Midnight Scoop"
+      ],
+      "tasteOnTop": [
+        "Midnight Scoop"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s08-gallery-afternoon",
+      "title": "Gallery afternoon for four",
+      "ok": true,
+      "poolSize": 3,
+      "tasteStatus": "applied",
+      "rejected": 2,
+      "feasible": 1,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Old Signal Museum",
+          "Courtyard Print Room"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Courtyard Print Room"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Old Signal Museum"
+      ],
+      "tasteOnTop": [
+        "Old Signal Museum"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.5,
+        "tasteOff": 0.5
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s09-celebration-budget-cut",
+      "title": "Celebration dinner after the budget drops",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 5,
+      "feasible": 5,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Tidewrack Social",
+          "Copper Kettle Grill",
+          "Harbour Lamp Kitchen"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Harbour Lamp Kitchen"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Saffron Courtyard",
+        "Copper Kettle Grill",
+        "Tidewrack Social"
+      ],
+      "tasteOnTop": [
+        "Tidewrack Social",
+        "Copper Kettle Grill",
+        "Paper Crane Noodle Bar"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.6666666666666666,
+        "tasteOff": 0.5
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 0.6666666666666666
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s10-no-feasible-option",
+      "title": "Constraints too tight, nothing fits",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 10,
+      "feasible": 0,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Harbour Lamp Kitchen",
+          "Quillfeather Supper Room",
+          "Umber & Oak"
+        ],
+        "violationCount": 3,
+        "violators": [
+          "Harbour Lamp Kitchen",
+          "Quillfeather Supper Room",
+          "Umber & Oak"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [],
+      "tasteOnTop": [],
+      "overlapAt3": null,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": null,
+        "tasteOff": null
+      },
+      "preservedTagShare": {
+        "tasteOn": null,
+        "tasteOff": null
+      },
+      "noFeasibleOption": true,
+      "relaxationsOffered": 3,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s11-outdoor-gig-rain",
+      "title": "Open air gig, rain arrives",
+      "ok": true,
+      "poolSize": 5,
+      "tasteStatus": "applied",
+      "rejected": 2,
+      "feasible": 3,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Cartographers Club",
+          "Cinder & Reed",
+          "Blue Hour Hall"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Cartographers Club"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Blue Hour Hall",
+        "Cinder & Reed",
+        "Lamplighter Stage"
+      ],
+      "tasteOnTop": [
+        "Cinder & Reed",
+        "Blue Hour Hall",
+        "Lamplighter Stage"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.3333333333333333,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.5714333333333332,
+        "tasteOff": 0.5714333333333332
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s12-tasting-menu-no-stairs",
+      "title": "Tasting menu without stairs",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 1,
+      "feasible": 9,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "Paper Crane Noodle Bar",
+          "The Lantern Room",
+          "Quillfeather Supper Room"
+        ],
+        "violationCount": 0,
+        "violators": []
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Verdant Table",
+        "The Lantern Room",
+        "Paper Crane Noodle Bar"
+      ],
+      "tasteOnTop": [
+        "Paper Crane Noodle Bar",
+        "The Lantern Room",
+        "Quillfeather Supper Room"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.6111111111111112,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.28573333333333334
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s13-late-bar-record-fans",
+      "title": "Late bar for record collectors",
+      "ok": true,
+      "poolSize": 6,
+      "tasteStatus": "applied",
+      "rejected": 5,
+      "feasible": 1,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "The Velvet Ledger",
+          "Low Tide Wine Room",
+          "The Reading Lounge"
+        ],
+        "violationCount": 3,
+        "violators": [
+          "The Velvet Ledger",
+          "Low Tide Wine Room",
+          "The Reading Lounge"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Meridian Roof"
+      ],
+      "tasteOnTop": [
+        "Meridian Roof"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s14-party-grows-to-fourteen",
+      "title": "The dinner grows to fourteen",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 1,
+      "feasible": 9,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "The Lantern Room",
+          "Nine Fathoms Oyster House",
+          "Quillfeather Supper Room"
+        ],
+        "violationCount": 0,
+        "violators": []
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Tidewrack Social",
+        "Nine Fathoms Oyster House",
+        "The Verdant Table"
+      ],
+      "tasteOnTop": [
+        "Nine Fathoms Oyster House",
+        "Tidewrack Social",
+        "The Verdant Table"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.7222222222222222,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.5,
+        "tasteOff": 0.5
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s15-nut-allergy-brunch",
+      "title": "Nut free cafe meeting",
+      "ok": true,
+      "poolSize": 5,
+      "tasteStatus": "applied",
+      "rejected": 4,
+      "feasible": 1,
+      "needsVerification": 0,
+      "ungatedTop": {
+        "names": [
+          "The Slow Pour",
+          "Sunroom Collective",
+          "Ember & Bean"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Sunroom Collective",
+          "Ember & Bean"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Slow Pour"
+      ],
+      "tasteOnTop": [
+        "The Slow Pour"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": null,
+      "topChoiceChanged": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.5,
+        "tasteOff": 0.5
+      },
+      "preservedTagShare": {
+        "tasteOn": 1,
+        "tasteOff": 1
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    },
+    {
+      "id": "s16-original-not-located",
+      "title": "Original venue cannot be located",
+      "ok": true,
+      "poolSize": 10,
+      "tasteStatus": "applied",
+      "rejected": 0,
+      "feasible": 0,
+      "needsVerification": 10,
+      "ungatedTop": {
+        "names": [
+          "Copper Kettle Grill",
+          "Harbour Lamp Kitchen",
+          "The Lantern Room"
+        ],
+        "violationCount": 0,
+        "violators": []
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Paper Crane Noodle Bar",
+        "Copper Kettle Grill",
+        "Saffron Courtyard"
+      ],
+      "tasteOnTop": [
+        "Copper Kettle Grill",
+        "Paper Crane Noodle Bar",
+        "Saffron Courtyard"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9555555555555556,
+      "topChoiceChanged": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0
+    }
+  ],
+  "summary": {
+    "scenarios": 17,
+    "completed": 17,
+    "ungatedScenariosWithViolation": 12,
+    "ungatedTopSlotsViolating": {
+      "violating": 19,
+      "total": 49
+    },
+    "gatedViolations": {
+      "tasteOn": 0,
+      "tasteOff": 0
+    },
+    "gateAgreesWithOracle": true,
+    "sameEligibleSetEverywhere": true,
+    "topChoiceChanged": {
+      "changed": 9,
+      "compared": 17
+    },
+    "meanOverlapAt3": 0.9166666666666665,
+    "meanKendallTau": 0.35959595959595964,
+    "meanAffinityTop3": {
+      "tasteOn": 0.46272291666666665,
+      "tasteOff": 0.4299854166666666,
+      "difference": 0.03273750000000003
+    },
+    "noFeasibleHandled": {
+      "scenarios": 1,
+      "withWaysForward": 1
+    }
+  },
+  "method": [
+    "Each scenario opens a case, records one disruption and runs one search.",
+    "Both arms use the identical candidate pool, the identical feasibility gate and the identical exclusions. Only the ordering rule differs.",
+    "Taste Off orders by distance to the original venue, then price level, then name. It uses no taste data.",
+    "Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.",
+    "The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.",
+    "Violations are judged by an independent implementation of the constraint rules that reads raw venue facts."
+  ],
+  "limits": [
+    "The catalogue, the venues and the affinity are invented and hand authored for this project.",
+    "These results show how the pipeline behaves. They do not measure how well Qloo predicts what real people enjoy.",
+    "The mean affinity difference is not independent evidence of better taste, because the simulated affinity defines taste in this catalogue.",
+    "How often an ungated list breaks a constraint depends on how the catalogue and scenarios were authored. It must not be read as a rate in the real world.",
+    "No people were involved in this evaluation."
+  ]
+}
