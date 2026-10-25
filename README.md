@@ -10,16 +10,16 @@ Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hack
 
 This table states what has and has not been verified. It is updated whenever the facts change.
 
-| Item                                          | Status                                                                                                    |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Unit and integration tests                    | Passing (`npm test`)                                                                                      |
-| Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                              |
-| Type check, lint, formatting                  | Passing (`npm run check`)                                                                                 |
-| Continuous integration                        | Workflow in `.github/workflows/ci.yml`. **Not yet confirmed.** The first run result will be recorded here |
-| Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                  |
-| Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which has been requested and has not arrived               |
-| Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                                             |
-| Hosted demo                                   | **Not yet deployed**                                                                                      |
+| Item                                          | Status                                                                                                     |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Unit and integration tests                    | Passing (`npm test`)                                                                                       |
+| Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                               |
+| Type check, lint, formatting                  | Passing (`npm run check`)                                                                                  |
+| Continuous integration                        | Passing on GitHub Actions for commit 67c916b: checks, build and browser tests (`.github/workflows/ci.yml`) |
+| Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                   |
+| Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which the team runs locally and never commits               |
+| Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                                              |
+| Hosted demo                                   | **Not yet deployed**                                                                                       |
 
 Until the live rows change, nothing in this repository claims that AFTERGLOW has been verified against the real Qloo API. Demo mode uses an invented catalogue and says so on every screen.
 
