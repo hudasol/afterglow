@@ -55,6 +55,10 @@ Each fact in the interface carries a source tag: Qloo, Simulated, You said, You 
 
 Qloo results describe what groups of people tend to like. AFTERGLOW presents them that way and does not treat an affinity as a prediction about any person. The full workflow, parameters and data handling are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
 
+## Use it from an MCP client
+
+The same workflow is available as MCP tools over stdio, so a model can open a case, ask the person the questions the gate raises, and record their answers. The rules are enforced by the application: unknown never passes, only the person's own word settles a fact, and nothing is booked. See [docs/MCP.md](docs/MCP.md).
+
 ## Taste On and Taste Off
 
 For every case the interface can show three orderings of the same eligible places. Nearest first sorts by distance to the original venue, then price. Most popular first sorts by the provider's general popularity and uses none of the group's signals, which is what a plain list of well known places does. Taste On sorts by a recovery score that blends taste with closeness. The pool, the gate and the exclusions are identical in all three, so the only difference is the ordering rule. See [docs/EVALUATION.md](docs/EVALUATION.md) for the method and what it can and cannot show.
@@ -105,16 +109,17 @@ The key is read only by the server. It is never sent to the browser, logged, or 
 
 ## Commands
 
-| Command              | What it does                                  |
-| -------------------- | --------------------------------------------- |
-| `npm run dev`        | API server and web dev server with reload     |
-| `npm run build`      | Build the interface to `web/dist`             |
-| `npm start`          | Run the server                                |
-| `npm test`           | Unit and integration tests                    |
-| `npm run test:e2e`   | Browser tests, including accessibility checks |
-| `npm run check`      | Type check, lint, formatting check and tests  |
-| `npm run eval`       | Offline evaluation on the simulated catalogue |
-| `npm run qloo:smoke` | Live Qloo experiment. Needs `QLOO_API_KEY`    |
+| Command              | What it does                                          |
+| -------------------- | ----------------------------------------------------- |
+| `npm run dev`        | API server and web dev server with reload             |
+| `npm run build`      | Build the interface to `web/dist`                     |
+| `npm start`          | Run the server                                        |
+| `npm test`           | Unit and integration tests                            |
+| `npm run test:e2e`   | Browser tests, including accessibility checks         |
+| `npm run check`      | Type check, lint, formatting check and tests          |
+| `npm run mcp`        | MCP server over stdio. See [docs/MCP.md](docs/MCP.md) |
+| `npm run eval`       | Offline evaluation on the simulated catalogue         |
+| `npm run qloo:smoke` | Live Qloo experiment. Needs `QLOO_API_KEY`            |
 
 Browser tests download nothing at run time but need a Playwright Chromium. If your Chromium is installed elsewhere, set `PLAYWRIGHT_CHROMIUM_PATH` to its executable.
 
@@ -128,6 +133,7 @@ src/qloo            Qloo client, matching, normalisation and the live provider
 src/simulation      The labelled simulated catalogue, provider and scenarios
 src/evaluation      Independent oracle, evaluation runner and report writer
 src/interfaces/http The Express API and static serving
+src/interfaces/mcp  The MCP server and its compact case summary
 web                 React interface
 e2e                 Browser tests
 docs                Integration, architecture, evaluation, deployment and limits

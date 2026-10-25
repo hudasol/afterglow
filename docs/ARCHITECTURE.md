@@ -39,6 +39,10 @@ SQLite through `node:sqlite` with SQL migrations and synchronous transactions. C
 
 Express 5 with security headers, a host check for loopback binds, an origin check on writes, a rate limit, an optional bearer token, and a 64 KB JSON limit. Cases are scoped to a browser by a random session identifier sent in a header and stored only as a SHA 256 hash. The built interface is served from the same process.
 
+## MCP interface
+
+A second interface over the same service. `src/interfaces/mcp` registers one tool per use case and returns a compact summary of the case view that always names its data source. It runs over stdio and has no code path to the database or a provider that the web interface does not also have. See [MCP.md](MCP.md).
+
 ## Web
 
 React 19 with Vite and a hash router. The interface imports types and a few pure functions from the domain so that the view contract is checked at compile time. It never holds the Qloo key.
