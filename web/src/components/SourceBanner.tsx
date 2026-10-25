@@ -14,9 +14,9 @@ export function SourceBanner({ mode, label }: { mode: CaseMode; label?: string }
   return (
     <div className="source-banner live" role="note">
       <div>
-        <strong>Live Qloo.</strong> {label ?? 'Taste results'} describe what groups of people tend
-        to like. They are not a prediction about any individual. Facts Qloo does not supply stay
-        unverified until you check them.
+        <strong>Live Qloo.</strong> Results from {label ?? 'the taste provider'} describe what
+        groups of people tend to like. They are not a prediction about any individual. Facts Qloo
+        does not supply stay unverified until you check them.
       </div>
     </div>
   );
