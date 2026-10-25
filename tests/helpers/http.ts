@@ -29,6 +29,7 @@ export async function startServer(
       qlooCallsToday: null,
       qlooDailyCap: 2000,
       placeFactsEnabled: false,
+      osmProbe: null,
       probe: null,
       ...integration,
     },

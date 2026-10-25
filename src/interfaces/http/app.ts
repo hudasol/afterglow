@@ -25,6 +25,21 @@ export interface ProbeResult {
   message: string;
 }
 
+/** The outcome of a small real query to OpenStreetMap, made from this server. */
+export interface OsmProbeResult {
+  ok: boolean;
+  verdict: 'go' | 'conditional' | 'no_go';
+  latencyMs: number | null;
+  /** The public host that answered, or the last one tried. */
+  host: string | null;
+  venues: number;
+  hoursPresent: number;
+  hoursRead: number;
+  message: string;
+  /** True when this is the answer from a moment ago, so the shared service is not asked again. */
+  cached: boolean;
+}
+
 export interface IntegrationStatus {
   liveConfigured: boolean;
   qlooBaseUrl: string;
@@ -34,6 +49,8 @@ export interface IntegrationStatus {
   placeFactsEnabled: boolean;
   /** Runs a minimal authenticated call to Qloo. Null when no key is configured. */
   probe: (() => Promise<ProbeResult>) | null;
+  /** Asks OpenStreetMap a small real question. Null when the lookup is turned off. */
+  osmProbe: (() => Promise<OsmProbeResult>) | null;
 }
 
 export interface AppOptions {
@@ -210,6 +227,7 @@ export function createApp(options: AppOptions): express.Express {
           callsToday: integration.qlooCallsToday,
           dailyCap: integration.qlooDailyCap,
           placeFacts: integration.placeFactsEnabled,
+          placeFactsCheck: integration.osmProbe !== null,
         },
         demo: {
           configured: true,
@@ -233,6 +251,22 @@ export function createApp(options: AppOptions): express.Express {
         return;
       }
       res.json(await integration.probe());
+    }),
+  );
+
+  api.post(
+    '/integration/osm-probe',
+    wrap(async (_req, res) => {
+      if (!integration.osmProbe) {
+        res.status(503).json({
+          error: {
+            code: 'OSM_NOT_ENABLED',
+            message: 'The OpenStreetMap place facts lookup is turned off on this server.',
+          },
+        });
+        return;
+      }
+      res.json(await integration.osmProbe());
     }),
   );
 

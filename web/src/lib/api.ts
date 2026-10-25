@@ -59,6 +59,8 @@ export interface ServerStatus {
       dailyCap: number;
       /** True when live cases may read opening hours and similar facts from OpenStreetMap. */
       placeFacts: boolean;
+      /** True when the server can run the small real check against OpenStreetMap. */
+      placeFactsCheck: boolean;
     };
     demo: { configured: boolean; label: string; cities: string[] };
   };
@@ -80,6 +82,18 @@ export interface CaseListItem {
   status: CaseView['status'];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OsmProbeResult {
+  ok: boolean;
+  verdict: 'go' | 'conditional' | 'no_go';
+  latencyMs: number | null;
+  host: string | null;
+  venues: number;
+  hoursPresent: number;
+  hoursRead: number;
+  message: string;
+  cached: boolean;
 }
 
 export interface ProbeResult {
@@ -196,6 +210,7 @@ export const api = {
   evaluation: () =>
     request<{ reports: EvaluationReportFile[]; smoke: SmokeReportFile[] }>('GET', '/evaluation'),
   probe: () => request<ProbeResult>('POST', '/integration/probe'),
+  osmProbe: () => request<OsmProbeResult>('POST', '/integration/osm-probe'),
   listCases: () => request<{ cases: CaseListItem[] }>('GET', '/cases'),
   openCase: (input: { mode: CaseMode; anchor: IntentAnchor; disruption: Disruption }) =>
     request<CaseView>('POST', '/cases', input),

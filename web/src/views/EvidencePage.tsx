@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   api,
   type EvaluationReportFile,
+  type OsmProbeResult,
   type ProbeResult,
   type ServerStatus,
   type SmokeReportFile,
@@ -101,6 +102,8 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
   const [smoke, setSmoke] = useState<SmokeReportFile[]>([]);
   const [probe, setProbe] = useState<ProbeResult | null>(null);
   const [probing, setProbing] = useState(false);
+  const [osm, setOsm] = useState<OsmProbeResult | { error: string } | null>(null);
+  const [askingOsm, setAskingOsm] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,6 +133,17 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
       });
     } finally {
       setProbing(false);
+    }
+  };
+
+  const runOsmProbe = async () => {
+    setAskingOsm(true);
+    try {
+      setOsm(await api.osmProbe());
+    } catch (caught) {
+      setOsm({ error: caught instanceof Error ? caught.message : 'The check failed.' });
+    } finally {
+      setAskingOsm(false);
     }
   };
 
@@ -183,6 +197,61 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         ) : (
           <p className="muted-text">Loading the server status.</p>
         )}
+      </section>
+
+      <section className="panel" aria-labelledby="ev-osm">
+        <h2 id="ev-osm">OpenStreetMap place facts</h2>
+        <p style={{ marginTop: '0.5rem' }}>
+          Qloo does not supply opening hours, diet, step free access or capacity. For live cases,
+          and only for the requirements a plan insists on, this server asks the public Overpass
+          service about the venues Qloo returned and reads the matching tags. Only the public
+          coordinates of those venues are sent. The data is © OpenStreetMap contributors, under the{' '}
+          <a href="https://www.openstreetmap.org/copyright">Open Database Licence</a>, and
+          volunteers edit it, so the interface shows its source on every value taken from it.
+        </p>
+        <p className="small muted-text" style={{ marginTop: '0.4rem' }}>
+          {live?.placeFacts
+            ? 'Live cases on this server use it.'
+            : 'Live cases on this server do not use it. That needs a Qloo key and the lookup turned on.'}{' '}
+          The check below asks for the named venues around one public point in Manhattan and shows
+          what this server received. It is made from this server, so it shows what the hosted
+          application can reach.
+        </p>
+        <div className="button-row" style={{ marginTop: '0.9rem' }}>
+          <button
+            type="button"
+            className="btn"
+            disabled={!live?.placeFactsCheck || askingOsm}
+            onClick={() => void runOsmProbe()}
+          >
+            {askingOsm ? 'Asking OpenStreetMap' : 'Ask OpenStreetMap now'}
+          </button>
+        </div>
+        {osm ? (
+          'error' in osm ? (
+            <p className="callout bad" role="status" style={{ marginTop: '0.8rem' }}>
+              Not reachable. {osm.error}
+            </p>
+          ) : (
+            <p
+              className={
+                osm.verdict === 'go'
+                  ? 'callout'
+                  : osm.verdict === 'conditional'
+                    ? 'callout warn'
+                    : 'callout bad'
+              }
+              role="status"
+              style={{ marginTop: '0.8rem' }}
+            >
+              {osm.ok ? 'Answered.' : 'Not answered.'} {osm.message}
+              {osm.ok
+                ? ` ${osm.venues} named venues, ${osm.hoursRead} of ${osm.hoursPresent} opening hours values read in full, ${osm.latencyMs ?? 'unknown'} ms${osm.host ? ` from ${osm.host}` : ''}.`
+                : ''}
+              {osm.cached ? ' This is the answer from a moment ago.' : ''}
+            </p>
+          )
+        ) : null}
       </section>
 
       <section aria-labelledby="ev-smoke" className="stack">

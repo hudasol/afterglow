@@ -31,6 +31,35 @@ describe('http interface', () => {
     expect(status.modes.live.placeFacts).toBe(true);
   });
 
+  it('answers the OpenStreetMap check only when the lookup is enabled', async () => {
+    const off = await startServer();
+    const refused = await off.request('/api/integration/osm-probe', { method: 'POST' });
+    expect(refused.status).toBe(503);
+    expect((await refused.json()).error.code).toBe('OSM_NOT_ENABLED');
+    await off.close();
+
+    const on = await startServer(
+      {},
+      {
+        osmProbe: async () => ({
+          ok: true,
+          verdict: 'go',
+          latencyMs: 812,
+          host: 'overpass.test',
+          venues: 12,
+          hoursPresent: 9,
+          hoursRead: 8,
+          message: 'Stand in answer for the test.',
+          cached: false,
+        }),
+      },
+    );
+    closer = on.close;
+    const answered = await on.request('/api/integration/osm-probe', { method: 'POST' });
+    expect(answered.status).toBe(200);
+    expect(await answered.json()).toMatchObject({ ok: true, host: 'overpass.test', hoursRead: 8 });
+  });
+
   it('requires a session header for case routes', async () => {
     const server = await startServer();
     closer = server.close;
