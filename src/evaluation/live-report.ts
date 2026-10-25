@@ -119,7 +119,7 @@ export const PREDICTIONS: readonly Prediction[] = [
   {
     id: 'P12',
     experiment: 'E5 Reliability and cost',
-    claim: 'Median number of requests that reached Qloo per scenario, placebo run excluded',
+    claim: 'Median number of requests that reached Qloo per scenario, swapped signals run excluded',
     comparator: '<=',
     threshold: 15,
     unit: 'count',
@@ -198,10 +198,14 @@ export function summariseLive(results: readonly ScenarioResult[]): LiveSummary {
     P5: share((r) => r.placebo?.topChoiceChanged),
     P6: share((r) => r.ungatedTop.violationCount > 0),
     P7: {
-      observed: done.reduce(
-        (sum, r) => sum + r.gatedViolations.tasteOn + r.gatedViolations.tasteOff,
-        0,
-      ),
+      // With no completed scenario nothing was judged, so a count of zero would be vacuous.
+      observed:
+        done.length === 0
+          ? null
+          : done.reduce(
+              (sum, r) => sum + r.gatedViolations.tasteOn + r.gatedViolations.tasteOff,
+              0,
+            ),
       low: null,
       high: null,
       basis: { used: done.length, of },
@@ -245,7 +249,7 @@ function show(value: number | null, unit: Prediction['unit']): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }
 
-function comparatorText(prediction: Prediction): string {
+export function comparatorText(prediction: Prediction): string {
   const symbol =
     prediction.comparator === '>='
       ? 'at least'
