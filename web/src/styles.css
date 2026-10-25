@@ -642,6 +642,13 @@ main {
 .source svg {
   flex: none;
 }
+.evidence-tag {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
 
 /* Option list */
 .option-group + .option-group {

@@ -432,6 +432,20 @@ export function CaseScreen({ id, tab }: { id: string; tab: CaseTab }) {
             </div>
           ) : null}
 
+          {view.run?.placeFacts && view.run.placeFacts.filled > 0 ? (
+            <p className="muted-text" role="note">
+              Some opening hours and access facts here were read from OpenStreetMap, © OpenStreetMap
+              contributors, available under the{' '}
+              <a href="https://www.openstreetmap.org/copyright">Open Database Licence</a>.
+              Volunteers edit that map, so check anything that matters.
+            </p>
+          ) : null}
+          {view.run?.placeFacts?.note ? (
+            <div className="callout warn" role="note">
+              {view.run.placeFacts.note}
+            </div>
+          ) : null}
+
           <RelaxationPanel
             view={view}
             busy={busy !== null}

@@ -57,6 +57,8 @@ export interface ServerStatus {
       baseUrl: string;
       callsToday: number | null;
       dailyCap: number;
+      /** True when live cases may read opening hours and similar facts from OpenStreetMap. */
+      placeFacts: boolean;
     };
     demo: { configured: boolean; label: string; cities: string[] };
   };
@@ -99,6 +101,7 @@ export interface Provenance {
     tagPhrases: string[];
     originalVenueName: string | null;
   };
+  sentToPlaceFacts: { source: string; sent: string; places: number } | null;
   keptLocal: string[];
   choices: {
     kind: string;
@@ -114,6 +117,7 @@ export interface Provenance {
     poolSize: number;
     tasteStatus: string;
     tasteNote: string | undefined;
+    placeFacts: { looked: number; matched: number; filled: number; note?: string } | undefined;
     shortlist: {
       name: string;
       providerRank: number | null;

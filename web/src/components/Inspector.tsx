@@ -154,6 +154,9 @@ export function Inspector({
                 </span>
                 <span className="why">
                   {verdict.reason} <Source kind={verdict.basis} />
+                  {verdict.evidence ? (
+                    <span className="evidence-tag">Read from the map: {verdict.evidence}</span>
+                  ) : null}
                 </span>
                 {(verdict.outcome === 'unknown' || verdict.basis === 'user_attested') &&
                 !closed &&

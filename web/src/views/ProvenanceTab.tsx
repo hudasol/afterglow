@@ -47,6 +47,15 @@ export function ProvenanceTab({ caseId, refreshKey }: { caseId: string; refreshK
           <dt>Original venue name</dt>
           <dd>{sent.originalVenueName ?? 'Not sent'}</dd>
         </dl>
+        {data.sentToPlaceFacts ? (
+          <>
+            <h3>Also sent to OpenStreetMap</h3>
+            <p>
+              {data.sentToPlaceFacts.source}: {data.sentToPlaceFacts.sent} (
+              {data.sentToPlaceFacts.places} places in the latest search.)
+            </p>
+          </>
+        ) : null}
         <h3>Kept on this server only</h3>
         <ul>
           {data.keptLocal.map((item) => (
@@ -111,6 +120,14 @@ export function ProvenanceTab({ caseId, refreshKey }: { caseId: string; refreshK
               Search {data.result.runId} returned {data.result.poolSize} places. Taste ranking:{' '}
               {data.result.tasteStatus}.{data.result.tasteNote ? ` ${data.result.tasteNote}` : ''}
             </p>
+            {data.result.placeFacts ? (
+              <p>
+                OpenStreetMap was asked about {data.result.placeFacts.looked} places, matched{' '}
+                {data.result.placeFacts.matched} by name and position, and filled in{' '}
+                {data.result.placeFacts.filled} facts.
+                {data.result.placeFacts.note ? ` ${data.result.placeFacts.note}` : ''}
+              </p>
+            ) : null}
             <div
               className="table-wrap"
               tabIndex={0}

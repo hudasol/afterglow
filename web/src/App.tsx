@@ -135,6 +135,12 @@ export function App() {
             <li>
               <a href={`${REPO_URL}/blob/main/LICENSE`}>MIT License</a>
             </li>
+            {status?.modes.live.placeFacts ? (
+              <li>
+                Place facts: ©{' '}
+                <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
+              </li>
+            ) : null}
             {status ? <li>Version {status.version}</li> : null}
           </ul>
         </div>
