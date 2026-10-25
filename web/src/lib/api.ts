@@ -2,6 +2,7 @@ import type { CaseView } from '../../../src/domain/case-view.js';
 import type { Disruption } from '../../../src/domain/plan.js';
 import type { CaseMode } from '../../../src/domain/case.js';
 import type { IntentAnchor } from '../../../src/domain/intent.js';
+import type { AgentTrace } from '../../../src/domain/trace.js';
 import { getSession } from './session';
 
 export class ApiError extends Error {
@@ -196,6 +197,7 @@ export const api = {
     request<CaseView>('POST', '/cases', input),
   getCase: (id: string) => request<CaseView>('GET', `/cases/${encodeURIComponent(id)}`),
   deleteCase: (id: string) => request<void>('DELETE', `/cases/${encodeURIComponent(id)}`),
+  trace: (id: string) => request<AgentTrace>('GET', `/cases/${encodeURIComponent(id)}/trace`),
   provenance: (id: string) =>
     request<Provenance>('GET', `/cases/${encodeURIComponent(id)}/provenance`),
   choose: (id: string, body: { key: string; chosenId?: string; skip?: boolean }) =>

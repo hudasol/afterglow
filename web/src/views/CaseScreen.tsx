@@ -16,9 +16,11 @@ import { api, ApiError } from '../lib/api';
 import { formatDuration, formatPlanTime } from '../lib/format';
 import { caseHref, go, type CaseTab } from '../lib/router';
 import { ProvenanceTab } from './ProvenanceTab';
+import { TraceTab } from './TraceTab';
 
 const TAB_LABELS: Record<CaseTab, string> = {
   options: 'Options',
+  trace: 'Agent trace',
   compare: 'Taste on and off',
   evidence: 'Evidence',
   history: 'History',
@@ -484,6 +486,7 @@ export function CaseScreen({ id, tab }: { id: string; tab: CaseTab }) {
         </div>
       ) : null}
 
+      {tab === 'trace' ? <TraceTab caseId={id} refreshKey={view.updatedAt} /> : null}
       {tab === 'compare' ? <CompareTab view={view} /> : null}
       {tab === 'evidence' ? <ProvenanceTab caseId={id} refreshKey={view.updatedAt} /> : null}
       {tab === 'history' ? (

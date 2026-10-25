@@ -1251,3 +1251,78 @@ code,
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
+
+/* Agent trace */
+.trace-cycles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.trace-cycle + .trace-cycle {
+  margin-top: 0;
+}
+.trace-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+.trace-head h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.trace-head time {
+  color: var(--ink-3);
+  font-size: 0.85rem;
+}
+.trace-tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0.9rem;
+}
+.trace-steps {
+  margin: 0;
+}
+.trace-row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+.trace-row dt {
+  font-weight: 650;
+  color: var(--ink-2);
+  border-left: 3px solid var(--line-strong);
+  padding-left: 0.6rem;
+}
+.trace-row[data-phase='act'] dt {
+  border-left-color: var(--info);
+}
+.trace-row[data-phase='decide'] dt {
+  border-left-color: var(--dusk-3);
+}
+.trace-row[data-phase='hand_over'] dt {
+  border-left-color: var(--dusk-4);
+}
+.trace-row dd {
+  margin: 0;
+}
+.trace-row ul,
+.trace-since {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.trace-row li + li,
+.trace-since li + li {
+  margin-top: 0.3rem;
+}
+@media (max-width: 40rem) {
+  .trace-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -126,6 +126,25 @@ test.describe('recovery flow in demo mode', () => {
     await expectNoSeriousAccessibilityIssues(page);
   });
 
+  test('shows what the agent observed, planned, did and decided, and where it stopped', async ({
+    page,
+  }) => {
+    await openPreset(page, 's02-vegan-date-budget');
+    await page.getByRole('link', { name: 'Agent trace' }).click();
+    await expect(page.getByRole('heading', { name: 'How the agent worked' })).toBeVisible();
+    await expect(page.getByText('It is not a chat model')).toBeVisible();
+
+    const cycle = page.getByRole('listitem').filter({ hasText: 'Cycle 1. First search' });
+    await expect(cycle).toBeVisible();
+    for (const phase of ['Observed', 'Planned', 'Did', 'Decided', 'Handed back']) {
+      await expect(cycle.getByText(phase, { exact: true })).toBeVisible();
+    }
+    await expect(cycle).toContainText('Checked every place against every requirement');
+    await expect(cycle).toContainText('does not book, call or pay');
+    await expect(cycle).toContainText('Simulated');
+    await expectNoSeriousAccessibilityIssues(page);
+  });
+
   test('lists the redacted evidence for a case', async ({ page }) => {
     await openPreset(page, 's02-vegan-date-budget');
     await page.getByRole('link', { name: 'Evidence' }).nth(1).click();

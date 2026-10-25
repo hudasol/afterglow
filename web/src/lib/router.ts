@@ -7,8 +7,8 @@ export type Route =
   | { name: 'case'; id: string; tab: CaseTab }
   | { name: 'evidence' };
 
-export type CaseTab = 'options' | 'compare' | 'evidence' | 'history';
-const TABS: CaseTab[] = ['options', 'compare', 'evidence', 'history'];
+export type CaseTab = 'options' | 'trace' | 'compare' | 'evidence' | 'history';
+const TABS: CaseTab[] = ['options', 'trace', 'compare', 'evidence', 'history'];
 
 export function parseHash(hash: string): Route {
   const raw = hash.replace(/^#/u, '') || '/';
