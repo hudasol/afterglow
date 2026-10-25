@@ -99,6 +99,14 @@ describe('feasibility gate', () => {
     expect(evaluateCandidate(fits, ctx).status).toBe('feasible');
   });
 
+  it('rejects a venue that is shut for the whole day of the plan', () => {
+    const anchor = makeAnchor({ hardConstraints: [{ kind: 'open_at_plan_time' }] });
+    const shut = makeCandidate({ id: 'a', open: { opensAt: 0, closesAt: 1, closedAllDay: true } });
+    const result = evaluateCandidate(shut, makeContext(anchor));
+    expect(result.status).toBe('rejected');
+    expect(result.rejectionReasons[0]).toMatch(/Closed for the whole day/u);
+  });
+
   it('applies a late arrival to the opening hours check', () => {
     const anchor = makeAnchor({ hardConstraints: [{ kind: 'open_at_plan_time' }] });
     const plan = deriveEffectivePlan(anchor, [{ kind: 'running_late', minutes: 90 }], []);

@@ -38,7 +38,7 @@ export interface CandidateSpec {
   price?: number | null;
   dietary?: string[] | null;
   stepFree?: boolean | null;
-  open?: { opensAt: number; closesAt: number } | null;
+  open?: { opensAt: number; closesAt: number; closedAllDay?: boolean } | null;
   capacity?: number | null;
   covered?: boolean | null;
   tags?: string[];

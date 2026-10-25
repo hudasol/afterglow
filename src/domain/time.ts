@@ -52,3 +52,9 @@ export function formatMinuteOfDay(minute: number): string {
   const normalised = ((minute % 1440) + 1440) % 1440;
   return `${pad(Math.floor(normalised / 60))}:${pad(normalised % 60)}`;
 }
+
+/** Local day of the week for the given ISO time, 0 for Sunday through 6 for Saturday. */
+export function localWeekday(iso: string): number {
+  const offset = offsetMinutes(iso);
+  return new Date(new Date(iso).getTime() + offset * 60_000).getUTCDay();
+}

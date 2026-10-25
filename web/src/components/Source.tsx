@@ -4,6 +4,7 @@ export type SourceKey = SourceKind | 'none';
 
 const LABELS: Record<SourceKey, string> = {
   qloo: 'Qloo',
+  openstreetmap: 'OpenStreetMap',
   simulation: 'Simulated',
   user: 'You said',
   user_attested: 'You checked',
@@ -13,6 +14,8 @@ const LABELS: Record<SourceKey, string> = {
 
 const EXPLAIN: Record<SourceKey, string> = {
   qloo: 'Returned by the Qloo API in this session.',
+  openstreetmap:
+    'Read from OpenStreetMap, a map that volunteers edit. It can be wrong or out of date, so check it.',
   simulation: 'From the invented demo catalogue. Not real and not from Qloo.',
   user: 'Entered by you when you described the plan.',
   user_attested: 'Checked and confirmed by you.',
@@ -27,6 +30,12 @@ function Glyph({ kind }: { kind: SourceKey }) {
       return (
         <svg {...common}>
           <circle cx="6" cy="6" r="5" fill="currentColor" />
+        </svg>
+      );
+    case 'openstreetmap':
+      return (
+        <svg {...common}>
+          <circle cx="6" cy="6" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
         </svg>
       );
     case 'simulation':

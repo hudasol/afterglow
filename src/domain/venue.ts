@@ -8,6 +8,8 @@ const pointSchema = z.object({ lat: z.number(), lon: z.number() });
 const openWindowSchema = z.object({
   opensAt: z.number().int().min(0).max(1439),
   closesAt: z.number().int().min(1).max(2160),
+  /** True when the venue is shut for the whole day of the plan. The times are then meaningless. */
+  closedAllDay: z.boolean().optional(),
 });
 
 export const candidateSchema = z.object({

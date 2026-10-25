@@ -7,10 +7,20 @@ import { z } from 'zod';
  * - user: stated by the person when describing the plan.
  * - user_attested: checked by the person after the fact (for example "I called and it is open").
  * - qloo: returned by the Qloo API in a live session.
+ * - openstreetmap: tags that OpenStreetMap contributors added to a place that was matched by name
+ *   and position. It is community data, so it can be wrong or out of date, and the person can
+ *   always override it by checking the fact.
  * - app: calculated by AFTERGLOW from other facts (distance, composite score).
  * - simulation: part of the labelled demo catalogue. It is never presented as live data.
  */
-export const sourceKindSchema = z.enum(['user', 'user_attested', 'qloo', 'app', 'simulation']);
+export const sourceKindSchema = z.enum([
+  'user',
+  'user_attested',
+  'qloo',
+  'openstreetmap',
+  'app',
+  'simulation',
+]);
 export type SourceKind = z.infer<typeof sourceKindSchema>;
 
 export const provenanceSchema = z.object({

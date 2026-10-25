@@ -23,6 +23,8 @@ export interface ConstraintVerdict {
   reason: string;
   /** Where the deciding fact came from. 'none' when the fact is missing. */
   basis: SourceKind | 'none';
+  /** What the fact rests on, such as the tag value read from a map. Absent when there is none. */
+  evidence?: string;
 }
 
 export type Feasibility = 'feasible' | 'needs_verification' | 'rejected';
@@ -75,6 +77,7 @@ interface Raw {
   outcome: VerdictOutcome;
   reason: string;
   basis: SourceKind | 'none';
+  evidence?: string;
 }
 
 function fromFact<T>(
@@ -88,6 +91,9 @@ function fromFact<T>(
     outcome: result.ok ? 'pass' : 'fail',
     reason: result.reason,
     basis: fact.provenance.source,
+    ...(fact.provenance.source === 'openstreetmap' && fact.provenance.detail
+      ? { evidence: fact.provenance.detail }
+      : {}),
   };
 }
 
@@ -142,6 +148,9 @@ function evaluateFromData(constraint: HardConstraint, candidate: Candidate, ctx:
       return fromFact(
         facts.openWindow,
         (window) => {
+          if (window.closedAllDay) {
+            return { ok: false, reason: 'Closed for the whole day of the plan' };
+          }
           const startMinute = localMinuteOfDay(ctx.plan.planStart);
           const endIso = shiftIso(ctx.plan.planStart, ctx.plan.durationMinutes);
           const crossesMidnight = localDayNumber(endIso) !== localDayNumber(ctx.plan.planStart);
@@ -219,6 +228,7 @@ export function evaluateCandidate(candidate: Candidate, ctx: GateContext): GateR
       outcome: raw.outcome,
       reason: raw.reason,
       basis: raw.basis,
+      ...(raw.evidence ? { evidence: raw.evidence } : {}),
     });
     if (raw.outcome === 'fail') {
       rejectionReasons.push(`${describeConstraint(constraint)}: ${raw.reason}`);
