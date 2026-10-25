@@ -47,6 +47,10 @@ A second interface over the same service. `src/interfaces/mcp` registers one too
 
 React 19 with Vite and a hash router. The interface imports types and a few pure functions from the domain so that the view contract is checked at compile time. It never holds the Qloo key.
 
+## Agent trace
+
+`buildTrace` in the domain layer replays the event log. At every search it rebuilds the case view as it stood at that moment and writes the cycle as five phases: observed, planned, did, decided and handed back. A change the person makes to places already fetched, such as a check, a declined option or an agreed relaxation, becomes a re-check cycle that says plainly that no new request was made. Several requirements given up in one agreement are one change. Because the trace is computed from events and never stored, it cannot describe a step that did not happen. It is served at `GET /api/cases/:id/trace` and as the `afterglow_get_trace` MCP tool.
+
 ## Why event sourcing
 
 The case history is a requirement of the product, not an add on. Because state is derived from events, the history tab, the evidence tab and the recovery view cannot disagree with each other, and every decision the person made is preserved in order.

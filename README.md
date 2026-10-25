@@ -32,6 +32,8 @@ All screenshots come from demo mode. The city, the venues and the taste scores a
 | ![Landing page with a gate result from the simulated catalogue](docs/screenshots/01-landing.png) | ![A shortlist of places that passed the gate](docs/screenshots/03-recovery.png)                   |
 | **A place ruled out, with the reason**                                                           | **Taste On against Taste Off**                                                                    |
 | ![A place ruled out with the exact requirement it failed](docs/screenshots/04-ruled-out.png)     | ![Order with and without taste over the same eligible places](docs/screenshots/05-comparison.png) |
+| **What the agent observed, did and decided**                                                     | **What was sent to the taste provider**                                                           |
+| ![The agent trace of a search cycle](docs/screenshots/07-agent-trace.png)                        | ![The evidence page listing the redacted request](docs/screenshots/06-evidence.png)               |
 
 ## The problem
 
@@ -43,7 +45,8 @@ A plan that falls apart usually ends with a scramble: a list of nearby places ra
 2. **Qloo Taste Engine.** Names and vibes the group likes are matched to Qloo entities and tags. An exact match resolves. Anything else is shown to the person to choose from, and an uncertain match is never passed on.
 3. **Feasibility Gate.** Every candidate is checked against every hard requirement and receives a verdict for each one: pass, fail or unknown. A failure rules the place out. An unknown never passes. It becomes a question for the person. The gate is identical whether or not taste is used.
 4. **Recovery Orchestrator.** Disruptions, the person's own checks, declined options and relaxations are recorded as events on the case. When no place meets every requirement, AFTERGLOW offers the smallest sets of requirements the person could give up and waits for agreement.
-5. **Persistent case history.** Each case is an append only event log in SQLite. The history tab shows every step in plain language.
+5. **Agent trace.** Every search cycle is shown as what the agent observed, planned, did and decided, and where it handed the decision back to the person. It is rebuilt from the recorded events. AFTERGLOW follows a fixed procedure and is not a chat model.
+6. **Persistent case history.** Each case is an append only event log in SQLite. The history tab shows every step in plain language.
 
 Each fact in the interface carries a source tag: Qloo, Simulated, You said, You checked, or Calculated here.
 
