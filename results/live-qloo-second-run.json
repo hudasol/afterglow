@@ -1,0 +1,1738 @@
+{
+  "kind": "live_qloo",
+  "generatedAt": "2026-10-25T15:53:24.392Z",
+  "provider": {
+    "mode": "live",
+    "label": "Qloo hackathon API"
+  },
+  "scenarioCount": 20,
+  "results": [
+    {
+      "id": "ny-a-friday-anniversary",
+      "title": "New York: Friday anniversary dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 19,
+      "feasible": 7,
+      "needsVerification": 14,
+      "ungatedTop": {
+        "names": [
+          "Red Rooster Harlem",
+          "Eataly - Flatiron",
+          "Wythe Hotel"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Red Rooster Harlem"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Mr. Purple",
+        "Pietro Nolita",
+        "Eataly - Flatiron"
+      ],
+      "tasteOnTop": [
+        "Eataly - Flatiron",
+        "Mr. Purple",
+        "Pietro Nolita"
+      ],
+      "popularTop": [
+        "Mr. Purple",
+        "Eataly - Flatiron",
+        "230 Fifth Rooftop Bar"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.7904761904761904,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8811216170691024,
+        "tasteOff": 0.8811216170691024,
+        "popular": 0.8811216170691024
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.4875,
+      "factCoverage": {
+        "openWindow": 0.65,
+        "stepFree": 0.775,
+        "dietary": null
+      },
+      "providerCalls": 6,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "ny-b-saturday-vegetarian",
+        "tasteOnTop": [
+          "Eataly - Flatiron",
+          "230 Fifth Rooftop Bar",
+          "Mr. Purple"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.8095238095238095,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "ny-b-saturday-vegetarian",
+      "title": "New York: Saturday dinner with vegetarian friends",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 17,
+      "feasible": 9,
+      "needsVerification": 14,
+      "ungatedTop": {
+        "names": [
+          "Eleven Madison Park",
+          "Baby's All Right",
+          "Wythe Hotel"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Eleven Madison Park"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Refinery Rooftop",
+        "230 Fifth Rooftop Bar",
+        "Eataly - Flatiron"
+      ],
+      "tasteOnTop": [
+        "Refinery Rooftop",
+        "Eataly - Flatiron",
+        "Tavern On the Green"
+      ],
+      "popularTop": [
+        "230 Fifth Rooftop Bar",
+        "Eataly - Flatiron",
+        "TAO Downtown Restaurant"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.6442687747035574,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8680080271756992,
+        "tasteOff": 0.8652191992290008,
+        "popular": 0.8689866164503368
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.409375,
+      "factCoverage": {
+        "openWindow": 0.65,
+        "stepFree": 0.775,
+        "dietary": 0.625
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "ny-c-monday-budget",
+        "tasteOnTop": [
+          "Refinery Rooftop",
+          "Eataly - Flatiron",
+          "230 Fifth Rooftop Bar"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.7470355731225297,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "ny-c-monday-budget",
+      "title": "New York: Monday budget dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 28,
+      "feasible": 2,
+      "needsVerification": 10,
+      "ungatedTop": {
+        "names": [
+          "Baby's All Right",
+          "Westfield World Trade Center",
+          "House of Yes"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Westfield World Trade Center",
+          "House of Yes"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Eataly - Flatiron",
+        "Taiyaki NYC Japanese Ice Cream",
+        "The Bowery Hotel"
+      ],
+      "tasteOnTop": [
+        "Eataly - Flatiron",
+        "Taiyaki NYC Japanese Ice Cream",
+        "The Bowery Hotel"
+      ],
+      "popularTop": [
+        "Eataly - Flatiron",
+        "Taiyaki NYC Japanese Ice Cream",
+        "Hard Rock Cafe"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.6060606060606061,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.787190005179895,
+        "tasteOff": 0.787190005179895,
+        "popular": 0.7944457424890435
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.4875,
+      "factCoverage": {
+        "openWindow": 0.65,
+        "stepFree": 0.775,
+        "dietary": null
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 2,
+      "placebo": {
+        "from": "ny-d-wednesday-group",
+        "tasteOnTop": [
+          "Eataly - Flatiron",
+          "Taiyaki NYC Japanese Ice Cream",
+          "The Bowery Hotel"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.6363636363636364,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "ny-d-wednesday-group",
+      "title": "New York: Wednesday dinner for eight",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 11,
+      "feasible": 0,
+      "needsVerification": 29,
+      "ungatedTop": {
+        "names": [
+          "Beauty & Essex",
+          "Westfield World Trade Center",
+          "Refinery Rooftop"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Westfield World Trade Center",
+          "Refinery Rooftop"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Ellen's Stardust Diner",
+        "Bubba Gump Shrimp Co.",
+        "Hard Rock Cafe"
+      ],
+      "tasteOnTop": [
+        "Ellen's Stardust Diner",
+        "Bubba Gump Shrimp Co.",
+        "Hard Rock Cafe"
+      ],
+      "popularTop": [
+        "Ellen's Stardust Diner",
+        "Hard Rock Cafe",
+        "230 Fifth Rooftop Bar"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9852216748768473,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7649962877984056,
+        "tasteOff": 0.7649962877984056,
+        "popular": 0.7649962877984056
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.4875,
+      "factCoverage": {
+        "openWindow": 0.65,
+        "stepFree": 0.775,
+        "dietary": null
+      },
+      "providerCalls": 1,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "ny-a-friday-anniversary",
+        "tasteOnTop": [
+          "Irving Plaza",
+          "Baby's All Right",
+          "Katz's Delicatessen"
+        ],
+        "overlapAt3": 0,
+        "kendallTau": 0.6157635467980296,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "lon-a-friday-anniversary",
+      "title": "London: Friday anniversary dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 16,
+      "feasible": 7,
+      "needsVerification": 17,
+      "ungatedTop": {
+        "names": [
+          "Quaglino's",
+          "Brasserie Zedel",
+          "Dinner by Heston Blumenthal"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Quaglino's",
+          "Dinner by Heston Blumenthal"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Wolseley Piccadilly",
+        "Brasserie Zedel",
+        "Ronnie Scott's"
+      ],
+      "tasteOnTop": [
+        "Brasserie Zedel",
+        "The Wolseley Piccadilly",
+        "Ronnie Scott's"
+      ],
+      "popularTop": [
+        "BOXPARK Shoreditch",
+        "The Wolseley Piccadilly",
+        "Brasserie Zedel"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9130434782608695,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8463477762901289,
+        "tasteOff": 0.8463477762901289,
+        "popular": 0.8573342423253829
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.50625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.725,
+        "dietary": null
+      },
+      "providerCalls": 4,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "lon-b-saturday-vegetarian",
+        "tasteOnTop": [
+          "The Wolseley Piccadilly",
+          "Brasserie Zedel",
+          "Ronnie Scott's"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.8695652173913043,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "lon-b-saturday-vegetarian",
+      "title": "London: Saturday dinner with vegetarian friends",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 11,
+      "feasible": 14,
+      "needsVerification": 15,
+      "ungatedTop": {
+        "names": [
+          "Wellcome Collection",
+          "Aqua Shard",
+          "Ham Yard Hotel"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Wellcome Collection"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Queen of Hoxton",
+        "Sky Garden",
+        "Balconies Restaurant"
+      ],
+      "tasteOnTop": [
+        "Balconies Restaurant",
+        "Aqua Shard",
+        "Ronnie Scott's"
+      ],
+      "popularTop": [
+        "Sky Garden",
+        "Balconies Restaurant",
+        "BOXPARK Shoreditch"
+      ],
+      "overlapAt3": 0.3333333333333333,
+      "kendallTau": 0.7487684729064039,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8326136640768694,
+        "tasteOff": 0.8294576094759831,
+        "popular": 0.8294576094759831
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.434375,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.725,
+        "dietary": 0.575
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "lon-c-monday-budget",
+        "tasteOnTop": [
+          "Sky Garden",
+          "Aqua Shard",
+          "Balconies Restaurant"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.7931034482758621,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "lon-c-monday-budget",
+      "title": "London: Monday budget dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 23,
+      "feasible": 5,
+      "needsVerification": 12,
+      "ungatedTop": {
+        "names": [
+          "Sky Garden",
+          "Peggy Porschen Belgravia",
+          "The O2"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Sky Garden",
+          "Peggy Porschen Belgravia"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Brasserie Zedel",
+        "Mercato Metropolitano",
+        "The Monument"
+      ],
+      "tasteOnTop": [
+        "Brasserie Zedel",
+        "Mercato Metropolitano",
+        "The Monument"
+      ],
+      "popularTop": [
+        "Aura x",
+        "BOXPARK Shoreditch",
+        "Brasserie Zedel"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9705882352941176,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7928249574603283,
+        "tasteOff": 0.7928249574603283,
+        "popular": 0.8115942984444491
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.50625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.725,
+        "dietary": null
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "lon-d-wednesday-group",
+        "tasteOnTop": [
+          "Brasserie Zedel",
+          "Mercato Metropolitano",
+          "The Monument"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.9705882352941176,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "lon-d-wednesday-group",
+      "title": "London: Wednesday dinner for eight",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 15,
+      "feasible": 0,
+      "needsVerification": 25,
+      "ungatedTop": {
+        "names": [
+          "Electric Ballroom",
+          "Pop Brixton",
+          "Theatre Royal Drury Lane"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Electric Ballroom"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Ham Yard Hotel",
+        "Quaglino's",
+        "Ronnie Scott's"
+      ],
+      "tasteOnTop": [
+        "Ham Yard Hotel",
+        "Quaglino's",
+        "Ronnie Scott's"
+      ],
+      "popularTop": [
+        "Balconies Restaurant",
+        "Selfridges",
+        "Park Plaza London Westminster Bridge"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 1,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7649962877984056,
+        "tasteOff": 0.7649962877984056,
+        "popular": 0.7649962877984056
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.50625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.725,
+        "dietary": null
+      },
+      "providerCalls": 1,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "lon-a-friday-anniversary",
+        "tasteOnTop": [
+          "The O2",
+          "Ham Yard Hotel",
+          "Quaglino's"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.84,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "par-a-friday-anniversary",
+      "title": "Paris: Friday anniversary dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 16,
+      "feasible": 9,
+      "needsVerification": 15,
+      "ungatedTop": {
+        "names": [
+          "Le Train Bleu"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Le Train Bleu"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Café de Flore",
+        "Le Café Marly",
+        "Rosa Bonheur sur Seine"
+      ],
+      "tasteOnTop": [
+        "Café de Flore",
+        "Le Café Marly",
+        "Rosa Bonheur sur Seine"
+      ],
+      "popularTop": [
+        "Café de Flore",
+        "Le Café Marly",
+        "La Maison Rose"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 1,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
+      "meanAffinityTop3": {
+        "tasteOn": null,
+        "tasteOff": null,
+        "popular": null
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.465625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.875,
+        "dietary": null
+      },
+      "providerCalls": 4,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "par-b-saturday-vegetarian",
+        "tasteOnTop": [
+          "Café de Flore",
+          "Le Café Marly",
+          "Rosa Bonheur sur Seine"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.9130434782608695,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "par-b-saturday-vegetarian",
+      "title": "Paris: Saturday dinner with vegetarian friends",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 10,
+      "feasible": 16,
+      "needsVerification": 14,
+      "ungatedTop": {
+        "names": [
+          "Café de la Paix",
+          "Café de Flore",
+          "Le Train Bleu"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Le Train Bleu"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Café de Flore",
+        "Kong",
+        "Le Café Marly"
+      ],
+      "tasteOnTop": [
+        "Café de Flore",
+        "Kong",
+        "Le Café Marly"
+      ],
+      "popularTop": [
+        "Café de Flore",
+        "Madame Brasserie",
+        "Kong"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.8528735632183908,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8375024566908208,
+        "tasteOff": 0.8375024566908208,
+        "popular": 0.84415441150535
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.378125,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.875,
+        "dietary": 0.7
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "par-c-monday-budget",
+        "tasteOnTop": [
+          "Café de Flore",
+          "Le Café Marly",
+          "Kong"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.7885057471264367,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "par-c-monday-budget",
+      "title": "Paris: Monday budget dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 22,
+      "feasible": 5,
+      "needsVerification": 13,
+      "ungatedTop": {
+        "names": [
+          "Cinémathèque Française",
+          "Point Éphémère",
+          "La Machine du Moulin Rouge"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Point Éphémère",
+          "La Machine du Moulin Rouge"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "L'As du Fallafel",
+        "Le Perchoir",
+        "Café de Flore"
+      ],
+      "tasteOnTop": [
+        "Le Perchoir",
+        "Café de Flore",
+        "Rosa Bonheur sur Seine"
+      ],
+      "popularTop": [
+        "Café de Flore",
+        "La Felicità",
+        "L'As du Fallafel"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.6862745098039216,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.9010333205121078,
+        "tasteOff": 0.8824189045816295,
+        "popular": 0.8813533915793109
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.465625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.875,
+        "dietary": null
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "par-d-wednesday-group",
+        "tasteOnTop": [
+          "Le Perchoir",
+          "L'As du Fallafel",
+          "Café de Flore"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.6993464052287581,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "par-d-wednesday-group",
+      "title": "Paris: Wednesday dinner for eight",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 11,
+      "feasible": 0,
+      "needsVerification": 29,
+      "ungatedTop": {
+        "names": [
+          "Bouillon Pigalle",
+          "Pink Mamma",
+          "La Bellevilloise"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Pink Mamma",
+          "La Bellevilloise"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "L'As du Fallafel",
+        "Bouillon République",
+        "Kong"
+      ],
+      "tasteOnTop": [
+        "L'As du Fallafel",
+        "Bouillon République",
+        "Kong"
+      ],
+      "popularTop": [
+        "Café de Flore",
+        "Hotel Costes",
+        "Bercy Village"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9950738916256158,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7649962877984056,
+        "tasteOff": 0.7649962877984056,
+        "popular": 0.7649962877984056
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.465625,
+      "factCoverage": {
+        "openWindow": 0.7,
+        "stepFree": 0.875,
+        "dietary": null
+      },
+      "providerCalls": 1,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "par-a-friday-anniversary",
+        "tasteOnTop": [
+          "Cinémathèque Française",
+          "La Maroquinerie",
+          "Point Éphémère"
+        ],
+        "overlapAt3": 0,
+        "kendallTau": 0.6157635467980296,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "tok-a-friday-anniversary",
+      "title": "Tokyo: Friday anniversary dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 30,
+      "feasible": 3,
+      "needsVerification": 7,
+      "ungatedTop": {
+        "names": [
+          "Pierre Hermé Paris Aoyama",
+          "TWO ROOMS",
+          "bills Odaiba"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Pierre Hermé Paris Aoyama",
+          "bills Odaiba"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "THE APOLLO Ginza",
+        "TWO ROOMS",
+        "Spring Valley Brewery Tokyo"
+      ],
+      "tasteOnTop": [
+        "TWO ROOMS",
+        "THE APOLLO Ginza",
+        "Spring Valley Brewery Tokyo"
+      ],
+      "popularTop": [
+        "Spring Valley Brewery Tokyo",
+        "THE APOLLO Ginza",
+        "TWO ROOMS"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9555555555555556,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7828792479466499,
+        "tasteOff": 0.7828792479466499,
+        "popular": 0.7828792479466499
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.484375,
+      "factCoverage": {
+        "openWindow": 0.875,
+        "stepFree": 0.55,
+        "dietary": null
+      },
+      "providerCalls": 5,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "tok-b-saturday-vegetarian",
+        "tasteOnTop": [
+          "THE APOLLO Ginza",
+          "TWO ROOMS",
+          "Spring Valley Brewery Tokyo"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.9555555555555556,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "tok-b-saturday-vegetarian",
+      "title": "Tokyo: Saturday dinner with vegetarian friends",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 25,
+      "feasible": 10,
+      "needsVerification": 5,
+      "ungatedTop": {
+        "names": [
+          "Path",
+          "THE APOLLO Ginza",
+          "Billboard Live Tokyo"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Billboard Live Tokyo"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "THE APOLLO Ginza",
+        "Canal Cafe",
+        "Egg Baby Cafe"
+      ],
+      "tasteOnTop": [
+        "THE APOLLO Ginza",
+        "Path",
+        "Canal Cafe"
+      ],
+      "popularTop": [
+        "Fuglen Tokyo",
+        "Ivy Place",
+        "Canal Cafe"
+      ],
+      "overlapAt3": 0.6666666666666666,
+      "kendallTau": 0.8285714285714286,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8680313721994193,
+        "tasteOff": 0.846652175313859,
+        "popular": null
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.396875,
+      "factCoverage": {
+        "openWindow": 0.875,
+        "stepFree": 0.55,
+        "dietary": 0.7
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "tok-c-monday-budget",
+        "tasteOnTop": [
+          "THE APOLLO Ginza",
+          "Canal Cafe",
+          "TWO ROOMS"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.7523809523809524,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "tok-c-monday-budget",
+      "title": "Tokyo: Monday budget dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 29,
+      "feasible": 6,
+      "needsVerification": 5,
+      "ungatedTop": {
+        "names": [
+          "BUY ME STAND",
+          "Path",
+          "PIZZA SLICE P."
+        ],
+        "violationCount": 2,
+        "violators": [
+          "BUY ME STAND",
+          "Path"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Egg Baby Cafe",
+        "Canal Cafe",
+        "crisscross"
+      ],
+      "tasteOnTop": [
+        "Canal Cafe",
+        "Egg Baby Cafe",
+        "crisscross"
+      ],
+      "popularTop": [
+        "Fuglen Tokyo",
+        "crisscross",
+        "The Little BAKERY Tokyo"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9636363636363636,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8278061491174721,
+        "tasteOff": 0.8278061491174721,
+        "popular": 0.8386171321124539
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.484375,
+      "factCoverage": {
+        "openWindow": 0.875,
+        "stepFree": 0.55,
+        "dietary": null
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "tok-d-wednesday-group",
+        "tasteOnTop": [
+          "Egg Baby Cafe",
+          "Canal Cafe",
+          "crisscross"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 0.9272727272727272,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "tok-d-wednesday-group",
+      "title": "Tokyo: Wednesday dinner for eight",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 23,
+      "feasible": 0,
+      "needsVerification": 17,
+      "ungatedTop": {
+        "names": [
+          "Hotel Gajoen Tokyo",
+          "Mitsukoshi Ginza",
+          "Hacienda"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "Mitsukoshi Ginza"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "The Great Burger",
+        "TWO ROOMS",
+        "Tower Records Shibuya"
+      ],
+      "tasteOnTop": [
+        "TWO ROOMS",
+        "The Great Burger",
+        "Tower Records Shibuya"
+      ],
+      "popularTop": [
+        "Fuglen Tokyo",
+        "Ivy Place",
+        "Hotel Gajoen Tokyo"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9705882352941176,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7649962877984056,
+        "tasteOff": 0.7649962877984056,
+        "popular": 0.7649962877984056
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.484375,
+      "factCoverage": {
+        "openWindow": 0.875,
+        "stepFree": 0.55,
+        "dietary": null
+      },
+      "providerCalls": 1,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "tok-a-friday-anniversary",
+        "tasteOnTop": [
+          "TWO ROOMS",
+          "The Great Burger",
+          "Tower Records Shibuya"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 1,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "dxb-a-friday-anniversary",
+      "title": "Dubai: Friday anniversary dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 30,
+      "feasible": 3,
+      "needsVerification": 7,
+      "ungatedTop": {
+        "names": [
+          "Cipriani Dubai",
+          "CÉ LA VI",
+          "Mint Leaf of London Dubai"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "Cipriani Dubai",
+          "CÉ LA VI"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Mint Leaf of London Dubai",
+        "The Cheesecake Factory",
+        "Lounge at Address Downtown"
+      ],
+      "tasteOnTop": [
+        "Mint Leaf of London Dubai",
+        "The Cheesecake Factory",
+        "Lounge at Address Downtown"
+      ],
+      "popularTop": [
+        "Lounge at Address Downtown",
+        "The Cheesecake Factory",
+        "Mint Leaf of London Dubai"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.5111111111111111,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.870532455852902,
+        "tasteOff": 0.870532455852902,
+        "popular": 0.8705324558529018
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.6666666666666666,
+        "tasteOff": 0.6666666666666666
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.509375,
+      "factCoverage": {
+        "openWindow": 0.575,
+        "stepFree": 0.75,
+        "dietary": null
+      },
+      "providerCalls": 4,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "dxb-b-saturday-vegetarian",
+        "tasteOnTop": [
+          "Mint Leaf of London Dubai",
+          "The Cheesecake Factory",
+          "Lounge at Address Downtown"
+        ],
+        "overlapAt3": 1,
+        "kendallTau": 1,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "dxb-b-saturday-vegetarian",
+      "title": "Dubai: Saturday dinner with vegetarian friends",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 28,
+      "feasible": 5,
+      "needsVerification": 7,
+      "ungatedTop": {
+        "names": [
+          "The Lounge at Address Beach Resort",
+          "GAL Dubai",
+          "Nola Eatery & Social House"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "The Lounge at Address Beach Resort",
+          "GAL Dubai"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "McGettigan's Souk Madinat Jumeirah",
+        "Barasti Beach",
+        "Nola Eatery & Social House"
+      ],
+      "tasteOnTop": [
+        "McGettigan's Souk Madinat Jumeirah",
+        "Barasti Beach",
+        "Nola Eatery & Social House"
+      ],
+      "popularTop": [
+        "McGettigan's Souk Madinat Jumeirah",
+        "Barasti Beach",
+        "Pier 7"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 0.9393939393939394,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
+      "meanAffinityTop3": {
+        "tasteOn": 0.8449742109599626,
+        "tasteOff": 0.8449742109599626,
+        "popular": 0.838486821081347
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.440625,
+      "factCoverage": {
+        "openWindow": 0.575,
+        "stepFree": 0.75,
+        "dietary": 0.55
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 3,
+      "placebo": {
+        "from": "dxb-c-monday-budget",
+        "tasteOnTop": [
+          "McGettigan's Souk Madinat Jumeirah",
+          "Barasti Beach",
+          "Pier 7"
+        ],
+        "overlapAt3": 0.6666666666666666,
+        "kendallTau": 0.8787878787878788,
+        "topChoiceChanged": false
+      }
+    },
+    {
+      "id": "dxb-c-monday-budget",
+      "title": "Dubai: Monday budget dinner",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 19,
+      "feasible": 0,
+      "needsVerification": 21,
+      "ungatedTop": {
+        "names": [
+          "CÉ LA VI",
+          "McGettigan's Souk Madinat Jumeirah",
+          "DRIFT Dubai"
+        ],
+        "violationCount": 2,
+        "violators": [
+          "CÉ LA VI",
+          "DRIFT Dubai"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Ikea Cafe",
+        "Barasti Beach",
+        "Lounge at Address Downtown"
+      ],
+      "tasteOnTop": [
+        "McGettigan's Souk Madinat Jumeirah",
+        "Barasti Beach",
+        "Fairmont The Palm"
+      ],
+      "popularTop": [
+        "Barasti Beach",
+        "McGettigan's Souk Madinat Jumeirah",
+        "Dubai Opera"
+      ],
+      "overlapAt3": 0.3333333333333333,
+      "kendallTau": -0.19047619047619047,
+      "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.6957981218518287,
+        "tasteOff": 0.6649921822277941,
+        "popular": 0.6852159730072159
+      },
+      "preservedTagShare": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.509375,
+      "factCoverage": {
+        "openWindow": 0.575,
+        "stepFree": 0.75,
+        "dietary": null
+      },
+      "providerCalls": 2,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "dxb-d-wednesday-group",
+        "tasteOnTop": [
+          "Ikea Cafe",
+          "Barasti Beach",
+          "Lounge at Address Downtown"
+        ],
+        "overlapAt3": 0.3333333333333333,
+        "kendallTau": -0.19047619047619047,
+        "topChoiceChanged": true
+      }
+    },
+    {
+      "id": "dxb-d-wednesday-group",
+      "title": "Dubai: Wednesday dinner for eight",
+      "ok": true,
+      "poolSize": 40,
+      "tasteStatus": "applied",
+      "rejected": 7,
+      "feasible": 0,
+      "needsVerification": 33,
+      "ungatedTop": {
+        "names": [
+          "DRIFT Dubai",
+          "Pierchic",
+          "Raffles Dubai"
+        ],
+        "violationCount": 1,
+        "violators": [
+          "DRIFT Dubai"
+        ]
+      },
+      "gatedViolations": {
+        "tasteOn": 0,
+        "tasteOff": 0
+      },
+      "sameEligibleSet": true,
+      "tasteOffTop": [
+        "Ikea Cafe",
+        "Barasti Beach",
+        "Lounge at Address Downtown"
+      ],
+      "tasteOnTop": [
+        "Ikea Cafe",
+        "Barasti Beach",
+        "Lounge at Address Downtown"
+      ],
+      "popularTop": [
+        "Barasti Beach",
+        "McGettigan's Souk Madinat Jumeirah",
+        "Dubai Opera"
+      ],
+      "overlapAt3": 1,
+      "kendallTau": 1,
+      "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
+      "meanAffinityTop3": {
+        "tasteOn": 0.7649962877984056,
+        "tasteOff": 0.7649962877984056,
+        "popular": 0.7649962877984056
+      },
+      "preservedTagShare": {
+        "tasteOn": 0.3333333333333333,
+        "tasteOff": 0.3333333333333333
+      },
+      "noFeasibleOption": false,
+      "relaxationsOffered": 0,
+      "unknownFactShare": 0.509375,
+      "factCoverage": {
+        "openWindow": 0.575,
+        "stepFree": 0.75,
+        "dietary": null
+      },
+      "providerCalls": 1,
+      "tasteOnFeasibleTop": 0,
+      "placebo": {
+        "from": "dxb-a-friday-anniversary",
+        "tasteOnTop": [
+          "Cipriani Dubai",
+          "Zuma Dubai",
+          "Dubai Opera"
+        ],
+        "overlapAt3": 0,
+        "kendallTau": 0.26515151515151514,
+        "topChoiceChanged": true
+      }
+    }
+  ],
+  "summary": {
+    "scenarios": 20,
+    "completed": 20,
+    "ungatedScenariosWithViolation": 20,
+    "ungatedTopSlotsViolating": {
+      "violating": 31,
+      "total": 58
+    },
+    "gatedViolations": {
+      "tasteOn": 0,
+      "tasteOff": 0
+    },
+    "gateAgreesWithOracle": true,
+    "sameEligibleSetEverywhere": true,
+    "topChoiceChanged": {
+      "changed": 8,
+      "compared": 20
+    },
+    "topChoiceChangedVsPopular": {
+      "changed": 15,
+      "compared": 20
+    },
+    "meanOverlapAt3": 0.8833333333333332,
+    "meanOverlapAt3VsPopular": 0.4833333333333333,
+    "meanKendallTau": 0.8085514920156424,
+    "meanAffinityTop3": {
+      "tasteOn": 0.8137707800723797,
+      "tasteOff": 0.8097315992835555,
+      "popular": 0.8116200554628641,
+      "difference": 0.004039180788824148
+    },
+    "noFeasibleHandled": {
+      "scenarios": 0,
+      "withWaysForward": 0
+    }
+  },
+  "method": [
+    "Each scenario opens a case, records one disruption and runs one search.",
+    "Both arms use the identical candidate pool, the identical feasibility gate and the identical exclusions. Only the ordering rule differs.",
+    "Taste Off orders by distance to the original venue, then price level, then name. It uses no taste data.",
+    "Popular orders by the provider general popularity, most popular first, with distance and price as tie breakers. It uses none of the group signals.",
+    "Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.",
+    "The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.",
+    "Violations are judged by an independent implementation of the constraint rules that reads raw venue facts."
+  ],
+  "limits": [
+    "Results depend on the cities, the signals and the places Qloo returned on the day of the run.",
+    "Qloo affinity describes what groups tend to like. It does not establish what a given person will enjoy.",
+    "Opening hours, step free access and dietary options are read from Qloo when it states them. It never states group capacity or covered seating, so requirements on those stay unverified.",
+    "No people were involved in this evaluation."
+  ],
+  "live": {
+    "bootstrap": {
+      "seed": 20261025,
+      "resamples": 10000
+    },
+    "metrics": [
+      {
+        "id": "P1",
+        "observed": 0.7,
+        "low": 0.6587499999999998,
+        "high": 0.7437499999999999,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P2",
+        "observed": 0.7350000000000001,
+        "low": 0.6875,
+        "high": 0.78,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P3",
+        "observed": 0.6299999999999999,
+        "low": 0.575,
+        "high": 0.6849999999999999,
+        "basis": {
+          "used": 5,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P4",
+        "observed": 0.7,
+        "low": 0.5333333333333333,
+        "high": 0.8333333333333334,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "MISS"
+      },
+      {
+        "id": "P5",
+        "observed": 0.45,
+        "low": 0.25819785703764037,
+        "high": 0.6579146589808726,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "MISS"
+      },
+      {
+        "id": "P6",
+        "observed": 1,
+        "low": 0.8388748398148705,
+        "high": 1,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P7",
+        "observed": 0,
+        "low": null,
+        "high": null,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P8",
+        "observed": 0.7,
+        "low": 0.4810271799475211,
+        "high": 0.8545227559784271,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P9",
+        "observed": 0.4,
+        "low": 0.21880653127178018,
+        "high": 0.6134185007652458,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "MISS"
+      },
+      {
+        "id": "P10",
+        "observed": 0.75,
+        "low": 0.5312991206074114,
+        "high": 0.8881382993000237,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P11",
+        "observed": 20,
+        "low": null,
+        "high": null,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      },
+      {
+        "id": "P12",
+        "observed": 2,
+        "low": null,
+        "high": null,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
+      }
+    ],
+    "hits": 9,
+    "misses": 3,
+    "notEvaluated": 0
+  },
+  "run": {
+    "label": "second run",
+    "note": "This is the second run on the same frozen scenarios and the same predictions. It was made after two product defects that the first run exposed were fixed: the original venue could be taken from another country, and Qloo timed out when five or more tag signals were sent. It is not independent of the first run, because the fixes were chosen after seeing which scenarios failed. It does not replace the first run, which is the registered result."
+  }
+}
