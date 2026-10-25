@@ -10,16 +10,17 @@ Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hack
 
 This table states what has and has not been verified. It is updated whenever the facts change.
 
-| Item                                          | Status                                                                                                                                                                               |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Unit and integration tests                    | Passing (`npm test`)                                                                                                                                                                 |
-| Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                                                                                                         |
-| Type check, lint, formatting                  | Passing (`npm run check`)                                                                                                                                                            |
-| Continuous integration                        | Passing on GitHub Actions for commit 67c916b: checks, build and browser tests (`.github/workflows/ci.yml`)                                                                           |
-| Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                                                                                             |
-| Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which the team runs locally and never commits                                                                                         |
-| Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                                                                                                                        |
-| Hosted demo                                   | Deployed on Render in demo mode at https://afterglow-gsc4.onrender.com. Render reported the deploy live and the server log shows it listening. **Live Qloo is not configured on it** |
+| Item                                            | Status                                                                                                                                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Unit and integration tests                      | Passing (`npm test`)                                                                                                                                                                 |
+| Browser tests with accessibility checks         | Passing (`npm run test:e2e`)                                                                                                                                                         |
+| Type check, lint, formatting                    | Passing (`npm run check`)                                                                                                                                                            |
+| Continuous integration                          | Passing on GitHub Actions for commit 67c916b: checks, build and browser tests (`.github/workflows/ci.yml`)                                                                           |
+| Offline evaluation on the simulated catalogue   | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                                                                                             |
+| Live Qloo smoke test (`npm run qloo:smoke`)     | **Not yet run.** It needs a personal Qloo key, which the team runs locally and never commits                                                                                         |
+| Live Qloo evaluation                            | **Not yet run.** It depends on the smoke test                                                                                                                                        |
+| OpenStreetMap place facts (`npm run osm:smoke`) | Implemented and tested with invented responses. **Not yet run against real OpenStreetMap data.** It needs no key and can be started from GitHub Actions                              |
+| Hosted demo                                     | Deployed on Render in demo mode at https://afterglow-gsc4.onrender.com. Render reported the deploy live and the server log shows it listening. **Live Qloo is not configured on it** |
 
 Until the live rows change, nothing in this repository claims that AFTERGLOW has been verified against the real Qloo API. Demo mode uses an invented catalogue and says so on every screen.
 
@@ -48,7 +49,7 @@ A plan that falls apart usually ends with a scramble: a list of nearby places ra
 5. **Agent trace.** Every search cycle is shown as what the agent observed, planned, did and decided, and where it handed the decision back to the person. It is rebuilt from the recorded events. AFTERGLOW follows a fixed procedure and is not a chat model.
 6. **Persistent case history.** Each case is an append only event log in SQLite. The history tab shows every step in plain language.
 
-Each fact in the interface carries a source tag: Qloo, Simulated, You said, You checked, or Calculated here.
+Each fact in the interface carries a source tag: Qloo, OpenStreetMap, Simulated, You said, You checked, or Calculated here.
 
 ## Where Qloo is used
 
@@ -57,6 +58,10 @@ Each fact in the interface carries a source tag: Qloo, Simulated, You said, You 
 - `/v2/insights` returns the candidate places for a city, and ranks a fixed list of places by affinity to the group's signals and to the lost venue, with explainability when it is available.
 
 Qloo results describe what groups of people tend to like. AFTERGLOW presents them that way and does not treat an affinity as a prediction about any person. The full workflow, parameters and data handling are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
+
+## Where OpenStreetMap is used
+
+Qloo does not supply opening hours, dietary options, step free access or capacity in a form AFTERGLOW reads. For live cases, and only for the requirements a plan insists on, AFTERGLOW looks these up on OpenStreetMap by matching each place by name and position. A value is used only when it is clearly stated, it carries the tag it was read from, it never replaces a fact you checked, and a failure leaves the fact unknown. Only the public coordinates of venues are sent. Details, limits and the licence credit are in [docs/OPENSTREETMAP.md](docs/OPENSTREETMAP.md).
 
 ## Use it from an MCP client
 
@@ -123,6 +128,7 @@ The key is read only by the server. It is never sent to the browser, logged, or 
 | `npm run mcp`        | MCP server over stdio. See [docs/MCP.md](docs/MCP.md) |
 | `npm run eval`       | Offline evaluation on the simulated catalogue         |
 | `npm run qloo:smoke` | Live Qloo experiment. Needs `QLOO_API_KEY`            |
+| `npm run osm:smoke`  | Real data check for OpenStreetMap place facts. No key |
 
 Browser tests download nothing at run time but need a Playwright Chromium. If your Chromium is installed elsewhere, set `PLAYWRIGHT_CHROMIUM_PATH` to its executable.
 
@@ -149,7 +155,7 @@ The domain layer imports nothing from the outer layers and performs no input or 
 The full list is in [docs/LIMITATIONS.md](docs/LIMITATIONS.md). The most important points:
 
 - The live Qloo path has not yet been verified with a real key.
-- In live mode Qloo does not supply opening hours, dietary options, accessibility, capacity or covered seating in a form AFTERGLOW reads, so those requirements stay unknown until the person checks them. The gate treats unknown as not passing.
+- In live mode Qloo does not supply opening hours, dietary options, accessibility, capacity or covered seating in a form AFTERGLOW reads. OpenStreetMap fills some of them where volunteers have tagged a matching place, and that lookup has not yet been run against real data. Everything else stays unknown until the person checks it. The gate treats unknown as not passing.
 - The offline evaluation uses an invented, hand authored catalogue. It shows how the pipeline behaves. It is not evidence about the quality of Qloo recommendations.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
 - Cases are tied to a browser through a random identifier. There are no accounts.

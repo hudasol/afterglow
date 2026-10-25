@@ -37,7 +37,7 @@ It shows that the gate rules out places that break requirements, that the oracle
 
 ## Live evaluation
 
-`npm run eval -- --live scenarios.json` runs the same comparison against Qloo for scenarios you supply, validated by the same schema as the intake form. It needs `QLOO_API_KEY`. Live venues lack opening hours, dietary options, accessibility and capacity, so the oracle is switched off and violations are only those the gate can establish from facts the provider returned. The report says so. The live evaluation has not yet been run.
+`npm run eval -- --live scenarios.json` runs the same comparison against Qloo for scenarios you supply, validated by the same schema as the intake form. It needs `QLOO_API_KEY`. Live venues lack opening hours, dietary options, accessibility and capacity in Qloo responses, and the live evaluation does not use the OpenStreetMap lookup, so the oracle is switched off and violations are only those the gate can establish from facts the provider returned. The report says so. The live evaluation has not yet been run.
 
 ## Reproducing
 

@@ -80,7 +80,7 @@ To use live Qloo, copy `.env.example` to `.env`, set `QLOO_API_KEY`, run `npm ru
 ## 6. Known limitations and what the results do not establish
 
 - The live Qloo path has not yet been verified with a real key.
-- In live mode Qloo is not read for opening hours, dietary options, accessibility, capacity or covered seating, so those requirements stay unknown until the person checks them, and the gate treats unknown as not passing.
+- In live mode Qloo is not read for opening hours, dietary options, accessibility, capacity or covered seating. For live cases AFTERGLOW looks some of them up on OpenStreetMap, which volunteers edit, and that lookup has not yet been run against real data. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
 - The offline evaluation uses an invented, hand authored catalogue. In it, a plain top three broke at least one requirement in 12 of 17 scenarios, and the gated shortlists broke none as judged by an independent oracle. These figures show how the pipeline behaves on that catalogue. They are not a rate in the real world and they say nothing about how well Qloo predicts what people enjoy.
 - No people took part in any evaluation.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
@@ -104,7 +104,7 @@ TypeScript with a layered design: a pure domain layer, an application layer behi
 
 ### Challenges
 
-Designing for unknown facts. Qloo gives rich taste data but not opening hours or accessibility, so the gate has three outcomes, and unknown never passes. Building a fair Taste On against Taste Off comparison, where only the ordering rule differs. Staying honest in a demo, where invented data must never look like live data.
+Designing for unknown facts. Qloo gives rich taste data but not opening hours or accessibility, so the gate has three outcomes, unknown never passes, and a second, labelled source fills in only what it can state clearly. Building a fair Taste On against Taste Off comparison, where only the ordering rule differs. Staying honest in a demo, where invented data must never look like live data.
 
 ### Accomplishments
 
@@ -116,7 +116,7 @@ That the most useful behaviour is often refusal: refusing to rank a place that c
 
 ### What is next
 
-Run the live smoke test and evaluation, add sources for opening hours and accessibility that can be read and cited, and test the recovery flow with real people.
+Run the live smoke test and evaluation, check the OpenStreetMap place facts against real data, and test the recovery flow with real people.
 
 ### Built with
 

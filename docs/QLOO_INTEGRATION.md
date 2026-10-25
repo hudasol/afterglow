@@ -58,7 +58,7 @@ If Qloo rejects the full request, the client retries in this order and tells the
 
 AFTERGLOW reads names, ids, types, descriptions, image links, tags, popularity, an affinity value, an explanation, an address when one is present, a price level when it is an integer from 1 to 4, and a location only from an object with explicit latitude and longitude keys. A bare coordinate array is ignored.
 
-AFTERGLOW does **not** read opening hours, dietary options, accessibility, group capacity or covered seating from Qloo responses, because their shapes have not been verified. Those facts stay unknown until the person attests them, and the gate treats unknown as not passing.
+AFTERGLOW does **not** read opening hours, dietary options, accessibility, group capacity or covered seating from Qloo responses, because their shapes have not been verified. For live cases some of them are looked up separately on OpenStreetMap, as described in [OPENSTREETMAP.md](OPENSTREETMAP.md), and shown with their own source. Whatever remains stays unknown until the person attests it, and the gate treats unknown as not passing. No Qloo data is sent to OpenStreetMap and nothing from OpenStreetMap is sent to Qloo.
 
 ## What is sent and what is kept
 

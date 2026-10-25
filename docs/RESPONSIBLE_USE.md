@@ -6,10 +6,14 @@ AFTERGLOW follows the safe use guidance supplied with the Qloo hackathon kit.
 
 1. **Aggregate taste, not individuals.** Qloo results describe what groups of people tend to like. AFTERGLOW does not infer a person's identity, sensitive traits, health, finances, politics or eligibility for anything, and does not describe an affinity as a probability about a person.
 2. **Minimal data to Qloo.** Only the city, the venue category, public taste names and phrases, and the original venue name are sent. The original venue name is a public place name. It is sent when it is used as a taste signal, which the person can turn off, or when a distance limit needs its location. Names, email addresses, device identifiers, account identifiers and location histories are never sent.
-3. **Source on every fact.** The interface labels each value as Qloo, Simulated, You said, You checked or Calculated here, so a Qloo result is never confused with the product's own interpretation.
+3. **Source on every fact.** The interface labels each value as Qloo, OpenStreetMap, Simulated, You said, You checked or Calculated here, so a Qloo result is never confused with the product's own interpretation or with community map data.
 4. **No guessing.** When a name or phrase matches several entries, the person chooses. When a fact is unknown, the place is flagged for the person's check and never assumed to pass.
 5. **No hidden action.** AFTERGLOW never books or contacts anyone. Every consequential step is the person's.
 6. **Honest demo.** Demo mode uses an invented city and says so on every screen where it appears.
+
+## Data sent to OpenStreetMap
+
+For live cases, when a plan insists on opening hours, a diet, step free access or seating for the party, the public coordinates of the venues Qloo returned are sent to the public Overpass service so that matching tags can be read. Nothing about the person, the plan or the group is sent. The lookup can be turned off with `AFTERGLOW_OSM_FACTS=false`. See [OPENSTREETMAP.md](OPENSTREETMAP.md).
 
 ## Secrets
 

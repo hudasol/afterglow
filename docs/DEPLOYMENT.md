@@ -22,14 +22,15 @@ A blueprint is included in `render.yaml`.
 3. Set the environment variables below.
 4. For live Qloo, add `QLOO_API_KEY` in the Render dashboard. Never put it in the repository or in `render.yaml`. Without it the service runs in demo mode only, and the interface says so.
 
-| Variable                | Value on a public demo | Why                                              |
-| ----------------------- | ---------------------- | ------------------------------------------------ |
-| `HOST`                  | `0.0.0.0`              | Listen for external traffic                      |
-| `AFTERGLOW_PUBLIC_DEMO` | `true`                 | Permit a non loopback bind without a token       |
-| `DATABASE_PATH`         | `/tmp/afterglow.db`    | A writable path. The free tier disk is ephemeral |
-| `QLOO_DAILY_CALL_CAP`   | `1500`                 | Keep visitors from exhausting the quota          |
-| `QLOO_API_KEY`          | the personal key       | Enables live mode. Server side only              |
-| `NODE_VERSION`          | `22.23.4` or newer 22  | Render reads this to pick the runtime            |
+| Variable                | Value on a public demo | Why                                                                                  |
+| ----------------------- | ---------------------- | ------------------------------------------------------------------------------------ |
+| `HOST`                  | `0.0.0.0`              | Listen for external traffic                                                          |
+| `AFTERGLOW_PUBLIC_DEMO` | `true`                 | Permit a non loopback bind without a token                                           |
+| `DATABASE_PATH`         | `/tmp/afterglow.db`    | A writable path. The free tier disk is ephemeral                                     |
+| `QLOO_DAILY_CALL_CAP`   | `1500`                 | Keep visitors from exhausting the quota                                              |
+| `QLOO_API_KEY`          | the personal key       | Enables live mode. Server side only                                                  |
+| `AFTERGLOW_OSM_FACTS`   | `true` (the default)   | Live cases read hours and access tags from OpenStreetMap. Set `false` to turn it off |
+| `NODE_VERSION`          | `22.23.4` or newer 22  | Render reads this to pick the runtime                                                |
 
 Render sets `PORT` and `RENDER`. When `RENDER` is `true` the server trusts the first proxy so rate limiting sees client addresses.
 

@@ -13,7 +13,7 @@ web (React)  ->  HTTP API, plus types and pure functions from the domain
 
 Pure rules and data shapes.
 
-- **Evidence.** Every fact is a `Fact<T>`: either known, with a value and a provenance (Qloo, simulation, user, user attested, app), or unknown, with a reason. There is no way to hold a value without saying where it came from.
+- **Evidence.** Every fact is a `Fact<T>`: either known, with a value and a provenance (Qloo, OpenStreetMap, simulation, user, user attested, app), or unknown, with a reason. There is no way to hold a value without saying where it came from.
 - **Intent Anchor.** The plan as described once. It requires at least one taste signal, which may be the venue that fell through, and rejects duplicate constraints. It is never modified.
 - **Plan.** Disruptions are applied to the anchor to produce an effective plan. A budget change can only tighten. Weather adds a covered space requirement. A party change adds a seating requirement. Relaxations the person approved remove requirements from the effective plan without touching the anchor.
 - **Feasibility gate.** For each candidate and each hard constraint the gate returns pass, fail or unknown. Any fail rules the place out. Any unknown leaves it needing verification. Only a full set of passes is feasible. A person's attestation overrides data, and the verdict records that basis.
@@ -33,6 +33,7 @@ SQLite through `node:sqlite` with SQL migrations and synchronous transactions. C
 ## Taste providers
 
 - `QlooTasteProvider` calls the Qloo API through `QlooClient`.
+- `OsmPlaceFactsProvider` is not a taste provider. It implements a separate `PlaceFactsProvider` port and runs after the pool is fetched, for live cases only. It reads opening hours, diet, wheelchair and capacity tags from OpenStreetMap for the facts a plan insists on, through `OverpassClient`, and fills only facts that are still unknown. Each value it sets carries the source `openstreetmap` and the tag it was read from. See [OPENSTREETMAP.md](OPENSTREETMAP.md).
 - `SimulatedTasteProvider` serves an invented city, Harbourvale, with 32 invented venues and a simulated affinity formula. Every screen that uses it says so. It exists for demonstration and tests and is never presented as Qloo data.
 
 ## HTTP interface
