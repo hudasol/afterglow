@@ -24,6 +24,7 @@ import {
 import { factContextOf } from '../domain/fact-context.js';
 import { checkOriginalVenue } from '../domain/original-venue.js';
 import { deriveEffectivePlan, disruptionSchema } from '../domain/plan.js';
+import { describeTasteCoverage } from '../domain/scoring.js';
 import { buildTrace, type AgentTrace } from '../domain/trace.js';
 import { normaliseName, type Candidate } from '../domain/venue.js';
 import { AppError, statusForProviderCode } from './errors.js';
@@ -728,7 +729,10 @@ export class RecoveryService {
         } else {
           tasteScores = ranked.scores;
           tasteStatus = ranked.degradedNote ? 'degraded' : 'applied';
-          if (ranked.degradedNote) tasteNote = ranked.degradedNote;
+          tasteNote =
+            [ranked.degradedNote, describeTasteCoverage(ranked.scores, pool.length)]
+              .filter(Boolean)
+              .join(' ') || undefined;
         }
       } catch (error) {
         const failure = appErrorFromProvider(error);

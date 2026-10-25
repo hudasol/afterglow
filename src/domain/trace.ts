@@ -217,7 +217,7 @@ function searchCycle(
     phase: 'act',
     text:
       run?.tasteStatus === 'applied'
-        ? 'Asked for taste affinity for those places. The answer was used.'
+        ? `Asked for taste affinity for those places. The answer was used. ${run.tasteNote ?? ''}`.trim()
         : run?.tasteStatus === 'degraded'
           ? `Asked for taste affinity. The answer was partial. ${run.tasteNote ?? ''}`.trim()
           : `Taste affinity was not available, so places are ordered by distance. ${run?.tasteNote ?? ''}`.trim(),

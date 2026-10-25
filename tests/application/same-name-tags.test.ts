@@ -84,3 +84,43 @@ describe('tags that were sent', () => {
     expect(second.run?.appliedSignals.tagNames).toEqual([]);
   });
 });
+
+describe('what the ranking says about its own strength', () => {
+  it('tells the person when the provider gave every place the same score', async () => {
+    const live = new StubLive();
+    live.fetchPool = async () => [
+      makeCandidate({ id: 'p1', name: 'Place One', point: { lat: 25.2001, lon: 55.27 } }),
+      makeCandidate({ id: 'p2', name: 'Place Two', point: { lat: 25.205, lon: 55.27 } }),
+    ];
+    live.rank = async () => ({
+      scores: [
+        { candidateId: 'p1', rank: 1, affinity: 0.7 },
+        { candidateId: 'p2', rank: 2, affinity: 0.7 },
+      ],
+    });
+    const { service } = makeService({ live });
+    const view = await service.openCase('session-flat', {
+      mode: 'live',
+      anchor: makeAnchor({ tasteTags: ['romantic'], useOriginalVenueAsSignal: false }),
+      disruption: { kind: 'venue_unavailable' },
+    });
+    expect(view.run?.tasteStatus).toBe('applied');
+    expect(view.run?.tasteNote).toContain('the same taste score');
+    const trace = service.getTrace('session-flat', view.id);
+    expect(JSON.stringify(trace)).toContain('the same taste score');
+  });
+
+  it('adds no note when the scores differ and cover the pool', async () => {
+    const live = new StubLive();
+    live.rank = async () => ({ scores: [{ candidateId: 'p1', rank: 1, affinity: 0.7 }] });
+    const { service } = makeService({ live });
+    const view = await service.openCase('session-spread', {
+      mode: 'live',
+      anchor: makeAnchor({ tasteTags: ['romantic'], useOriginalVenueAsSignal: false }),
+      disruption: { kind: 'venue_unavailable' },
+    });
+    expect(view.run?.tasteStatus).toBe('applied');
+    expect(view.run?.tasteNote ?? '').not.toContain('taste score');
+    expect(view.run?.tasteNote ?? '').not.toContain('scored');
+  });
+});

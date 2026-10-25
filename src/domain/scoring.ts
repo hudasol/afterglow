@@ -45,6 +45,36 @@ export function tasteValues(scores: readonly TasteScore[]): Map<string, TasteBas
   return result;
 }
 
+/**
+ * What a ranking response says about how far taste could decide the order. It reports two things the
+ * person would otherwise not see: that the provider scored only part of the pool, and that it gave
+ * every place it scored the same affinity, in which case the order within a group follows distance.
+ */
+export function describeTasteCoverage(
+  scores: readonly TasteScore[],
+  poolSize: number,
+): string | null {
+  const notes: string[] = [];
+  const affinities = scores
+    .map((score) => score.affinity)
+    .filter((value): value is number => value !== undefined);
+  const flat =
+    affinities.length >= 2 &&
+    affinities.length === scores.length &&
+    Math.max(...affinities) - Math.min(...affinities) < 1e-9;
+  if (flat) {
+    notes.push(
+      'Qloo gave every place it scored the same taste score for these signals, so within each group of places the order follows distance.',
+    );
+  }
+  if (scores.length > 0 && scores.length < poolSize) {
+    notes.push(
+      `Qloo scored ${scores.length} of ${poolSize} places. Within each group of places, those it did not score come last.`,
+    );
+  }
+  return notes.length > 0 ? notes.join(' ') : null;
+}
+
 export interface ScoreBreakdown {
   composite: number;
   tasteComponent: number | null;

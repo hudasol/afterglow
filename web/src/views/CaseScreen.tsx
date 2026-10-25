@@ -420,6 +420,12 @@ export function CaseScreen({ id, tab }: { id: string; tab: CaseTab }) {
             </div>
           ) : null}
 
+          {view.run?.tasteStatus === 'applied' && view.run.tasteNote ? (
+            <div className="callout" role="note">
+              <strong>About the taste ranking.</strong> {view.run.tasteNote}
+            </div>
+          ) : null}
+
           {view.run && view.run.tasteStatus !== 'applied' ? (
             <div className="callout warn" role="note">
               <strong>
