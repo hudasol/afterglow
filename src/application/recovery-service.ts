@@ -594,6 +594,54 @@ export class RecoveryService {
     this.#append(caseId, loaded, events);
   }
 
+  /**
+   * Asks the second source for the facts the plan depends on. It never throws: when the lookup
+   * fails the pool comes back unchanged and the summary says so, so the person is asked instead.
+   * It records its calls separately so that they stay in a fixed order next to the taste calls.
+   */
+  async #lookUpPlaceFacts(
+    state: CaseState,
+    pool: Candidate[],
+  ): Promise<{ pool: Candidate[]; summary: SearchRun['placeFacts']; traces: CallTrace[] }> {
+    const traces: CallTrace[] = [];
+    if (state.opened.mode !== 'live' || !this.#placeFacts || pool.length === 0) {
+      return { pool, summary: undefined, traces };
+    }
+    const plan = deriveEffectivePlan(state.opened.anchor, state.disruptions, state.relaxedKeys);
+    try {
+      const enriched = await this.#placeFacts.enrich(pool, plan, {
+        traces,
+        city: state.opened.anchor.city,
+      });
+      return {
+        pool: enriched.candidates,
+        traces,
+        summary:
+          enriched.looked > 0
+            ? {
+                source: 'openstreetmap',
+                looked: enriched.looked,
+                matched: enriched.matched,
+                filled: enriched.filled,
+                ...(enriched.note ? { note: enriched.note } : {}),
+              }
+            : undefined,
+      };
+    } catch {
+      return {
+        pool,
+        traces,
+        summary: {
+          source: 'openstreetmap',
+          looked: 0,
+          matched: 0,
+          filled: 0,
+          note: 'The place facts lookup failed. Facts that depend on it stay unknown.',
+        },
+      };
+    }
+  }
+
   async #runSearch(state: CaseState, trigger: SearchRun['trigger']): Promise<CaseEvent[]> {
     const provider = this.#providers[state.opened.mode];
     const anchor = state.opened.anchor;
@@ -629,33 +677,9 @@ export class RecoveryService {
       return [{ type: 'search_failed', runId, code: failure.code, message: failure.message }];
     }
 
-    // Practical facts the taste provider does not supply come from a second, labelled source. The
-    // plan decides which are needed, so nothing is looked up that the plan does not depend on.
-    let placeFacts: SearchRun['placeFacts'];
-    if (state.opened.mode === 'live' && this.#placeFacts && pool.length > 0) {
-      const plan = deriveEffectivePlan(anchor, state.disruptions, state.relaxedKeys);
-      try {
-        const enriched = await this.#placeFacts.enrich(pool, plan, ctx);
-        pool = enriched.candidates;
-        if (enriched.looked > 0) {
-          placeFacts = {
-            source: 'openstreetmap',
-            looked: enriched.looked,
-            matched: enriched.matched,
-            filled: enriched.filled,
-            ...(enriched.note ? { note: enriched.note } : {}),
-          };
-        }
-      } catch {
-        placeFacts = {
-          source: 'openstreetmap',
-          looked: 0,
-          matched: 0,
-          filled: 0,
-          note: 'The place facts lookup failed. Facts that depend on it stay unknown.',
-        };
-      }
-    }
+    // Practical facts the taste provider does not supply come from a second, labelled source. It
+    // does not depend on the taste ranking, so both run at once and the search waits for the slower.
+    const factsTask = this.#lookUpPlaceFacts(state, pool);
 
     let tasteScores: SearchRun['tasteScores'] = null;
     let tasteStatus: SearchRun['tasteStatus'] = 'unavailable';
@@ -689,6 +713,11 @@ export class RecoveryService {
         tasteNote = `Taste ranking was unavailable (${failure.code}). Only the practical baseline is shown.`;
       }
     }
+
+    const facts = await factsTask;
+    pool = facts.pool;
+    traces.push(...facts.traces);
+    const placeFacts = facts.summary;
 
     const run: SearchRun = {
       runId,
