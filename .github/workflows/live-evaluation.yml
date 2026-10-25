@@ -50,6 +50,7 @@ jobs:
         run: |
           npm run qloo:timing -- ny-b-saturday-vegetarian
           npm run qloo:timing -- lon-b-saturday-vegetarian
+          npm run qloo:timing -- --tags
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live

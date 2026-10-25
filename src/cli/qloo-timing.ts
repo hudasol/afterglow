@@ -2,6 +2,7 @@
  * Times one ranking request in several forms, to find out which part of it makes Qloo slow.
  *
  *   npm run qloo:timing -- ny-b-saturday-vegetarian
+ *   npm run qloo:timing -- --tags       Times every tag of the scenarios on its own.
  *
  * It reads the scenario from evaluation/live-scenarios.json, resolves its signals, fetches the
  * pool, and then sends the same ranking request with parts left out. It prints durations and
@@ -36,9 +37,71 @@ function picked(
   return (resolution.candidates ?? []).find((c) => c.id === choice || c.type === choice);
 }
 
+async function timeEachTag(): Promise<void> {
+  const config = loadConfig();
+  if (!config.QLOO_API_KEY) {
+    console.error('QLOO_API_KEY is not set, so nothing was requested.');
+    process.exitCode = 2;
+    return;
+  }
+  const scenarios = JSON.parse(
+    readFileSync(resolve(import.meta.dirname, '../../evaluation/live-scenarios.json'), 'utf8'),
+  ) as Scenario[];
+  const client = new QlooClient({
+    apiKey: config.QLOO_API_KEY,
+    baseUrl: config.QLOO_API_URL,
+    timeoutMs: 90_000,
+    maxAttempts: 1,
+    dailyCallCap: config.QLOO_DAILY_CALL_CAP,
+  });
+  const provider = new QlooTasteProvider(client);
+  const ctx = { traces: [], city: 'New York' };
+  const category = await provider.resolve('category', categoryTagPhrase.restaurant, ctx);
+  const pool = await provider.fetchPool(
+    {
+      city: 'New York',
+      take: 40,
+      ...(category.selected ? { categoryTagId: category.selected.id } : {}),
+    },
+    ctx,
+  );
+  const poolIds = pool.map((p) => p.id);
+  const phrases = [...new Set(scenarios.flatMap((s) => s.anchor.tasteTags))];
+  console.log(`New York pool of ${poolIds.length}. Each tag is sent on its own.`);
+  for (const phrase of phrases) {
+    const resolution = await provider.resolve('tag', phrase, ctx);
+    const ids = [
+      ...(resolution.selected ? [resolution.selected] : []),
+      ...(resolution.alsoUsed ?? []),
+    ];
+    for (const tag of ids) {
+      const started = Date.now();
+      let outcome = 'ok';
+      try {
+        await client.get(
+          '/v2/insights',
+          {
+            'filter.type': PLACE_TYPE,
+            'filter.results.entities': poolIds,
+            'signal.interests.tags': [tag.id],
+            take: poolIds.length,
+          },
+          [],
+        );
+      } catch (error) {
+        outcome = error instanceof Error ? error.message.slice(0, 100) : 'failed';
+      }
+      console.log(
+        `${String(Date.now() - started).padStart(6)} ms  ${outcome}  ${phrase}: ${tag.id}`,
+      );
+    }
+  }
+}
+
 async function main(): Promise<void> {
   const id = process.argv[2];
   if (!id) throw new Error('Pass the id of a scenario.');
+  if (id === '--tags') return timeEachTag();
   const config = loadConfig();
   if (!config.QLOO_API_KEY) {
     console.error('QLOO_API_KEY is not set, so nothing was requested.');
