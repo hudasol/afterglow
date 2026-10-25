@@ -88,6 +88,12 @@ export function ProvenanceTab({ caseId, refreshKey }: { caseId: string; refreshK
                     <td>{choice.status.replace('_', ' ')}</td>
                     <td>
                       {choice.selected?.name ?? 'Nothing'}
+                      {choice.alsoUsed.length > 0 ? (
+                        <div className="small muted-text">
+                          {choice.alsoUsed.length + 1} Qloo tags share this name and are used
+                          together.
+                        </div>
+                      ) : null}
                       {choice.alternativesConsidered.length > 0 ? (
                         <div className="small muted-text">
                           Also considered:{' '}

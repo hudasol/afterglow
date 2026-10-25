@@ -151,6 +151,20 @@ export async function resolveTag(
       });
     }
   }
+  if (kind === 'tag' && exact.length > 1 && exact[0]) {
+    // Entries that carry the same name in different taxonomies name the same idea. Every one of
+    // them is used, so nothing is chosen on the person's behalf and nothing is left out.
+    const [first, ...rest] = exact.slice(0, 5);
+    return outcome(kind, input, 'resolved', {
+      selected: stripTag(first as TagRef),
+      alsoUsed: rest.map(stripTag),
+      method: 'same_name_group',
+      warnings: [
+        ...warnings,
+        `${exact.length} Qloo tags are called "${exact[0].name}" in different taxonomies. All of them are used together.`,
+      ],
+    });
+  }
   return outcome(kind, input, 'ambiguous', {
     candidates: (exact.length > 0 ? exact : scoped).slice(0, 5).map(stripTag),
     warnings: [

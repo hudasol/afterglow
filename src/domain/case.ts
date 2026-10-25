@@ -26,7 +26,15 @@ export const tasteResolutionSchema = z.object({
   selected: resolvedRefSchema.optional(),
   /** Up to five candidates when the status is ambiguous. The person chooses among them. */
   candidates: z.array(resolvedRefSchema).max(5).optional(),
-  method: z.enum(['exact', 'identifier', 'user_choice', 'simulation']).optional(),
+  method: z
+    .enum(['exact', 'same_name_group', 'identifier', 'user_choice', 'simulation'])
+    .optional(),
+  /**
+   * Other tags with exactly the same name, used together with the selected one. A phrase such as
+   * romantic exists in several Qloo taxonomies, and each entry names the same idea, so asking the
+   * person to pick one would be a question without a difference.
+   */
+  alsoUsed: z.array(resolvedRefSchema).max(4).optional(),
   warnings: z.array(z.string().max(300)).max(5).optional(),
 });
 export type TasteResolution = z.infer<typeof tasteResolutionSchema>;

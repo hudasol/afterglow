@@ -57,7 +57,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Balthazar"
+        "name": "Peter Luger Steak House"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -142,12 +142,12 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Carbone"
+        "name": "Le Bernardin"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Room for the whole group", "Lively atmosphere"],
       "tasteEntities": [],
-      "tasteTags": ["lively", "rooftop"],
+      "tasteTags": ["lively vibe", "rooftop"],
       "hardConstraints": [
         {
           "kind": "fits_party_size"
@@ -181,7 +181,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Dishoom"
+        "name": "Sketch"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["A table where we can talk", "Something that feels special"],
@@ -226,7 +226,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "The Ivy"
+        "name": "St. John"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -268,7 +268,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Hawksmoor"
+        "name": "Rules"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Affordable", "Easy to get to"],
@@ -311,12 +311,12 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Padella"
+        "name": "Brasserie Zédel"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Room for the whole group", "Lively atmosphere"],
       "tasteEntities": [],
-      "tasteTags": ["lively", "outdoor seating"],
+      "tasteTags": ["lively vibe", "outdoor seating"],
       "hardConstraints": [
         {
           "kind": "fits_party_size"
@@ -395,7 +395,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Café de Flore"
+        "name": "Le Procope"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -485,7 +485,7 @@
       "useOriginalVenueAsSignal": false,
       "preserve": ["Room for the whole group", "Lively atmosphere"],
       "tasteEntities": [],
-      "tasteTags": ["lively", "rooftop"],
+      "tasteTags": ["lively vibe", "rooftop"],
       "hardConstraints": [
         {
           "kind": "fits_party_size"
@@ -519,7 +519,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Ichiran"
+        "name": "Sukiyabashi Jiro"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["A table where we can talk", "Something that feels special"],
@@ -564,7 +564,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Gonpachi"
+        "name": "Narisawa"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -606,7 +606,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Afuri"
+        "name": "Kanda Yabusoba"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Affordable", "Easy to get to"],
@@ -649,12 +649,12 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Sushi Dai"
+        "name": "Den"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Room for the whole group", "Lively atmosphere"],
       "tasteEntities": [],
-      "tasteTags": ["lively", "craft cocktails"],
+      "tasteTags": ["lively vibe", "craft cocktails"],
       "hardConstraints": [
         {
           "kind": "fits_party_size"
@@ -733,7 +733,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Nobu"
+        "name": "Pierchic"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -818,12 +818,12 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Ravi Restaurant"
+        "name": "Arabian Tea House"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Room for the whole group", "Lively atmosphere"],
       "tasteEntities": [],
-      "tasteTags": ["lively", "outdoor seating"],
+      "tasteTags": ["lively vibe", "outdoor seating"],
       "hardConstraints": [
         {
           "kind": "fits_party_size"

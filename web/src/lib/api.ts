@@ -123,6 +123,7 @@ export interface Provenance {
     status: string;
     selected: { id: string; name: string } | null;
     method: string | null;
+    alsoUsed: { id: string; name: string }[];
     alternativesConsidered: { id: string; name: string }[];
   }[];
   calls: { resolution: CallRecord[]; latestSearch: CallRecord[] };

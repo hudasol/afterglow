@@ -231,3 +231,24 @@ export function recordedPlaceEntity(
     ],
   };
 }
+
+/**
+ * RECORDED names: the phrase "lively" returned four place tags, and none of them is called just
+ * "Lively". The ids here are invented. The names and the taxonomy types were recorded on
+ * 25 October 2026.
+ */
+export const recordedLivelyTags = {
+  results: {
+    tags: [
+      ['Lively Vibe', 'urn:tag:ambience:qloo'],
+      ['Lively Atmosphere', 'urn:tag:good_for:qloo'],
+      ['Lively-Loud', 'urn:tag:ambience:qloo'],
+      ['Lively with live entertainment', 'urn:tag:ambience:qloo'],
+    ].map(([name, type], index) => ({
+      id: `${type}:invented_${index}`,
+      name,
+      type,
+      parents: [{ type: 'urn:entity:place' }],
+    })),
+  },
+};

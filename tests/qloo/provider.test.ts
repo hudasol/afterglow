@@ -6,6 +6,7 @@ import {
   jsonResponse,
   recordedJazzAnyTags,
   recordedJazzPlaceTags,
+  recordedLivelyTags,
   recordedMusicianSearch,
   recordedRestaurantTags,
   syntheticPlaceResponse,
@@ -88,8 +89,7 @@ describe('QlooTasteProvider', () => {
     });
   });
 
-  it('asks the person to choose when several tags for places share a name', async () => {
-    const { provider } = providerWith(() => jsonResponse(syntheticTagResponse));
+  it('uses together every tag for places that carries the same name', async () => {
     const twoPlaceTags = {
       results: {
         tags: [
@@ -110,12 +110,27 @@ describe('QlooTasteProvider', () => {
     };
     const both = providerWith(() => jsonResponse(twoPlaceTags)).provider;
     const result = await both.resolve('tag', 'jazz', { traces: [] });
+    expect(result.status).toBe('resolved');
+    expect(result.method).toBe('same_name_group');
+    expect(result.selected?.id).toBe('urn:tag:a:jazz');
+    expect(result.alsoUsed?.map((c) => c.id)).toEqual(['urn:tag:b:jazz']);
+    expect(result.warnings?.join(' ')).toContain('All of them are used together');
+  });
+
+  it('leaves out tags that apply to artists only when a place tag has the same name', async () => {
+    const { provider } = providerWith(() => jsonResponse(syntheticTagResponse));
+    const result = await provider.resolve('tag', 'jazz', { traces: [] });
+    expect(result.status).toBe('resolved');
+    expect(result.selected?.id).toBe('urn:tag:genre:place:jazz');
+    expect(result.alsoUsed).toBeUndefined();
+  });
+
+  it('asks the person to choose when no tag carries the phrase exactly', async () => {
+    const { provider } = providerWith(() => jsonResponse(recordedLivelyTags));
+    const result = await provider.resolve('tag', 'lively', { traces: [] });
     expect(result.status).toBe('ambiguous');
-    expect(result.candidates?.map((c) => c.id)).toEqual(['urn:tag:a:jazz', 'urn:tag:b:jazz']);
-    // The tags that apply to artists only are left out of the choice.
-    const mixed = await provider.resolve('tag', 'jazz', { traces: [] });
-    expect(mixed.status).toBe('resolved');
-    expect(mixed.selected?.id).toBe('urn:tag:genre:place:jazz');
+    expect(result.candidates).toHaveLength(4);
+    expect(result.selected).toBeUndefined();
   });
 
   it('asks Qloo for tags that apply to places and resolves the one it returns', async () => {
@@ -134,8 +149,9 @@ describe('QlooTasteProvider', () => {
     );
     const result = await provider.resolve('tag', 'jazz', { traces: [] });
     expect(seen).toHaveLength(2);
-    expect(result.status).toBe('ambiguous');
+    expect(result.status).toBe('resolved');
     expect(result.warnings?.join(' ')).toContain('another domain');
+    expect(result.alsoUsed).toHaveLength(2);
   });
 
   it('uses the place genre tag for a category that exists under several taxonomies', async () => {

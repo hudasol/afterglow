@@ -163,6 +163,7 @@ export class RecoveryService {
           ? { id: resolution.selected.id, name: resolution.selected.name }
           : null,
         method: resolution.method ?? null,
+        alsoUsed: (resolution.alsoUsed ?? []).map((ref) => ({ id: ref.id, name: ref.name })),
         alternativesConsidered: (resolution.candidates ?? []).map((c) => ({
           id: c.id,
           name: c.name,
@@ -656,7 +657,10 @@ export class RecoveryService {
           (resolution) =>
             resolution.kind === kind && resolution.status === 'resolved' && resolution.selected,
         )
-        .map((resolution) => resolution.selected as ResolvedRef);
+        .flatMap((resolution) => [
+          resolution.selected as ResolvedRef,
+          ...(resolution.alsoUsed ?? []),
+        ]);
     const entities = selected('entity');
     const tags = selected('tag');
     const category = selected('category')[0];
@@ -732,7 +736,7 @@ export class RecoveryService {
       ...(placeFacts ? { placeFacts } : {}),
       appliedSignals: {
         entityNames: entities.map((entity) => entity.name),
-        tagNames: tags.map((tag) => tag.name),
+        tagNames: [...new Set(tags.map((tag) => tag.name))],
         ...(category ? { categoryTag: category.name } : {}),
         ...(lostVenue ? { lostVenue: lostVenue.name } : {}),
         location: anchor.city,
