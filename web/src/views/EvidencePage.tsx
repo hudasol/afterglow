@@ -207,10 +207,11 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
       <section className="panel" aria-labelledby="ev-osm">
         <h2 id="ev-osm">OpenStreetMap place facts</h2>
         <p style={{ marginTop: '0.5rem' }}>
-          Qloo does not supply opening hours, diet, step free access or capacity. For live cases,
-          and only for the requirements a plan insists on, this server asks the public Overpass
-          service about the venues Qloo returned and reads the matching tags. Only the public
-          coordinates of those venues are sent. The data is © OpenStreetMap contributors, under the{' '}
+          Qloo states opening hours, step free access and dietary options for part of the places it
+          returns, and never group capacity or covered seating. For live cases, and only for facts a
+          plan insists on that Qloo left unknown, this server asks the public Overpass service about
+          the venues Qloo returned and reads the matching tags. Only the public coordinates of those
+          venues are sent. The data is © OpenStreetMap contributors, under the{' '}
           <a href="https://www.openstreetmap.org/copyright">Open Database Licence</a>, and
           volunteers edit it, so the interface shows its source on every value taken from it.
         </p>

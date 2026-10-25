@@ -5,12 +5,12 @@
 Team Kanban: Huda Mueen Qureshi, Awaiz Ahmed.
 Source code: https://github.com/hudasol/afterglow (MIT License, shown in the repository About panel).
 
-| Item                                   | Status                                                                                  |
-| -------------------------------------- | --------------------------------------------------------------------------------------- |
-| Public repository with visible license | Published, MIT                                                                          |
-| Hosted demo                            | https://afterglow-gsc4.onrender.com in demo mode. Live Qloo is not configured on it yet |
-| Demo video                             | Not made. Screenshots are provided instead                                              |
-| Live Qloo verification                 | Smoke test (verdict go) and a preregistered evaluation, run twice, on 25 October 2026   |
+| Item                                   | Status                                                                                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Public repository with visible license | Published, MIT                                                                                                                            |
+| Hosted demo                            | https://afterglow-gsc4.onrender.com, with demo mode and live Qloo. The free plan sleeps when idle, so the first request can take a minute |
+| Demo video                             | Not made. Screenshots are provided instead                                                                                                |
+| Live Qloo verification                 | Smoke test (verdict go) and a preregistered evaluation, run twice, on 25 October 2026                                                     |
 
 ## 1. Product problem statement
 
@@ -49,16 +49,17 @@ The shape of the ranking request is documented in [QLOO_INTEGRATION.md](QLOO_INT
 
 ## 4. Demo and screenshots
 
-The screenshots are from demo mode. The city, the venues and the taste scores are simulated, and every screen says so. None contains a credential or personal data. They can be regenerated with `node scripts/screenshots.mjs` against a running server.
+The case screenshots are from demo mode. The city, the venues and the taste scores are simulated, and every screen says so. The live evaluation screenshot shows recorded results and holds no venue data. None contains a credential or personal data. They can be regenerated with `node scripts/screenshots.mjs` against a running server.
 
-| Screenshot                                  | What it shows                                                        |
-| ------------------------------------------- | -------------------------------------------------------------------- |
-| [Landing](screenshots/01-landing.png)       | The product and a real gate result from the simulated catalogue      |
-| [Intake](screenshots/02-intake.png)         | The intent anchor: plan, what must survive, taste, hard requirements |
-| [Recovery](screenshots/03-recovery.png)     | A shortlist of places that passed the gate, with source tags         |
-| [Ruled out](screenshots/04-ruled-out.png)   | A place ruled out, with the exact requirement it failed              |
-| [Comparison](screenshots/05-comparison.png) | Taste On against Taste Off over the same eligible places             |
-| [Evidence](screenshots/06-evidence.png)     | The integration status and what has and has not been verified        |
+| Screenshot                                            | What it shows                                                                           |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Landing](screenshots/01-landing.png)                 | The product and a real gate result from the simulated catalogue                         |
+| [Intake](screenshots/02-intake.png)                   | The intent anchor: plan, what must survive, taste, hard requirements                    |
+| [Recovery](screenshots/03-recovery.png)               | A shortlist of places that passed the gate, with source tags                            |
+| [Ruled out](screenshots/04-ruled-out.png)             | A place ruled out, with the exact requirement it failed                                 |
+| [Comparison](screenshots/05-comparison.png)           | Taste On against Taste Off over the same eligible places                                |
+| [Evidence](screenshots/06-evidence.png)               | The integration status and what has and has not been verified                           |
+| [Live evaluation](screenshots/08-live-evaluation.png) | The twelve preregistered predictions and the results of both live runs, misses included |
 
 ## 5. Setup from a clean environment
 
