@@ -48,9 +48,9 @@ jobs:
       - name: Time the forms of one ranking request
         if: ${{ inputs.mode == 'timing' }}
         run: |
-          npm run qloo:timing -- ny-b-saturday-vegetarian
-          npm run qloo:timing -- lon-b-saturday-vegetarian
-          npm run qloo:timing -- --tags
+          npm run qloo:timing -- ny-b-saturday-vegetarian --cumulative
+          npm run qloo:timing -- ny-d-wednesday-group --cumulative
+          npm run qloo:timing -- ny-a-friday-anniversary --cumulative
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live

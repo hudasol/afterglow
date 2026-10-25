@@ -3,6 +3,8 @@
  *
  *   npm run qloo:timing -- ny-b-saturday-vegetarian
  *   npm run qloo:timing -- --tags       Times every tag of the scenarios on its own.
+ *   npm run qloo:timing -- ny-b-saturday-vegetarian --cumulative
+ *                                       Adds the tags one at a time and times each request.
  *
  * It reads the scenario from evaluation/live-scenarios.json, resolves its signals, fetches the
  * pool, and then sends the same ranking request with parts left out. It prints durations and
@@ -162,6 +164,29 @@ async function main(): Promise<void> {
     'filter.results.entities': poolIds,
     take: poolIds.length,
   };
+  if (process.argv[3] === '--cumulative') {
+    for (let count = 1; count <= allTagIds.length; count += 1) {
+      const started = Date.now();
+      let outcome = 'ok';
+      try {
+        await client.get(
+          '/v2/insights',
+          {
+            ...base,
+            ...(entityIds.length ? { 'signal.interests.entities': entityIds } : {}),
+            'signal.interests.tags': allTagIds.slice(0, count),
+          },
+          [],
+        );
+      } catch (error) {
+        outcome = error instanceof Error ? error.message.slice(0, 100) : 'failed';
+      }
+      console.log(
+        `${String(Date.now() - started).padStart(6)} ms  ${outcome}  ${entityIds.length} entities and ${count} tags`,
+      );
+    }
+    return;
+  }
   const variants: Array<[string, QueryParams]> = [
     [
       'entities and all tags, explainability',
