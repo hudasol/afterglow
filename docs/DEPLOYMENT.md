@@ -43,9 +43,13 @@ Note that the built interface does not send the access token. A token protects t
 ## After deploying
 
 1. Open `/api/health`. It should return `{"status":"ok"}` with the version.
-2. Open the site and the Evidence page. It states whether a Qloo key is configured.
+2. Open the site and the Evidence page. It states whether a Qloo key is configured, and has a button that asks OpenStreetMap a small real question from the server.
 3. With a key set, press Check the connection on the Evidence page.
 4. Run the smoke test from a trusted machine with the same key and record the result in `docs/QLOO_INTEGRATION.md`.
+
+## Deploying a new version
+
+The Render service was created from the repository with automatic deploys switched on, but pushes to `main` did not start a deploy in this project, so the hosted demo stayed on the first version until a deploy was started by hand. Do not assume a push reached the demo. After pushing, start a deploy from the Render dashboard (Manual Deploy, then Deploy latest commit) and check that the version and the commit on the dashboard are the ones you expect. Before submitting, make the last deploy deliberately and then stop pushing changes you do not intend to show.
 
 ## Keeping the free instance awake
 
