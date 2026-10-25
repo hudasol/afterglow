@@ -42,6 +42,7 @@ export interface CandidateSpec {
   capacity?: number | null;
   covered?: boolean | null;
   tags?: string[];
+  popularity?: number;
 }
 
 function fact<T>(value: T | null | undefined, reason: string): Fact<T> {
@@ -63,7 +64,10 @@ export function makeCandidate(spec: CandidateSpec): Candidate {
       groupCapacity: fact(spec.capacity, 'no capacity'),
       covered: fact(spec.covered, 'no cover data'),
     },
-    taste: { tagNames: spec.tags ?? [] },
+    taste: {
+      tagNames: spec.tags ?? [],
+      ...(spec.popularity !== undefined ? { popularity: spec.popularity } : {}),
+    },
   };
 }
 

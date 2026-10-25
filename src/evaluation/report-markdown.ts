@@ -56,10 +56,18 @@ export function renderReport(report: EvaluationReport): string {
   lines.push(
     `| Top choice differs between Taste On and Taste Off | ${s.topChoiceChanged.changed} of ${s.topChoiceChanged.compared} |`,
   );
-  lines.push(`| Mean overlap of the top three | ${pct(s.meanOverlapAt3)} |`);
+  lines.push(
+    `| Top choice differs between Taste On and Popular | ${s.topChoiceChangedVsPopular.changed} of ${s.topChoiceChangedVsPopular.compared} |`,
+  );
+  lines.push(
+    `| Mean overlap of the top three, Taste On against Taste Off | ${pct(s.meanOverlapAt3)} |`,
+  );
+  lines.push(
+    `| Mean overlap of the top three, Taste On against Popular | ${pct(s.meanOverlapAt3VsPopular)} |`,
+  );
   lines.push(`| Mean Kendall tau between the two orderings | ${num(s.meanKendallTau)} |`);
   lines.push(
-    `| Mean provider affinity of the top three, Taste On / Taste Off | ${num(s.meanAffinityTop3.tasteOn)} / ${num(s.meanAffinityTop3.tasteOff)} |`,
+    `| Mean provider affinity of the top three, Taste On / Taste Off / Popular | ${num(s.meanAffinityTop3.tasteOn)} / ${num(s.meanAffinityTop3.tasteOff)} / ${num(s.meanAffinityTop3.popular)} |`,
   );
   lines.push(
     `| Scenarios with no eligible option that offered a way forward | ${s.noFeasibleHandled.withWaysForward} of ${s.noFeasibleHandled.scenarios} |`,

@@ -30,10 +30,14 @@ export interface ScenarioResult {
   sameEligibleSet: boolean;
   tasteOffTop: string[];
   tasteOnTop: string[];
+  popularTop: string[];
   overlapAt3: number | null;
   kendallTau: number | null;
   topChoiceChanged: boolean | null;
-  meanAffinityTop3: { tasteOn: number | null; tasteOff: number | null };
+  /** Taste On against the Popular ordering. Null when the provider returned no popularity. */
+  overlapAt3VsPopular: number | null;
+  topChoiceChangedVsPopular: boolean | null;
+  meanAffinityTop3: { tasteOn: number | null; tasteOff: number | null; popular: number | null };
   /** Share of top three places carrying a tag the person asked to preserve. Null when no tags were returned. */
   preservedTagShare: { tasteOn: number | null; tasteOff: number | null };
   noFeasibleOption: boolean;
@@ -50,14 +54,26 @@ export interface AggregateResult {
   gateAgreesWithOracle: boolean;
   sameEligibleSetEverywhere: boolean;
   topChoiceChanged: { changed: number; compared: number };
+  topChoiceChangedVsPopular: { changed: number; compared: number };
   meanOverlapAt3: number | null;
+  meanOverlapAt3VsPopular: number | null;
   meanKendallTau: number | null;
-  meanAffinityTop3: { tasteOn: number | null; tasteOff: number | null; difference: number | null };
+  meanAffinityTop3: {
+    tasteOn: number | null;
+    tasteOff: number | null;
+    popular: number | null;
+    difference: number | null;
+  };
   noFeasibleHandled: { scenarios: number; withWaysForward: number };
 }
 
-function rankedIds(view: CaseView, arm: 'taste_on' | 'taste_off'): string[] {
-  const key = (o: OptionView) => (arm === 'taste_on' ? o.tasteOn?.position : o.tasteOffPosition);
+function rankedIds(view: CaseView, arm: 'taste_on' | 'taste_off' | 'popular'): string[] {
+  const key = (o: OptionView) =>
+    arm === 'taste_on'
+      ? o.tasteOn?.position
+      : arm === 'popular'
+        ? o.popularPosition
+        : o.tasteOffPosition;
   return view.options
     .filter((o) => key(o) !== undefined && key(o) !== null && o.feasibility !== 'rejected')
     .sort((a, b) => (key(a) as number) - (key(b) as number))
@@ -120,10 +136,13 @@ export async function evaluateScenario(
     sameEligibleSet: true,
     tasteOffTop: [],
     tasteOnTop: [],
+    popularTop: [],
     overlapAt3: null,
     kendallTau: null,
     topChoiceChanged: null,
-    meanAffinityTop3: { tasteOn: null, tasteOff: null },
+    overlapAt3VsPopular: null,
+    topChoiceChangedVsPopular: null,
+    meanAffinityTop3: { tasteOn: null, tasteOff: null, popular: null },
     preservedTagShare: { tasteOn: null, tasteOff: null },
     noFeasibleOption: false,
     relaxationsOffered: 0,
@@ -156,6 +175,7 @@ export async function evaluateScenario(
     const eligible = pool.filter((o) => o.feasibility !== 'rejected');
     const offIds = rankedIds(view, 'taste_off');
     const onIds = view.comparison ? rankedIds(view, 'taste_on') : [];
+    const popularIds = view.comparison?.popular ? rankedIds(view, 'popular') : [];
 
     const originalLocation = (() => {
       const normalised = normaliseName(view.anchor.originalVenue.name);
@@ -224,12 +244,18 @@ export async function evaluateScenario(
       sameEligibleSet: sameSet,
       tasteOffTop: offIds.slice(0, TOP).map((id) => nameOf(view, id)),
       tasteOnTop: onIds.slice(0, TOP).map((id) => nameOf(view, id)),
+      popularTop: popularIds.slice(0, TOP).map((id) => nameOf(view, id)),
       overlapAt3: view.comparison?.overlapAt3 ?? null,
       kendallTau: view.comparison?.kendallTau ?? null,
       topChoiceChanged: view.comparison ? view.comparison.topChoiceChanged : null,
+      overlapAt3VsPopular: view.comparison?.popular?.overlapAt3 ?? null,
+      topChoiceChangedVsPopular: view.comparison?.popular
+        ? view.comparison.popular.topChoiceChanged
+        : null,
       meanAffinityTop3: {
         tasteOn: view.comparison ? affinityOf(view, onIds.slice(0, TOP)) : null,
         tasteOff: view.comparison ? affinityOf(view, offIds.slice(0, TOP)) : null,
+        popular: view.comparison?.popular ? affinityOf(view, popularIds.slice(0, TOP)) : null,
       },
       preservedTagShare: {
         tasteOn: view.comparison ? preservedShare(view, onIds.slice(0, TOP)) : null,
@@ -256,6 +282,10 @@ export function aggregate(results: readonly ScenarioResult[]): AggregateResult {
   const off = mean(
     done.map((r) => r.meanAffinityTop3.tasteOff).filter((v): v is number => v !== null),
   );
+  const pop = mean(
+    done.map((r) => r.meanAffinityTop3.popular).filter((v): v is number => v !== null),
+  );
+  const comparedPopular = done.filter((r) => r.topChoiceChangedVsPopular !== null);
   const empties = done.filter((r) => r.noFeasibleOption);
   return {
     scenarios: results.length,
@@ -277,11 +307,19 @@ export function aggregate(results: readonly ScenarioResult[]): AggregateResult {
       changed: compared.filter((r) => r.topChoiceChanged).length,
       compared: compared.length,
     },
+    topChoiceChangedVsPopular: {
+      changed: comparedPopular.filter((r) => r.topChoiceChangedVsPopular).length,
+      compared: comparedPopular.length,
+    },
     meanOverlapAt3: mean(done.map((r) => r.overlapAt3).filter((v): v is number => v !== null)),
+    meanOverlapAt3VsPopular: mean(
+      done.map((r) => r.overlapAt3VsPopular).filter((v): v is number => v !== null),
+    ),
     meanKendallTau: mean(done.map((r) => r.kendallTau).filter((v): v is number => v !== null)),
     meanAffinityTop3: {
       tasteOn: on,
       tasteOff: off,
+      popular: pop,
       difference: on !== null && off !== null ? on - off : null,
     },
     noFeasibleHandled: {
@@ -321,6 +359,7 @@ export async function runEvaluation(
       'Each scenario opens a case, records one disruption and runs one search.',
       'Both arms use the identical candidate pool, the identical feasibility gate and the identical exclusions. Only the ordering rule differs.',
       'Taste Off orders by distance to the original venue, then price level, then name. It uses no taste data.',
+      'Popular orders by the provider general popularity, most popular first, with distance and price as tie breakers. It uses none of the group signals.',
       'Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.',
       'The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.',
       options.useOracle

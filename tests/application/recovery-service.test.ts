@@ -468,3 +468,16 @@ describe('the lost venue as a taste signal', () => {
     expect(eligible.some((o) => o.candidate.name === 'The Lantern Room')).toBe(false);
   });
 });
+
+describe('the popular ordering', () => {
+  it('orders the same eligible places a third way and reports the difference', async () => {
+    const { service } = makeService();
+    const view = await open(service, 's01-anniversary-venue-closed');
+    const eligible = view.options.filter((o) => o.feasibility !== 'rejected');
+    expect(eligible.length).toBeGreaterThan(0);
+    expect(eligible.every((o) => o.popularPosition !== null)).toBe(true);
+    expect(new Set(eligible.map((o) => o.popularPosition)).size).toBe(eligible.length);
+    expect(view.comparison?.popular).not.toBeNull();
+    expect(view.comparison?.popular?.topIds).toHaveLength(3);
+  });
+});

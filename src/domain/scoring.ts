@@ -103,6 +103,33 @@ function compareNullable(a: number | null, b: number | null): number {
   return diff === 0 ? 0 : diff < 0 ? -1 : 1;
 }
 
+export interface PopularKey extends BaselineKey {
+  popularity: number | null;
+}
+
+/**
+ * The Popular ordering. It is what a plain list of well known places does: the most popular first,
+ * using the provider's general popularity and none of the group's own signals. Ties, and places with
+ * no popularity value, fall back to the Taste Off ordering so the result is deterministic.
+ */
+export function compareByPopularity(a: PopularKey, b: PopularKey): number {
+  if (a.popularity === null && b.popularity !== null) return 1;
+  if (a.popularity !== null && b.popularity === null) return -1;
+  if (a.popularity !== null && b.popularity !== null) {
+    // Compared at 0.001 resolution so floating point noise cannot decide order.
+    const diff = Math.round(b.popularity * 1000) - Math.round(a.popularity * 1000);
+    if (diff !== 0) return diff < 0 ? -1 : 1;
+  }
+  return compareBaseline(a, b);
+}
+
+export function popularKey(candidate: Candidate, distance: number | null): PopularKey {
+  return {
+    ...baselineKey(candidate, distance),
+    popularity: candidate.taste.popularity ?? null,
+  };
+}
+
 export function baselineKey(candidate: Candidate, distance: number | null): BaselineKey {
   return {
     distanceKm: distance,

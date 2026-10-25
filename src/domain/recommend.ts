@@ -7,14 +7,20 @@ import {
 import {
   baselineKey,
   compareBaseline,
+  compareByPopularity,
   compositeScore,
   distanceToOriginal,
+  popularKey,
   tasteValues,
   type ScoreBreakdown,
 } from './scoring.js';
 import type { Candidate, TasteScore } from './venue.js';
 
-export type Arm = 'taste_on' | 'taste_off';
+/**
+ * Three orderings of the same eligible places. Taste Off sorts by distance. Popular sorts by the
+ * provider's general popularity. Taste On uses the group's own signals.
+ */
+export type Arm = 'taste_on' | 'taste_off' | 'popular';
 
 export interface RankedOption {
   candidateId: string;
@@ -39,6 +45,8 @@ export interface RecommendationOutcome {
   tasteOff: ArmOutcome;
   /** Null when no taste scores were available, for example when Qloo could not be reached. */
   tasteOn: ArmOutcome | null;
+  /** Null when none of the eligible places has a popularity value. */
+  popular: ArmOutcome | null;
 }
 
 /**
@@ -85,7 +93,26 @@ export function recommend(
     })),
   };
 
-  if (!tasteScores) return { gate, rejectedIds, tasteOff, tasteOn: null };
+  const popularSorted = [...eligible].sort(
+    (a, b) =>
+      feasibilityRank(a.result.status) - feasibilityRank(b.result.status) ||
+      compareByPopularity(popularKey(a.candidate, a.distance), popularKey(b.candidate, b.distance)),
+  );
+  const popular: ArmOutcome | null = eligible.some(
+    (entry) => entry.candidate.taste.popularity !== undefined,
+  )
+    ? {
+        arm: 'popular',
+        options: popularSorted.map((entry, index) => ({
+          candidateId: entry.candidate.id,
+          position: index + 1,
+          feasibility: entry.result.status as Exclude<Feasibility, 'rejected'>,
+          distanceKm: entry.distance,
+        })),
+      }
+    : null;
+
+  if (!tasteScores) return { gate, rejectedIds, tasteOff, tasteOn: null, popular };
 
   const values = tasteValues(tasteScores);
   const byId = new Map(tasteScores.map((score) => [score.candidateId, score]));
@@ -119,5 +146,5 @@ export function recommend(
     })),
   };
 
-  return { gate, rejectedIds, tasteOff, tasteOn };
+  return { gate, rejectedIds, tasteOff, tasteOn, popular };
 }

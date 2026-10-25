@@ -46,6 +46,8 @@ export interface OptionView {
   /** What the taste provider returned for this place, whether or not it passed the gate. */
   providerTaste: { rank: number; affinity: number | null; explanation: string[] } | null;
   tasteOffPosition: number | null;
+  /** Position in the Popular ordering, or null when no popularity value was available. */
+  popularPosition: number | null;
   distanceKm: number | null;
   /** Tags the provider returned for this venue that match a tag the person asked to preserve. */
   matchedTags: string[];
@@ -57,6 +59,13 @@ export interface ComparisonView {
   overlapAt3: number | null;
   kendallTau: number | null;
   topChoiceChanged: boolean;
+  /** Taste On against the Popular ordering. Null when no popularity values were available. */
+  popular: {
+    topIds: string[];
+    overlapAt3: number | null;
+    kendallTau: number | null;
+    topChoiceChanged: boolean;
+  } | null;
 }
 
 export interface HistoryEntry {
@@ -160,6 +169,9 @@ export function buildCaseView(
   const options: OptionView[] = [];
   if (run && outcome) {
     const offByid = new Map(outcome.tasteOff.options.map((option) => [option.candidateId, option]));
+    const popularById = new Map(
+      (outcome.popular?.options ?? []).map((option) => [option.candidateId, option]),
+    );
     const onById = new Map<string, RankedOption>(
       (outcome.tasteOn?.options ?? []).map((option) => [option.candidateId, option]),
     );
@@ -215,6 +227,7 @@ export function buildCaseView(
             }
           : null,
         tasteOffPosition: off?.position ?? null,
+        popularPosition: popularById.get(candidate.id)?.position ?? null,
         // Measured for every place, including ruled out ones, so the person can see why a distance limit applied.
         distanceKm:
           on?.distanceKm ?? off?.distanceKm ?? distanceToOriginal(candidate, ctx.originalLocation),
@@ -257,6 +270,18 @@ export function buildCaseView(
       overlapAt3: overlapAtK(offIds, onIds, SHORTLIST_SIZE),
       kendallTau: kendallTau(offIds, onIds),
       topChoiceChanged: offIds[0] !== undefined && onIds[0] !== undefined && offIds[0] !== onIds[0],
+      popular: outcome.popular
+        ? (() => {
+            const popularIds = outcome.popular.options.map((option) => option.candidateId);
+            return {
+              topIds: popularIds.slice(0, SHORTLIST_SIZE),
+              overlapAt3: overlapAtK(popularIds, onIds, SHORTLIST_SIZE),
+              kendallTau: kendallTau(popularIds, onIds),
+              topChoiceChanged:
+                popularIds[0] !== undefined && onIds[0] !== undefined && popularIds[0] !== onIds[0],
+            };
+          })()
+        : null,
     };
   }
 

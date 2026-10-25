@@ -510,6 +510,46 @@ const rows: Row[] = [
   },
 ];
 
+/**
+ * Invented general popularity, from 0 to 1, for each venue. It is authored by hand and does not
+ * depend on the taste tags. It stands in for the non personalised popularity a real provider
+ * returns, so the demo can show a popularity ordered list next to the taste ordered one.
+ */
+const simulatedPopularity: Record<string, number> = {
+  'sim-tidewrack': 0.92,
+  'sim-copper-kettle': 0.88,
+  'sim-meridian-roof': 0.86,
+  'sim-midnight-scoop': 0.85,
+  'sim-ember-bean': 0.83,
+  'sim-harbour-lamp': 0.81,
+  'sim-dockside-taps': 0.79,
+  'sim-nine-fathoms': 0.77,
+  'sim-lantern-room': 0.74,
+  'sim-paper-crane': 0.71,
+  'sim-harbour-annex': 0.69,
+  'sim-sunroom': 0.68,
+  'sim-blue-hour': 0.66,
+  'sim-honey-ledger': 0.64,
+  'sim-night-owl': 0.62,
+  'sim-salted-fig': 0.58,
+  'sim-cartographers': 0.57,
+  'sim-umber-oak': 0.55,
+  'sim-slow-pour': 0.52,
+  'sim-salt-static': 0.49,
+  'sim-foxglove': 0.47,
+  'sim-lamplighter': 0.46,
+  'sim-saffron-courtyard': 0.44,
+  'sim-low-tide-wine': 0.43,
+  'sim-verdant-table': 0.41,
+  'sim-glasshouse': 0.39,
+  'sim-quillfeather': 0.38,
+  'sim-velvet-ledger': 0.35,
+  'sim-cinder-reed': 0.33,
+  'sim-reading-lounge': 0.31,
+  'sim-old-signal': 0.28,
+  'sim-print-room': 0.25,
+};
+
 const SIM_PROVENANCE = {
   source: 'simulation' as const,
   label: 'Simulated demo catalogue',
@@ -549,7 +589,7 @@ export const catalogue: SimulatedVenue[] = rows.map((row) => {
       groupCapacity: known(row.capacity, SIM_PROVENANCE),
       covered: known(row.covered, SIM_PROVENANCE),
     },
-    taste: { tagNames: tags },
+    taste: { popularity: simulatedPopularity[row.id] ?? 0.5, tagNames: tags },
   };
   return { candidate, category: row.category, tags };
 });

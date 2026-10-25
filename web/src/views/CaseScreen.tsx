@@ -8,7 +8,7 @@ import { Horizon } from '../components/Horizon';
 import { Inspector } from '../components/Inspector';
 import { OptionGroups } from '../components/OptionList';
 import { RelaxationPanel } from '../components/RelaxationPanel';
-import { SlopeChart } from '../components/SlopeChart';
+import { SlopeChart, type SlopeBaseline } from '../components/SlopeChart';
 import { SourceBanner } from '../components/SourceBanner';
 import { Timeline } from '../components/Timeline';
 import { useCaseActions } from '../components/useCaseActions';
@@ -114,6 +114,7 @@ function AnchorSummary({ view }: { view: CaseView }) {
 }
 
 function CompareTab({ view }: { view: CaseView }) {
+  const [against, setAgainst] = useState<SlopeBaseline>('nearest');
   const comparison = view.comparison;
   if (!comparison) {
     const reason = !view.run
@@ -135,25 +136,64 @@ function CompareTab({ view }: { view: CaseView }) {
   return (
     <div className="stack">
       <p className="lede" style={{ color: 'var(--ink-2)' }}>
-        Both orders use the same places and the same gate. The only difference is the ordering rule:
-        without taste, places are sorted by distance, then price. With taste, they are sorted by the
-        recovery score.
+        Every order uses the same places and the same gate. The only difference is the ordering
+        rule. Nearest first sorts by distance, then price. Most popular first sorts by how popular
+        each place is in general. With taste, places are sorted by the recovery score, which uses
+        what this group likes.
       </p>
+      {comparison.popular ? (
+        <fieldset className="segmented">
+          <legend className="visually-hidden">Compare taste with</legend>
+          <span className="segmented-label" aria-hidden="true">
+            Compare taste with
+          </span>
+          <label>
+            <input
+              type="radio"
+              name="against"
+              checked={against === 'nearest'}
+              onChange={() => setAgainst('nearest')}
+            />
+            <span className="pill">Nearest first</span>
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="against"
+              checked={against === 'popular'}
+              onChange={() => setAgainst('popular')}
+            />
+            <span className="pill">Most popular first</span>
+          </label>
+        </fieldset>
+      ) : null}
       <div className="compare-grid">
         <div className="panel">
-          <SlopeChart view={view} />
+          <SlopeChart view={view} baseline={comparison.popular ? against : 'nearest'} />
         </div>
         <dl className="stat-list panel">
           <div>
-            <dt>Top choice changes with taste</dt>
+            <dt>Top choice changes with taste, against nearest first</dt>
             <dd>{comparison.topChoiceChanged ? 'Yes' : 'No'}</dd>
           </div>
           <div>
-            <dt>Top three in common</dt>
+            <dt>Top three in common with nearest first</dt>
             <dd>{percent(comparison.overlapAt3)}</dd>
           </div>
+          {comparison.popular ? (
+            <>
+              <div>
+                <dt>Top choice changes with taste, against most popular</dt>
+                <dd>{comparison.popular.topChoiceChanged ? 'Yes' : 'No'}</dd>
+              </div>
+              <div>
+                <dt>Top three in common with most popular</dt>
+                <dd>{percent(comparison.popular.overlapAt3)}</dd>
+              </div>
+            </>
+          ) : null}
           <div>
-            <dt>Order agreement (Kendall tau)</dt>
+            <dt>Order agreement with nearest first (Kendall tau)</dt>
             <dd>
               {comparison.kendallTau === null ? 'not defined' : comparison.kendallTau.toFixed(2)}
             </dd>
@@ -163,7 +203,7 @@ function CompareTab({ view }: { view: CaseView }) {
       <div className="form-grid">
         <section className="panel" aria-labelledby="top-off">
           <h2 id="top-off" style={{ fontSize: '1.2rem' }}>
-            Top three without taste
+            Top three, nearest first
           </h2>
           <ol>
             {comparison.tasteOffTopIds.map((id) => (
@@ -171,6 +211,18 @@ function CompareTab({ view }: { view: CaseView }) {
             ))}
           </ol>
         </section>
+        {comparison.popular ? (
+          <section className="panel" aria-labelledby="top-popular">
+            <h2 id="top-popular" style={{ fontSize: '1.2rem' }}>
+              Top three, most popular first
+            </h2>
+            <ol>
+              {comparison.popular.topIds.map((id) => (
+                <li key={id}>{nameOf(id)}</li>
+              ))}
+            </ol>
+          </section>
+        ) : null}
         <section className="panel" aria-labelledby="top-on">
           <h2 id="top-on" style={{ fontSize: '1.2rem' }}>
             Top three with taste

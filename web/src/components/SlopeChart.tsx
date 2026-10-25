@@ -1,16 +1,32 @@
 import type { CaseView } from '../../../src/domain/case-view.js';
 
+export type SlopeBaseline = 'nearest' | 'popular';
+
+const BASELINE_TITLE: Record<SlopeBaseline, string> = {
+  nearest: 'Nearest first',
+  popular: 'Most popular first',
+};
+
 /**
- * Compares the order without taste (left) with the order with taste (right) for the same
- * eligible places. Lines connect the same place, so changes in order are visible at a glance.
+ * Compares a plain order (left) with the order with taste (right) for the same eligible places.
+ * The plain order is either nearest first or most popular first. Lines connect the same place,
+ * so changes in order are visible at a glance.
  */
-export function SlopeChart({ view }: { view: CaseView }) {
+export function SlopeChart({
+  view,
+  baseline = 'nearest',
+}: {
+  view: CaseView;
+  baseline?: SlopeBaseline;
+}) {
+  const plainPosition = (o: CaseView['options'][number]): number | null =>
+    baseline === 'popular' ? o.popularPosition : o.tasteOffPosition;
   const eligible = view.options.filter(
-    (o) => o.feasibility !== 'rejected' && o.tasteOffPosition !== null,
+    (o) => o.feasibility !== 'rejected' && plainPosition(o) !== null,
   );
   const rows = eligible
     .filter((o) => o.tasteOn !== null)
-    .sort((a, b) => (a.tasteOffPosition ?? 0) - (b.tasteOffPosition ?? 0))
+    .sort((a, b) => (plainPosition(a) ?? 0) - (plainPosition(b) ?? 0))
     .slice(0, 8);
   if (rows.length === 0) return null;
 
@@ -28,7 +44,7 @@ export function SlopeChart({ view }: { view: CaseView }) {
   const description = rows
     .map(
       (o) =>
-        `${o.candidate.name}: without taste ${rows.indexOf(o) + 1}, with taste ${onOrder.indexOf(o) + 1}`,
+        `${o.candidate.name}: ${BASELINE_TITLE[baseline].toLowerCase()} ${rows.indexOf(o) + 1}, with taste ${onOrder.indexOf(o) + 1}`,
     )
     .join('. ');
 
@@ -38,10 +54,10 @@ export function SlopeChart({ view }: { view: CaseView }) {
         className="slope"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Order of the top ${rows.length} eligible places without and with taste. ${description}.`}
+        aria-label={`Order of the top ${rows.length} eligible places, ${BASELINE_TITLE[baseline].toLowerCase()} against with taste. ${description}.`}
       >
         <text className="col-title" x={left - 12} y={22} textAnchor="end">
-          Without taste
+          {BASELINE_TITLE[baseline]}
         </text>
         <text className="col-title" x={right + 12} y={22} textAnchor="start">
           With taste

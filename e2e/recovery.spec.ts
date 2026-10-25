@@ -103,10 +103,27 @@ test.describe('recovery flow in demo mode', () => {
     await openPreset(page, 's02-vegan-date-budget');
     await page.getByRole('link', { name: 'Taste on and off' }).click();
     await expect(
-      page.getByText('Both orders use the same places and the same gate.'),
+      page.getByText('Every order uses the same places and the same gate.'),
     ).toBeVisible();
-    await expect(page.getByRole('img', { name: /Order of the top/ })).toBeVisible();
+    await expect(
+      page.getByRole('img', { name: /nearest first against with taste/i }),
+    ).toBeVisible();
     await expect(page.getByText('How the recovery score works')).toBeVisible();
+  });
+
+  test('compares taste with the most popular order as well as the nearest first order', async ({
+    page,
+  }) => {
+    await openPreset(page, 's02-vegan-date-budget');
+    await page.getByRole('link', { name: 'Taste on and off' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Top three, most popular first' }),
+    ).toBeVisible();
+    await page.getByRole('radio', { name: 'Most popular first' }).check();
+    await expect(
+      page.getByRole('img', { name: /most popular first against with taste/i }),
+    ).toBeVisible();
+    await expectNoSeriousAccessibilityIssues(page);
   });
 
   test('lists the redacted evidence for a case', async ({ page }) => {
