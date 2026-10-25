@@ -34,6 +34,7 @@
     "test:e2e": "playwright test",
     "mcp": "node --env-file-if-exists=.env --import tsx src/cli/mcp.ts",
     "qloo:smoke": "node --env-file-if-exists=.env --import tsx src/cli/qloo-smoke.ts",
+    "qloo:timing": "node --env-file-if-exists=.env --import tsx src/cli/qloo-timing.ts",
     "osm:smoke": "node --env-file-if-exists=.env --import tsx src/cli/osm-smoke.ts",
     "eval": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts",
     "eval:preflight": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts --preflight evaluation/live-scenarios.json",
