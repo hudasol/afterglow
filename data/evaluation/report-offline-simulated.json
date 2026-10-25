@@ -1,6 +1,6 @@
 {
   "kind": "offline_simulated",
-  "generatedAt": "2026-10-25T11:06:32.993Z",
+  "generatedAt": "2026-10-25T15:06:25.153Z",
   "provider": {
     "mode": "demo",
     "label": "Simulated demo catalogue (not Qloo data, not real venues)"
@@ -61,7 +61,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s00-jazz-needs-a-choice",
@@ -117,7 +125,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s02-vegan-date-budget",
@@ -176,7 +192,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s03-rain-birthday-bar",
@@ -234,7 +258,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s04-late-arrival-live-music",
@@ -289,7 +321,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 2,
+      "placebo": null
     },
     {
       "id": "s05-family-lunch-halal",
@@ -344,7 +384,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 2,
+      "placebo": null
     },
     {
       "id": "s06-quiet-cafe-gluten-free",
@@ -397,7 +445,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 1,
+      "placebo": null
     },
     {
       "id": "s07-dessert-after-the-show",
@@ -448,7 +504,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 1,
+      "placebo": null
     },
     {
       "id": "s08-gallery-afternoon",
@@ -499,7 +563,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 1,
+      "placebo": null
     },
     {
       "id": "s09-celebration-budget-cut",
@@ -557,7 +629,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s10-no-feasible-option",
@@ -605,7 +685,15 @@
       },
       "noFeasibleOption": true,
       "relaxationsOffered": 3,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 0,
+      "placebo": null
     },
     {
       "id": "s11-outdoor-gig-rain",
@@ -663,7 +751,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s12-tasting-menu-no-stairs",
@@ -719,7 +815,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s13-late-bar-record-fans",
@@ -772,7 +876,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 1,
+      "placebo": null
     },
     {
       "id": "s14-party-grows-to-fourteen",
@@ -828,7 +940,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 3,
+      "placebo": null
     },
     {
       "id": "s15-nut-allergy-brunch",
@@ -881,7 +1001,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": 1
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 1,
+      "placebo": null
     },
     {
       "id": "s16-original-not-located",
@@ -937,7 +1065,15 @@
       },
       "noFeasibleOption": false,
       "relaxationsOffered": 0,
-      "unknownFactShare": 0
+      "unknownFactShare": 0,
+      "factCoverage": {
+        "openWindow": 1,
+        "stepFree": 1,
+        "dietary": null
+      },
+      "providerCalls": 0,
+      "tasteOnFeasibleTop": 0,
+      "placebo": null
     }
   ],
   "summary": {

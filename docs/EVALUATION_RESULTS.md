@@ -1,6 +1,6 @@
 # Evaluation results: offline, simulated catalogue
 
-Generated: 2026-10-25T11:06:32.993Z
+Generated: 2026-10-25T15:06:25.153Z
 Source: Simulated demo catalogue (not Qloo data, not real venues)
 Scenarios: 17 completed of 17
 
