@@ -11,7 +11,7 @@ import {
   type StoredEvent,
   type TasteResolution,
 } from './case.js';
-import { isKnown, known, unknown, type Fact } from './evidence.js';
+import { known, unknown, type Fact } from './evidence.js';
 import {
   buildExclusions,
   suggestRelaxations,
@@ -22,6 +22,7 @@ import {
 } from './feasibility.js';
 import type { GeoPoint } from './geo.js';
 import type { IntentAnchor } from './intent.js';
+import { checkOriginalVenue } from './original-venue.js';
 import { kendallTau, overlapAtK } from './metrics.js';
 import { deriveEffectivePlan, describeDisruption, type EffectivePlan } from './plan.js';
 import { recommend, type Arm, type RankedOption } from './recommend.js';
@@ -117,19 +118,25 @@ export interface CaseView {
 const SHORTLIST_SIZE = 3;
 
 function originalLocationFact(state: CaseState, pool: readonly Candidate[]): Fact<GeoPoint> {
-  const originalName = state.opened.anchor.originalVenue.name;
-  const resolution = state.resolutions[resolutionKey('original_venue', originalName)];
-  const selected = resolution?.selected;
-  if (selected?.location) {
-    return known(selected.location, {
+  const anchor = state.opened.anchor;
+  const resolution = state.resolutions[resolutionKey('original_venue', anchor.originalVenue.name)];
+  const check = checkOriginalVenue({
+    selected: resolution?.selected,
+    venueName: anchor.originalVenue.name,
+    city: anchor.city,
+    pool,
+  });
+  if (check.location) {
+    const name = check.ref?.name ?? anchor.originalVenue.name;
+    return known(check.location, {
       source: state.opened.mode === 'demo' ? 'simulation' : 'qloo',
-      label: `Location of ${selected.name}`,
+      label:
+        check.locationFrom === 'results'
+          ? `Location of ${name} in the search results`
+          : `Location of ${name}`,
     });
   }
-  const normalised = normaliseName(originalName);
-  const match = pool.find((candidate) => normaliseName(candidate.name) === normalised);
-  if (match && isKnown(match.facts.location)) return match.facts.location;
-  return unknown('The original venue was not located');
+  return unknown(check.note ?? 'The original venue was not located');
 }
 
 function matchedTagsFor(candidate: Candidate, state: CaseState): string[] {
@@ -154,7 +161,10 @@ export function gateContextFor(state: CaseState, pool: readonly Candidate[]): Ga
     plan,
     originalLocation: originalLocationFact(state, pool),
     attestations: state.attestations,
-    exclusions: buildExclusions(excludedIds, [state.opened.anchor.originalVenue.name]),
+    exclusions: buildExclusions(excludedIds, [
+      state.opened.anchor.originalVenue.name,
+      `${state.opened.anchor.originalVenue.name} ${state.opened.anchor.city}`,
+    ]),
   };
 }
 

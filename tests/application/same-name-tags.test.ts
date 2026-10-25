@@ -59,3 +59,28 @@ describe('tags that share a name', () => {
     expect(choice?.alsoUsed).toEqual([{ id: 'urn:tag:setting:romantic', name: 'Romantic' }]);
   });
 });
+
+describe('tags that were sent', () => {
+  it('lists only the tags the provider reports as sent', async () => {
+    const live = new StubLive();
+    live.rank = async (request) => {
+      live.ranked = request;
+      return { scores: [], appliedTagIds: ['urn:tag:setting:romantic'] };
+    };
+    const { service } = makeService({ live });
+    const view = await service.openCase('session-b', {
+      mode: 'live',
+      anchor: makeAnchor({ tasteTags: ['romantic'], useOriginalVenueAsSignal: false }),
+      disruption: { kind: 'venue_unavailable' },
+    });
+    expect(view.run?.appliedSignals.tagNames).toEqual(['Romantic']);
+    const none = new StubLive();
+    none.rank = async () => ({ scores: [], appliedTagIds: [] });
+    const second = await makeService({ live: none }).service.openCase('session-c', {
+      mode: 'live',
+      anchor: makeAnchor({ tasteTags: ['romantic'], useOriginalVenueAsSignal: false }),
+      disruption: { kind: 'venue_unavailable' },
+    });
+    expect(second.run?.appliedSignals.tagNames).toEqual([]);
+  });
+});

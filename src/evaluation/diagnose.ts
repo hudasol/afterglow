@@ -33,6 +33,8 @@ export interface ScenarioDiagnosis {
     distanceKm: { min: number | null; median: number | null; max: number | null };
     sample: Array<{ name: string; address: string | null; distanceKm: number | null }>;
   };
+  /** How far apart the provider's affinity values are across the pool, which decides how much taste can move the order. */
+  affinity: { count: number; min: number | null; median: number | null; max: number | null };
   rejectionReasons: Array<{ reason: string; places: number }>;
   signals: Array<{
     kind: string;
@@ -83,6 +85,9 @@ export async function diagnoseScenario(
     const distances = view.options
       .map((o) => o.distanceKm)
       .filter((d): d is number => typeof d === 'number');
+    const affinities = view.options
+      .map((o) => o.providerTaste?.affinity)
+      .filter((a): a is number => typeof a === 'number');
     const reasons = new Map<string, number>();
     for (const option of view.options) {
       for (const reason of option.rejectionReasons) {
@@ -133,6 +138,12 @@ export async function diagnoseScenario(
               : null,
           distanceKm: o.distanceKm,
         })),
+      },
+      affinity: {
+        count: affinities.length,
+        min: affinities.length ? Math.min(...affinities) : null,
+        median: median(affinities),
+        max: affinities.length ? Math.max(...affinities) : null,
       },
       rejectionReasons: [...reasons.entries()]
         .sort((a, b) => b[1] - a[1])

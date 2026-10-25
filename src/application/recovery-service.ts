@@ -22,6 +22,7 @@ import {
   type IntentAnchor,
 } from '../domain/intent.js';
 import { factContextOf } from '../domain/fact-context.js';
+import { checkOriginalVenue } from '../domain/original-venue.js';
 import { deriveEffectivePlan, disruptionSchema } from '../domain/plan.js';
 import { buildTrace, type AgentTrace } from '../domain/trace.js';
 import { normaliseName, type Candidate } from '../domain/venue.js';
@@ -651,21 +652,21 @@ export class RecoveryService {
     const traces: CallTrace[] = [];
     const ctx: ProviderContext = { traces, city: anchor.city };
 
-    const selected = (kind: ResolutionKind): ResolvedRef[] =>
-      Object.values(state.resolutions)
-        .filter(
-          (resolution) =>
-            resolution.kind === kind && resolution.status === 'resolved' && resolution.selected,
-        )
-        .flatMap((resolution) => [
-          resolution.selected as ResolvedRef,
-          ...(resolution.alsoUsed ?? []),
-        ]);
+    // The entry the person or the matcher settled on comes first for every phrase, then the other
+    // tags that share its name. The provider may only be able to use the first few.
+    const selected = (kind: ResolutionKind): ResolvedRef[] => {
+      const resolved = Object.values(state.resolutions).filter(
+        (resolution) =>
+          resolution.kind === kind && resolution.status === 'resolved' && resolution.selected,
+      );
+      return [
+        ...resolved.map((resolution) => resolution.selected as ResolvedRef),
+        ...resolved.flatMap((resolution) => resolution.alsoUsed ?? []),
+      ];
+    };
     const entities = selected('entity');
     const tags = selected('tag');
     const category = selected('category')[0];
-    // The venue that fell through is a signal of its own: places that share its audience.
-    const lostVenue = anchor.useOriginalVenueAsSignal ? selected('original_venue')[0] : undefined;
 
     let pool: Candidate[];
     try {
@@ -683,6 +684,16 @@ export class RecoveryService {
       return [{ type: 'search_failed', runId, code: failure.code, message: failure.message }];
     }
 
+    // The venue that fell through is a signal of its own: places that share its audience. A name
+    // search is not limited to the city, so the entry is checked against the places found there.
+    const venueCheck = checkOriginalVenue({
+      selected: selected('original_venue')[0],
+      venueName: anchor.originalVenue.name,
+      city: anchor.city,
+      pool,
+    });
+    const lostVenue = anchor.useOriginalVenueAsSignal ? (venueCheck.ref ?? undefined) : undefined;
+
     // Practical facts the taste provider does not supply come from a second, labelled source. It
     // does not depend on the taste ranking, so both run at once and the search waits for the slower.
     const factsTask = this.#lookUpPlaceFacts(state, pool);
@@ -690,6 +701,8 @@ export class RecoveryService {
     let tasteScores: SearchRun['tasteScores'] = null;
     let tasteStatus: SearchRun['tasteStatus'] = 'unavailable';
     let tasteNote: string | undefined;
+    // Only the tags that were sent count as applied, so the Evidence tab never claims more.
+    let appliedTags: ResolvedRef[] = [];
 
     if (pool.length === 0) {
       tasteNote = 'The provider returned no places for this city and category.';
@@ -706,6 +719,9 @@ export class RecoveryService {
           },
           ctx,
         );
+        appliedTags = ranked.appliedTagIds
+          ? tags.filter((tag) => ranked.appliedTagIds?.includes(tag.id))
+          : tags;
         if (ranked.scores.length === 0) {
           tasteNote =
             'The provider returned no taste scores for these places, so only the practical baseline is shown.';
@@ -718,6 +734,10 @@ export class RecoveryService {
         const failure = appErrorFromProvider(error);
         tasteNote = `Taste ranking was unavailable (${failure.code}). Only the practical baseline is shown.`;
       }
+    }
+
+    if (venueCheck.note) {
+      tasteNote = [tasteNote, venueCheck.note].filter(Boolean).join(' ').slice(0, 500);
     }
 
     const facts = await factsTask;
@@ -736,7 +756,7 @@ export class RecoveryService {
       ...(placeFacts ? { placeFacts } : {}),
       appliedSignals: {
         entityNames: entities.map((entity) => entity.name),
-        tagNames: [...new Set(tags.map((tag) => tag.name))],
+        tagNames: [...new Set(appliedTags.map((tag) => tag.name))],
         ...(category ? { categoryTag: category.name } : {}),
         ...(lostVenue ? { lostVenue: lostVenue.name } : {}),
         location: anchor.city,
