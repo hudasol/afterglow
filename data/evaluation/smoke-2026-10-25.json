@@ -1,0 +1,1320 @@
+{
+  "generatedAt": "2026-10-25T14:49:00.337Z",
+  "options": {
+    "city": "New York",
+    "seedA": "Miles Davis",
+    "seedB": "Metallica",
+    "category": "restaurant",
+    "poolSize": 40
+  },
+  "checks": [
+    {
+      "name": "reachability and authentication",
+      "ok": true,
+      "detail": "Qloo accepted an authenticated search request."
+    },
+    {
+      "name": "entity resolution",
+      "ok": true,
+      "detail": "Miles Davis: 2 exact entries, the person chooses; Metallica: 5 exact entries, the person chooses"
+    },
+    {
+      "name": "category tag resolution",
+      "ok": true,
+      "detail": "restaurant: resolved"
+    },
+    {
+      "name": "tag resolution for a vibe phrase",
+      "ok": true,
+      "detail": "jazz: resolved (1 candidates)"
+    },
+    {
+      "name": "category filter narrows the pool",
+      "ok": true,
+      "detail": "40 of 40 places carry the tag urn:tag:genre:place:restaurant."
+    },
+    {
+      "name": "practical facts read from the pool",
+      "ok": true,
+      "detail": "Opening hours for 26 of 40 places, step free access for 31, vegetarian food for 25."
+    },
+    {
+      "name": "place pool for the city",
+      "ok": true,
+      "detail": "40 places returned for New York."
+    },
+    {
+      "name": "rank over a fixed pool",
+      "ok": true,
+      "detail": "40 of 40 places received a score (100%)."
+    },
+    {
+      "name": "signal sensitivity",
+      "ok": true,
+      "detail": "Two different probe signals gave Kendall tau 0.41 and top three overlap 0%."
+    },
+    {
+      "name": "a place as a taste signal",
+      "ok": true,
+      "detail": "39 of 40 places were scored when a place entity was the only signal."
+    },
+    {
+      "name": "entity and tag signals together",
+      "ok": true,
+      "detail": "Qloo accepted entity and tag signals in one ranking request."
+    }
+  ],
+  "verdict": "go",
+  "reasons": [],
+  "notes": [
+    "A probe name matched more than one entry. The ranking checks used the first candidate. The product asks the person to choose in this case."
+  ],
+  "observed": {
+    "poolSize": 40,
+    "withLocation": 40,
+    "withPriceLevel": 27,
+    "withAddress": 40,
+    "withTags": 40,
+    "withAffinity": 40,
+    "withExplanation": 40,
+    "withPopularity": 40,
+    "entityKeys": [
+      "disambiguation",
+      "entity_id",
+      "external",
+      "location",
+      "name",
+      "popularity",
+      "properties",
+      "query",
+      "references",
+      "subtype",
+      "tags",
+      "type"
+    ],
+    "propertyKeys": [
+      "address",
+      "ambience_description",
+      "amenities_description",
+      "business_rating",
+      "check_in_time",
+      "check_out_time",
+      "cost_description",
+      "cuisine_description",
+      "customer_demographics_description",
+      "description",
+      "event_spaces",
+      "geocode",
+      "good_for",
+      "hotel_class",
+      "hours",
+      "image",
+      "images",
+      "is_closed",
+      "keywords",
+      "live_music",
+      "localities",
+      "locality",
+      "loyalty_program",
+      "menu_url",
+      "neighborhood",
+      "neighborhood_description",
+      "number_of_rooms",
+      "number_of_stations",
+      "overall_description",
+      "parking",
+      "pet_friendly",
+      "phone",
+      "physical_setting_description",
+      "price_level",
+      "price_range",
+      "primary_genre",
+      "service_description",
+      "short_description",
+      "specialty_dishes",
+      "star_rating",
+      "unique_selling_points",
+      "website"
+    ],
+    "propertyShape": {
+      "address": "string",
+      "ambience_description": "string",
+      "amenities_description": "string",
+      "business_rating": "number",
+      "check_in_time": "null",
+      "check_out_time": "null",
+      "cost_description": "null",
+      "cuisine_description": "string",
+      "customer_demographics_description": "string",
+      "description": "string",
+      "event_spaces": "boolean",
+      "geocode": "object",
+      "good_for": "null",
+      "hotel_class": "null",
+      "hours": "object",
+      "image": "object",
+      "images": "array",
+      "is_closed": "boolean",
+      "keywords": "array",
+      "live_music": "boolean",
+      "localities": "array",
+      "locality": "object",
+      "loyalty_program": "null",
+      "menu_url": "null",
+      "neighborhood": "string",
+      "neighborhood_description": "string",
+      "number_of_rooms": "null",
+      "number_of_stations": "null",
+      "overall_description": "string",
+      "parking": "boolean",
+      "pet_friendly": "boolean",
+      "phone": "string",
+      "physical_setting_description": "string",
+      "price_level": "number",
+      "price_range": "object",
+      "primary_genre": "object",
+      "service_description": "string",
+      "short_description": "string",
+      "specialty_dishes": "array",
+      "star_rating": "null",
+      "unique_selling_points": "string",
+      "website": "string"
+    },
+    "hoursLikeKeys": [
+      "hours",
+      "is_closed"
+    ],
+    "tagLookups": [
+      {
+        "phrase": "restaurant",
+        "parentFilter": null,
+        "status": "20 returned",
+        "results": [
+          {
+            "id": "urn:tag:product_service:qloo:restaurant_dining",
+            "name": "Restaurant Dining",
+            "type": "urn:tag:product_service:qloo",
+            "parentTypes": [
+              "urn:entity:brand"
+            ]
+          },
+          {
+            "id": "urn:tag:product_service:qloo:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:product_service:qloo",
+            "parentTypes": [
+              "urn:entity:brand"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:genre:place:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:genre:place",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:restaurant_dining",
+            "name": "Restaurant Dining",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:dining_option:qloo:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:dining_option:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenities:place:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:amenities:place",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:eatery",
+            "name": "Eatery",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:product_service:qloo:restaurants",
+            "name": "Restaurants",
+            "type": "urn:tag:product_service:qloo",
+            "parentTypes": [
+              "urn:entity:brand"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:restobar",
+            "name": "Restobar",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:restaurant_service",
+            "name": "Restaurant Service",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:gastropub_food",
+            "name": "Gastropub Food",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          }
+        ]
+      },
+      {
+        "phrase": "restaurant",
+        "parentFilter": "urn:entity:place",
+        "status": "20 returned",
+        "results": [
+          {
+            "id": "urn:tag:amenity:qloo:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:genre:place:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:genre:place",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:restaurant_dining",
+            "name": "Restaurant Dining",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:dining_option:qloo:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:dining_option:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenities:place:restaurant",
+            "name": "Restaurant",
+            "type": "urn:tag:amenities:place",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:eatery",
+            "name": "Eatery",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:restobar",
+            "name": "Restobar",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:restaurant_service",
+            "name": "Restaurant Service",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:gastropub_food",
+            "name": "Gastropub Food",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:amenity:qloo:dining_restaurant",
+            "name": "Dining Restaurant",
+            "type": "urn:tag:amenity:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:eatery",
+            "name": "Eatery",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          },
+          {
+            "id": "urn:tag:cuisine:qloo:gaststatte",
+            "name": "Gaststätte",
+            "type": "urn:tag:cuisine:qloo",
+            "parentTypes": [
+              "urn:entity:place"
+            ]
+          }
+        ]
+      },
+      {
+        "phrase": "jazz",
+        "parentFilter": null,
+        "status": "20 returned",
+        "results": [
+          {
+            "id": "urn:tag:genre:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:genre:qloo",
+            "parentTypes": [
+              "urn:entity:artist",
+              "urn:entity:person",
+              "urn:entity:book",
+              "urn:entity:movie",
+              "urn:entity:tv_show",
+              "urn:entity:podcast"
+            ]
+          },
+          {
+            "id": "urn:tag:genre:music:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:genre:music",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:music:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:music:qloo",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:genre_category:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:genre_category:qloo",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:subgenre:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:subgenre:qloo",
+            "parentTypes": [
+              "urn:entity:artist",
+              "urn:entity:book",
+              "urn:entity:movie",
+              "urn:entity:tv_show",
+              "urn:entity:podcast"
+            ]
+          },
+          {
+            "id": "urn:tag:influenced_by:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:influenced_by:qloo",
+            "parentTypes": [
+              "urn:entity:artist",
+              "urn:entity:person"
+            ]
+          },
+          {
+            "id": "urn:tag:genre:music:cool_jazz",
+            "name": "cool jazz",
+            "type": "urn:tag:genre:music",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:influence:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:influence:qloo",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:interests:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:interests:qloo",
+            "parentTypes": [
+              "urn:entity:place",
+              "urn:entity:movie",
+              "urn:entity:tv_show"
+            ]
+          },
+          {
+            "id": "urn:tag:cultural_genre:qloo:american_jazz",
+            "name": "American Jazz",
+            "type": "urn:tag:cultural_genre:qloo",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:genre:music:j_jazz",
+            "name": "J jazz",
+            "type": "urn:tag:genre:music",
+            "parentTypes": [
+              "urn:entity:artist"
+            ]
+          },
+          {
+            "id": "urn:tag:hobby:qloo:jazz_music",
+            "name": "Jazz music",
+            "type": "urn:tag:hobby:qloo",
+            "parentTypes": [
+              "urn:entity:person"
+            ]
+          }
+        ]
+      },
+      {
+        "phrase": "jazz",
+        "parentFilter": "urn:entity:place",
+        "status": "1 returned",
+        "results": [
+          {
+            "id": "urn:tag:interests:qloo:jazz",
+            "name": "Jazz",
+            "type": "urn:tag:interests:qloo",
+            "parentTypes": [
+              "urn:entity:place",
+              "urn:entity:movie",
+              "urn:entity:tv_show"
+            ]
+          }
+        ]
+      }
+    ],
+    "factsRead": {
+      "openWindow": 26,
+      "stepFree": 31,
+      "dietary": 25,
+      "closedAllDay": 5
+    },
+    "withHours": 26,
+    "withGoodFor": 24,
+    "withCategoryTag": 40,
+    "markedClosed": 0,
+    "taxonomy": {
+      "goodFor": [
+        {
+          "name": "Anniversary",
+          "count": 16
+        },
+        {
+          "name": "Large Group",
+          "count": 15
+        },
+        {
+          "name": "Bar",
+          "count": 6
+        },
+        {
+          "name": "Good for kids",
+          "count": 6
+        },
+        {
+          "name": "Work Dinner",
+          "count": 6
+        },
+        {
+          "name": "Date Night",
+          "count": 4
+        },
+        {
+          "name": "Good for Groups",
+          "count": 2
+        },
+        {
+          "name": "Inexpensive",
+          "count": 1
+        },
+        {
+          "name": "Where to Drink",
+          "count": 1
+        }
+      ],
+      "tags": [
+        {
+          "name": "Place",
+          "type": "urn:tag:genre:place",
+          "count": 40
+        },
+        {
+          "name": "Restaurant",
+          "type": "urn:tag:genre:place",
+          "count": 40
+        },
+        {
+          "name": "Dining drinking",
+          "type": "urn:tag:activity_type:qloo",
+          "count": 39
+        },
+        {
+          "name": "Destination",
+          "type": "urn:tag:visit_intent:qloo",
+          "count": 38
+        },
+        {
+          "name": "Central",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "count": 37
+        },
+        {
+          "name": "Evening",
+          "type": "urn:tag:time_of_day_fit:qloo",
+          "count": 37
+        },
+        {
+          "name": "Urban",
+          "type": "urn:tag:setting:qloo",
+          "count": 37
+        },
+        {
+          "name": "Walkable",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "count": 36
+        },
+        {
+          "name": "Special occasion",
+          "type": "urn:tag:visit_intent:qloo",
+          "count": 35
+        },
+        {
+          "name": "City center",
+          "type": "urn:tag:setting:qloo",
+          "count": 34
+        },
+        {
+          "name": "Lively",
+          "type": "urn:tag:ambience:qloo",
+          "count": 34
+        },
+        {
+          "name": "Bustling",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "count": 31
+        },
+        {
+          "name": "Wheelchair accessible entrance",
+          "type": "urn:tag:accessibility:place",
+          "count": 31
+        },
+        {
+          "name": "Afternoon",
+          "type": "urn:tag:time_of_day_fit:qloo",
+          "count": 30
+        },
+        {
+          "name": "Dine in",
+          "type": "urn:tag:service_type:qloo",
+          "count": 30
+        },
+        {
+          "name": "25 29",
+          "type": "urn:tag:age_range:qloo",
+          "count": 29
+        },
+        {
+          "name": "Locals",
+          "type": "urn:tag:customer_identity:qloo",
+          "count": 28
+        },
+        {
+          "name": "Takeout",
+          "type": "urn:tag:service_type:qloo",
+          "count": 28
+        },
+        {
+          "name": "Tourists",
+          "type": "urn:tag:customer_identity:qloo",
+          "count": 28
+        },
+        {
+          "name": "Wheelchair accessible restroom",
+          "type": "urn:tag:accessibility:place",
+          "count": 28
+        },
+        {
+          "name": "Wheelchair accessible seating",
+          "type": "urn:tag:accessibility:place",
+          "count": 28
+        },
+        {
+          "name": "Credit cards",
+          "type": "urn:tag:payments:place",
+          "count": 27
+        },
+        {
+          "name": "Debit cards",
+          "type": "urn:tag:payments:place",
+          "count": 27
+        },
+        {
+          "name": "Modern",
+          "type": "urn:tag:decor:qloo",
+          "count": 27
+        },
+        {
+          "name": "Onsite services",
+          "type": "urn:tag:service_options:place",
+          "count": 27
+        },
+        {
+          "name": "Casual",
+          "type": "urn:tag:culinary_style:qloo",
+          "count": 26
+        },
+        {
+          "name": "Price level",
+          "type": "urn:tag:payments:place",
+          "count": 26
+        },
+        {
+          "name": "Foodies",
+          "type": "urn:tag:customer_identity:qloo",
+          "count": 25
+        },
+        {
+          "name": "Groups of friends",
+          "type": "urn:tag:customer_identity:qloo",
+          "count": 25
+        },
+        {
+          "name": "Mastercard",
+          "type": "urn:tag:credit_card:place",
+          "count": 25
+        },
+        {
+          "name": "Nfc mobile payments",
+          "type": "urn:tag:payments:place",
+          "count": 25
+        },
+        {
+          "name": "Cocktails",
+          "type": "urn:tag:beverage_offering:qloo",
+          "count": 24
+        },
+        {
+          "name": "Restroom",
+          "type": "urn:tag:amenities:place",
+          "count": 24
+        },
+        {
+          "name": "City view",
+          "type": "urn:tag:view:qloo",
+          "count": 23
+        },
+        {
+          "name": "Delivery",
+          "type": "urn:tag:service_type:qloo",
+          "count": 23
+        },
+        {
+          "name": "Morning",
+          "type": "urn:tag:time_of_day_fit:qloo",
+          "count": 23
+        },
+        {
+          "name": "Vegetarian",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 23
+        },
+        {
+          "name": "Beer",
+          "type": "urn:tag:beverage_offering:qloo",
+          "count": 22
+        },
+        {
+          "name": "Coffee and tea",
+          "type": "urn:tag:beverage_offering:qloo",
+          "count": 22
+        },
+        {
+          "name": "Dine in",
+          "type": "urn:tag:service_options:place",
+          "count": 22
+        },
+        {
+          "name": "Trendy",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "count": 22
+        },
+        {
+          "name": "18 24",
+          "type": "urn:tag:age_range:qloo",
+          "count": 21
+        },
+        {
+          "name": "30 34",
+          "type": "urn:tag:age_range:qloo",
+          "count": 21
+        },
+        {
+          "name": "Full bar",
+          "type": "urn:tag:beverage_offering:qloo",
+          "count": 21
+        },
+        {
+          "name": "Loud",
+          "type": "urn:tag:noise_level:qloo",
+          "count": 21
+        },
+        {
+          "name": "Reservations",
+          "type": "urn:tag:service_type:qloo",
+          "count": 21
+        },
+        {
+          "name": "Takeout",
+          "type": "urn:tag:service_options:place",
+          "count": 21
+        },
+        {
+          "name": "Wine",
+          "type": "urn:tag:beverage_offering:qloo",
+          "count": 21
+        },
+        {
+          "name": "Alcohol",
+          "type": "urn:tag:offerings:place",
+          "count": 20
+        },
+        {
+          "name": "Bar service",
+          "type": "urn:tag:service_type:qloo",
+          "count": 20
+        },
+        {
+          "name": "Beer",
+          "type": "urn:tag:offerings:place",
+          "count": 20
+        },
+        {
+          "name": "Cocktails",
+          "type": "urn:tag:offerings:place",
+          "count": 20
+        },
+        {
+          "name": "Large group",
+          "type": "urn:tag:ambience:place",
+          "count": 20
+        },
+        {
+          "name": "Midday",
+          "type": "urn:tag:time_of_day_fit:qloo",
+          "count": 20
+        },
+        {
+          "name": "Social",
+          "type": "urn:tag:ambience:qloo",
+          "count": 20
+        },
+        {
+          "name": "Wine",
+          "type": "urn:tag:offerings:place",
+          "count": 20
+        },
+        {
+          "name": "American",
+          "type": "urn:tag:cuisine:qloo",
+          "count": 19
+        },
+        {
+          "name": "Bar onsite",
+          "type": "urn:tag:amenities:place",
+          "count": 19
+        },
+        {
+          "name": "Birthday",
+          "type": "urn:tag:event:place",
+          "count": 19
+        },
+        {
+          "name": "Casual",
+          "type": "urn:tag:ambience:qloo",
+          "count": 19
+        }
+      ],
+      "practical": [
+        {
+          "id": "urn:tag:accessibility:place:wheelchair_accessible_entrance",
+          "name": "Wheelchair accessible entrance",
+          "type": "urn:tag:accessibility:place",
+          "count": 31
+        },
+        {
+          "id": "urn:tag:accessibility:place:wheelchair_accessible_restroom",
+          "name": "Wheelchair accessible restroom",
+          "type": "urn:tag:accessibility:place",
+          "count": 28
+        },
+        {
+          "id": "urn:tag:accessibility:place:wheelchair_accessible_seating",
+          "name": "Wheelchair accessible seating",
+          "type": "urn:tag:accessibility:place",
+          "count": 28
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:vegetarian",
+          "name": "Vegetarian",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 23
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:gluten_free",
+          "name": "Gluten free",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 18
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:vegan",
+          "name": "Vegan",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 16
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:healthy_options",
+          "name": "Healthy options",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 12
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:halal",
+          "name": "Halal",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 11
+        },
+        {
+          "id": "urn:tag:accessibility:place:wheelchair_accessible_parking_lot",
+          "name": "Wheelchair accessible parking lot",
+          "type": "urn:tag:accessibility:place",
+          "count": 10
+        },
+        {
+          "id": "urn:tag:accessibility:place:wheelchair_accessible_elevator",
+          "name": "Wheelchair accessible elevator",
+          "type": "urn:tag:accessibility:place",
+          "count": 5
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:allergy_friendly",
+          "name": "Allergy friendly",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 4
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:organic",
+          "name": "Organic",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 4
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:dairy_free",
+          "name": "Dairy free",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 3
+        },
+        {
+          "id": "urn:tag:accessibility:place:assistive_hearing_loop",
+          "name": "Assistive hearing loop",
+          "type": "urn:tag:accessibility:place",
+          "count": 1
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:nut_free",
+          "name": "Nut free",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 1
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:plant_based",
+          "name": "Plant based",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 1
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:soy_free",
+          "name": "Soy free",
+          "type": "urn:tag:dietary_option:qloo",
+          "count": 1
+        }
+      ]
+    },
+    "nestedShapes": {
+      "properties.hours": {
+        "friday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "time T23:30:00",
+            "opens": "time T08:00:00"
+          }
+        },
+        "monday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "time T23:00:00",
+            "opens": "time T08:00:00"
+          }
+        },
+        "saturday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "null",
+            "opens": "null"
+          }
+        },
+        "sunday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "null",
+            "opens": "null"
+          }
+        },
+        "thursday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "time T23:00:00",
+            "opens": "time T08:00:00"
+          }
+        },
+        "tuesday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "time T23:00:00",
+            "opens": "time T08:00:00"
+          }
+        },
+        "wednesday": {
+          "array": 1,
+          "first": {
+            "closed": "boolean",
+            "closes": "time T23:00:00",
+            "opens": "time T08:00:00"
+          }
+        }
+      },
+      "properties.is_closed": "boolean",
+      "properties.price_range": {
+        "currency": "string aaa",
+        "from": "null",
+        "to": "null"
+      },
+      "properties.price_level": "number",
+      "properties.good_for": "null",
+      "properties.locality": {
+        "city": {
+          "abbreviation": "string AAA",
+          "admin_level": "number",
+          "boundary": "string aaaaaaaaaaaaaa",
+          "country_code": "null",
+          "entity_id": "string 99A99999-9AAA-9AA9-99A9-999A9A99",
+          "locality_id": "string a999999",
+          "name": "string Aaa Aaaa",
+          "place": "string aaaa"
+        },
+        "country": {
+          "abbreviation": "string AAA",
+          "admin_level": "number",
+          "boundary": "string aaaaaaaaaaaaaa",
+          "country_code": "string AA",
+          "entity_id": "string AAA99A99-999A-9A9A-AA99-AA99999A",
+          "locality_id": "string a999999",
+          "name": "string Aaaaaa Aaaaaa",
+          "place": "string aaaaaaa"
+        },
+        "county": {
+          "abbreviation": "null",
+          "admin_level": "number",
+          "boundary": "string aaaaaaaaaaaaaa",
+          "country_code": "null",
+          "entity_id": "string AA9A99AA-9A9A-9AAA-99AA-9999999A",
+          "locality_id": "string a9999999",
+          "name": "string Aaa Aaaa Aaaaaa",
+          "place": "string aaaaaa"
+        },
+        "metro": {
+          "abbreviation": "null",
+          "admin_level": "number",
+          "boundary": "string aaaaa",
+          "country_code": "null",
+          "entity_id": "string 9999A9A9-999A-9999-A9A9-999999A9",
+          "locality_id": "string 99A99999-9AAA-9AA9-99A9-999A9A99",
+          "name": "string Aaa Aaaa Aaaa",
+          "place": "string aaaaa"
+        },
+        "neighborhood": {
+          "abbreviation": "null",
+          "admin_level": "number",
+          "boundary": "string aaaaa",
+          "country_code": "null",
+          "entity_id": "string 9A999AAA-999A-9999-99A9-A99A9AAA",
+          "locality_id": "string a9999999",
+          "name": "string Aaaaa Aaaa Aaaa",
+          "place": "string aaaaaaaaaaaaa"
+        },
+        "state": {
+          "abbreviation": "string A.A.",
+          "admin_level": "number",
+          "boundary": "string aaaaaaaaaaaaaa",
+          "country_code": "null",
+          "entity_id": "string AAAA9999-9999-999A-99A9-A999AA99",
+          "locality_id": "string a99999",
+          "name": "string Aaa Aaaa",
+          "place": "string aaaaa"
+        }
+      },
+      "properties.geocode": {
+        "admin1_region": "string Aaa Aaaa",
+        "admin2_region": "string Aaa Aaaa Aaaaaa",
+        "city": "string Aaa Aaaa",
+        "country": "string Aaaaaa Aaaaaa",
+        "country_code": "string AA",
+        "metro": "string Aaa Aaaa Aaaa",
+        "name": "string Aaaaa Aaaa Aaaa"
+      },
+      "properties.business_rating": "number",
+      "properties.primary_genre": {
+        "akas": {
+          "array": 42,
+          "first": {
+            "languages": {
+              "array": 1,
+              "first": "string aa"
+            },
+            "value": "string \"델리\""
+          }
+        },
+        "id": "string aaa:aaa:aaaaa:aaaaa:aaaaaaaaaa:a",
+        "name": "string Aaaa",
+        "type": "string aaa:aaa:aaaaa:aaaaa",
+        "weight": "null"
+      },
+      "location": {
+        "geohash": "string aa9aaaa99a9a",
+        "lat": "number",
+        "lon": "number"
+      },
+      "tags": {
+        "array": 136,
+        "first": {
+          "id": "string aaa:aaa:aaaaaaa_aaaa:aaaa:aaaaaa",
+          "name": "string Aaaaaaa",
+          "type": "string aaa:aaa:aaaaaaa_aaaa:aaaa",
+          "weight": "null"
+        }
+      },
+      "external": {
+        "google_place": {
+          "array": 1,
+          "first": {
+            "id": "string 999999a999aa9aaa",
+            "place_id": "string AaAAAaa9a99AaaaA9aaAA-aAAAA"
+          }
+        },
+        "michelin": {
+          "array": 1,
+          "first": {
+            "id": "string 999999",
+            "stars": "null"
+          }
+        }
+      },
+      "references": "null",
+      "query": {
+        "distance": "number",
+        "measurements": {
+          "audience_growth": "number"
+        }
+      },
+      "disambiguation": "string 999 A Aaaaaaa Aa Aaa Aaaa, AA 99",
+      "type": "string aaa:aaaaaa",
+      "subtype": "string aaa:aaaaaa:aaaaa"
+    },
+    "probes": [
+      {
+        "kind": "entity",
+        "input": "Miles Davis",
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "name": "Miles Davis",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Miles Davis",
+            "type": "urn:entity:person"
+          }
+        ],
+        "warnings": [
+          "Several entries share this name. Choose the intended entry."
+        ]
+      },
+      {
+        "kind": "entity",
+        "input": "Metallica",
+        "status": "ambiguous",
+        "candidates": [
+          {
+            "name": "Metallica",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Metallica",
+            "type": "urn:entity:album"
+          },
+          {
+            "name": "Metallica",
+            "type": "urn:entity:person"
+          },
+          {
+            "name": "Metallica",
+            "type": "urn:entity:album"
+          },
+          {
+            "name": "Metallica",
+            "type": "urn:entity:author"
+          }
+        ],
+        "warnings": [
+          "Several entries share this name. Choose the intended entry."
+        ]
+      },
+      {
+        "kind": "entity",
+        "input": "Miles Davis",
+        "status": "typed search returned 5",
+        "candidates": [
+          {
+            "name": "Miles Davis",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Miles Davis Quintet",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Miles Davis & Charlie Parker",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Miles Davis Septet",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Miles Davis & The Modern Jazz Giants",
+            "type": "urn:entity:artist"
+          }
+        ],
+        "warnings": [],
+        "note": "search with types=urn:entity:artist"
+      },
+      {
+        "kind": "entity",
+        "input": "Metallica",
+        "status": "typed search returned 5",
+        "candidates": [
+          {
+            "name": "Metallica",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Metallica and Ozzy Osbourne",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Metallica Tribute",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "MetallicA  (Kill'em All)",
+            "type": "urn:entity:artist"
+          },
+          {
+            "name": "Hip-Hop Tribute To Metallica",
+            "type": "urn:entity:artist"
+          }
+        ],
+        "warnings": [],
+        "note": "search with types=urn:entity:artist"
+      },
+      {
+        "kind": "category",
+        "input": "restaurant",
+        "status": "resolved",
+        "candidates": [
+          {
+            "name": "Restaurant",
+            "type": "urn:tag:genre:place"
+          }
+        ],
+        "warnings": [
+          "5 tags are called \"Restaurant\". The place genre tag was used because it says what kind of place a venue is."
+        ]
+      },
+      {
+        "kind": "tag",
+        "input": "jazz",
+        "status": "resolved",
+        "candidates": [
+          {
+            "name": "Jazz",
+            "type": "urn:tag:interests:qloo"
+          }
+        ],
+        "warnings": []
+      }
+    ],
+    "signalSensitivity": {
+      "overlapAt3": 0,
+      "kendallTau": 0.41025641025641024
+    },
+    "callCount": 16,
+    "callErrors": []
+  }
+}
