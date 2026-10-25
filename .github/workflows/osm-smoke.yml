@@ -14,6 +14,12 @@ on:
       radius:
         description: Radius in metres, 50 to 1500
         default: '400'
+      overpass_url:
+        description: Overpass endpoint to ask
+        default: https://overpass-api.de/api/interpreter
+      timeout_ms:
+        description: How long to wait for an answer, in milliseconds
+        default: '45000'
 
 permissions:
   contents: read
@@ -27,6 +33,8 @@ jobs:
       LAT: ${{ inputs.lat }}
       LON: ${{ inputs.lon }}
       RADIUS: ${{ inputs.radius }}
+      OVERPASS_URL: ${{ inputs.overpass_url }}
+      OVERPASS_TIMEOUT_MS: ${{ inputs.timeout_ms }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
