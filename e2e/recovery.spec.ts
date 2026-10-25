@@ -17,6 +17,15 @@ test.describe('landing page', () => {
     await expectNoSeriousAccessibilityIssues(page);
   });
 
+  test('opens a simulated example in one press and lands on a shortlist', async ({ page }) => {
+    await page.goto('/');
+    const run = page.getByRole('button', { name: 'Run a simulated example' });
+    await expect(run).toBeEnabled();
+    await run.click();
+    await expect(page.getByRole('heading', { name: 'Shortlist' })).toBeVisible();
+    await expect(page.getByText('Demo mode.')).toBeVisible();
+  });
+
   test('has a skip link that moves focus to the main content', async ({ page }) => {
     await page.goto('/');
     await page.keyboard.press('Tab');

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { caseHref, go } from '../lib/router';
 import {
   api,
+  ApiError,
   type EvaluationReportFile,
   type ScenarioPreset,
   type Showcase,
@@ -90,6 +92,30 @@ export function Home() {
   const [showcaseFailed, setShowcaseFailed] = useState(false);
   const [presets, setPresets] = useState<ScenarioPreset[]>([]);
   const [report, setReport] = useState<EvaluationReportFile | null>(null);
+  const [launching, setLaunching] = useState(false);
+  const [launchError, setLaunchError] = useState<string | null>(null);
+
+  // The first example that needs no choice from the person, so one press reaches a shortlist.
+  const quickExample = presets.find((preset) => !preset.choices);
+
+  async function runExample(): Promise<void> {
+    if (!quickExample) return;
+    setLaunching(true);
+    setLaunchError(null);
+    try {
+      const view = await api.openCase({
+        mode: 'demo',
+        anchor: quickExample.anchor,
+        disruption: quickExample.disruption,
+      });
+      go(caseHref(view.id));
+    } catch (caught) {
+      setLaunchError(
+        caught instanceof ApiError ? caught.message : 'The example could not be opened.',
+      );
+      setLaunching(false);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -128,10 +154,23 @@ export function Home() {
             <a className="btn primary" href="#/new">
               Start a recovery
             </a>
+            <button
+              type="button"
+              className="btn"
+              disabled={!quickExample || launching}
+              onClick={() => void runExample()}
+            >
+              {launching ? 'Opening the example' : 'Run a simulated example'}
+            </button>
             <a className="btn" href="#/evidence">
               See the evidence
             </a>
           </div>
+          {launchError ? (
+            <p className="error" role="alert" style={{ marginTop: '0.75rem' }}>
+              {launchError}
+            </p>
+          ) : null}
         </div>
         {showcase ? (
           <Vignette showcase={showcase} />
