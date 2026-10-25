@@ -1,0 +1,58 @@
+# Runs the live Qloo experiment from GitHub, so the personal key never has to leave GitHub.
+# It runs only when started by hand. The key comes from the repository secret QLOO_API_KEY.
+name: Qloo smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        description: City level location to search
+        default: New York
+      seed_a:
+        description: First public name used as a taste signal
+        default: Miles Davis
+      seed_b:
+        description: Second public name used as a taste signal
+        default: Metallica
+      category:
+        description: Venue category
+        default: restaurant
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Live Qloo experiment
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      QLOO_API_KEY: ${{ secrets.QLOO_API_KEY }}
+      CITY: ${{ inputs.city }}
+      SEED_A: ${{ inputs.seed_a }}
+      SEED_B: ${{ inputs.seed_b }}
+      CATEGORY: ${{ inputs.category }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Check that the secret is set
+        run: |
+          if [ -z "$QLOO_API_KEY" ]; then
+            echo "The repository secret QLOO_API_KEY is not set. Nothing was requested."
+            exit 2
+          fi
+      - name: Run the smoke test
+        run: npm run qloo:smoke -- --city "$CITY" --seed-a "$SEED_A" --seed-b "$SEED_B" --category "$CATEGORY"
+      - name: Show the redacted report
+        if: always()
+        run: cat data/evaluation/smoke-*.json 2>/dev/null || echo "No report was written."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qloo-smoke-report
+          path: data/evaluation/smoke-*.json
+          if-no-files-found: ignore
