@@ -6,19 +6,20 @@ Current results are in [EVALUATION_RESULTS.md](EVALUATION_RESULTS.md). They are 
 
 ## Design
 
-Each scenario opens a case, records one disruption, resolves any ambiguous signals using a stated choice, and runs one search. Three lists are then compared.
+Each scenario opens a case, records one disruption, resolves any ambiguous signals using a stated choice, and runs one search. Four lists are then compared.
 
 1. **Ungated list.** The top three places by provider rank with no feasibility gate. It stands for a plain recommender. The original venue is left out, as any sensible recommender would.
 2. **Taste Off.** Gated places ordered by distance, then price, then name.
-3. **Taste On.** Gated places ordered by the recovery score.
+3. **Popular.** Gated places ordered by the provider's general popularity, most popular first, with distance and price as tie breakers. It uses none of the group's signals, so it stands for a plain list of well known places.
+4. **Taste On.** Gated places ordered by the recovery score. The venue that fell through counts as a taste signal unless the scenario turns it off.
 
-Both gated arms use the identical pool, gate and exclusions. The report states whether the eligible sets were identical in every scenario.
+All gated arms use the identical pool, gate and exclusions. The report states whether the eligible sets were identical in every scenario.
 
 ## Measures
 
 - How often the ungated top three contained a place that breaks a hard requirement.
 - Violations in the gated top three, judged by an independent oracle. The oracle is a separate implementation of the constraint rules that reads raw venue facts, so it can disagree with the gate and would reveal a bug.
-- Whether the top choice differs between Taste On and Taste Off.
+- Whether the top choice differs between Taste On and Taste Off, and between Taste On and Popular.
 - Overlap of the top three, and Kendall tau between the full orderings.
 - Mean provider affinity of the top three in each arm, reported separately from the recovery score.
 - For scenarios with no eligible place, whether a way forward was offered.

@@ -14,6 +14,7 @@ The client, matching rules, provider and smoke experiment are implemented and te
 | Place pool for a city                    | Not yet run     |
 | Ranking responds to different signals    | Not yet run     |
 | Entity and tag signals accepted together | Not yet run     |
+| A place accepted as a taste signal       | Not yet run     |
 | Go, conditional or no go verdict         | Not yet decided |
 
 ## Getting a key
@@ -31,7 +32,7 @@ Qloo issues hackathon keys through a request form linked from the hackathon page
 
 ### Matching a name the group likes
 
-`GET /search` with `query` (the name), `take=5`, and for the original venue `types=urn:entity:place`.
+`GET /search` with `query` (the name), `take=5`, and for the original venue `types=urn:entity:place`. The original venue is looked up when it is used as a taste signal, which is the default, or when a distance limit needs its location.
 
 Policy: if exactly one returned entity has the same normalised name as the input, it resolves. Otherwise the match is ambiguous and up to five candidates are shown to the person, who chooses or skips the signal. A fuzzy match is never passed on silently. For the original venue, candidates that carry the same name are narrowed by the city only when exactly one mentions the city.
 
@@ -47,7 +48,7 @@ Policy: an exact normalised name match resolves. Otherwise the person chooses. T
 
 ### Ranking a fixed list by taste
 
-`GET /v2/insights` with `filter.type=urn:entity:place`, `filter.results.entities` (the candidate ids), `signal.interests.entities` and `signal.interests.tags` (the resolved ids), `feature.explainability=true` and `take`.
+`GET /v2/insights` with `filter.type=urn:entity:place`, `filter.results.entities` (the candidate ids), `signal.interests.entities` (the resolved names the group likes, and the resolved venue that fell through) and `signal.interests.tags` (the resolved vibes), `feature.explainability=true` and `take`.
 
 Ranking a fixed list, rather than asking Qloo for its own top places, means the Taste On and Taste Off orderings are built from the identical pool.
 
@@ -66,7 +67,7 @@ Sent to Qloo, and nothing else:
 - the city, as typed
 - the venue category phrase
 - the public names and vibe phrases the group likes
-- the original venue name, only when a distance limit is set, so a distance can be measured
+- the original venue name, when it is used as a taste signal (the default, which the person can turn off) or when a distance limit needs its location
 
 Kept on the server only: the plan title, party size, notes about what must survive, times, requirements, decisions, and the case history.
 
@@ -97,7 +98,7 @@ The shape of a ranking request, with identifiers replaced by placeholders, is:
 GET /v2/insights
   filter.type=urn:entity:place
   filter.results.entities=<place id>,<place id>,<place id>
-  signal.interests.entities=<entity id for a name the group likes>
+  signal.interests.entities=<entity id for a name the group likes>,<entity id for the venue that fell through>
   signal.interests.tags=<tag id for a vibe the group likes>
   feature.explainability=true
   take=<number of places>

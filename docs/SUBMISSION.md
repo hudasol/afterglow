@@ -20,14 +20,14 @@ AFTERGLOW recovers the experience, not only the booking. The person describes th
 
 ## 2. Qloo workflow and why it fits
 
-| Step                                 | Qloo endpoint                                    | Why                                                                                    |
-| ------------------------------------ | ------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| Match names the group likes          | `/search`                                        | Turns a public name into a Qloo entity so it can act as a taste signal                 |
-| Match vibes, genres and the category | `/v2/tags` with semantic search                  | Turns a phrase into a tag, scoped to places for the category                           |
-| Candidate places for a city          | `/v2/insights` with a place type and city filter | Provides a pool of real places to evaluate                                             |
-| Rank a fixed list by taste           | `/v2/insights` with `filter.results.entities`    | Ranks the same pool the gate evaluated, so Taste On and Taste Off differ only in order |
+| Step                                            | Qloo endpoint                                    | Why                                                                                                                                                                         |
+| ----------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Match names the group likes, and the lost venue | `/search`                                        | Turns a public name into a Qloo entity so it can act as a taste signal. The venue that fell through is a signal too, so the search looks for places that share its audience |
+| Match vibes, genres and the category            | `/v2/tags` with semantic search                  | Turns a phrase into a tag, scoped to places for the category                                                                                                                |
+| Candidate places for a city                     | `/v2/insights` with a place type and city filter | Provides a pool of real places to evaluate                                                                                                                                  |
+| Rank a fixed list by taste                      | `/v2/insights` with `filter.results.entities`    | Ranks the same pool the gate evaluated, so Taste On and Taste Off differ only in order                                                                                      |
 
-Qloo fits because the product question is not which place is popular but which place carries the same cultural signal as the plan that was lost. Entities and tags express that signal, and ranking a fixed list lets the comparison with a taste free ordering be fair.
+Qloo fits because the product question is not which place is popular but which place carries the same cultural signal as the plan that was lost. Entities and tags express that signal, the venue that fell through is the strongest example of it, and ranking a fixed list lets the comparison with taste free orderings (nearest first and most popular first) be fair.
 
 Qloo results are used as evidence inside a product flow. They never override a hard requirement: a place that fails a requirement is ruled out however well it matches taste. Full detail is in [QLOO_INTEGRATION.md](QLOO_INTEGRATION.md).
 
@@ -37,7 +37,7 @@ Qloo results are used as evidence inside a product flow. They never override a h
 
 Every case has an Evidence tab that lists, for that case:
 
-- what was sent to the taste provider: the city, the category phrase, the names and vibe phrases, and the original venue name only when a distance limit applied
+- what was sent to the taste provider: the city, the category phrase, the names and vibe phrases, and the original venue name when it was used as a taste signal or a distance limit applied
 - what was kept local
 - how each name or phrase was matched, the entry that was selected, how it was selected, and the alternatives that were considered
 - the redacted requests, with endpoint, parameters, status, attempts, duration, cache state and result count, and no credential

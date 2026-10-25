@@ -10,15 +10,15 @@ Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hack
 
 This table states what has and has not been verified. It is updated whenever the facts change.
 
-| Item                                          | Status                                                                                      |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Unit and integration tests                    | Passing (`npm test`)                                                                        |
-| Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                |
-| Type check, lint, formatting                  | Passing (`npm run check`)                                                                   |
-| Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                    |
-| Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which has been requested and has not arrived |
-| Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                               |
-| Hosted demo                                   | **Not yet deployed**                                                                        |
+| Item                                          | Status                                                                                                    |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Unit and integration tests                    | Passing (`npm test`)                                                                                      |
+| Browser tests with accessibility checks       | Passing (`npm run test:e2e`)                                                                              |
+| Type check, lint, formatting                  | Passing (`npm run check`)                                                                                 |
+| Offline evaluation on the simulated catalogue | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                  |
+| Live Qloo smoke test (`npm run qloo:smoke`)   | **Not yet run.** It needs a personal Qloo key, which has been requested and has not arrived               |
+| Live Qloo evaluation                          | **Not yet run.** It depends on the smoke test                                                             |
+| Hosted demo                                   | **Not yet deployed**                                                                                      |
 
 Until the live rows change, nothing in this repository claims that AFTERGLOW has been verified against the real Qloo API. Demo mode uses an invented catalogue and says so on every screen.
 
@@ -48,15 +48,15 @@ Each fact in the interface carries a source tag: Qloo, Simulated, You said, You 
 
 ## Where Qloo is used
 
-- `/search` resolves names the group likes, and the original venue when a distance limit applies.
+- `/search` resolves names the group likes, and the venue that fell through, which is used as a taste signal so the search looks for places that share its audience. The person can turn this off.
 - `/v2/tags` with semantic search resolves vibes and genres, and the venue category tag.
-- `/v2/insights` returns the candidate places for a city, and ranks a fixed list of places by affinity to the group's signals, with explainability when it is available.
+- `/v2/insights` returns the candidate places for a city, and ranks a fixed list of places by affinity to the group's signals and to the lost venue, with explainability when it is available.
 
 Qloo results describe what groups of people tend to like. AFTERGLOW presents them that way and does not treat an affinity as a prediction about any person. The full workflow, parameters and data handling are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
 
 ## Taste On and Taste Off
 
-For every case the interface can show two orderings of the same eligible places. Taste Off sorts by distance to the original venue, then price. Taste On sorts by a recovery score that blends taste with closeness. The pool, the gate and the exclusions are identical in both, so the only difference is the ordering rule. See [docs/EVALUATION.md](docs/EVALUATION.md) for the method and what it can and cannot show.
+For every case the interface can show three orderings of the same eligible places. Nearest first sorts by distance to the original venue, then price. Most popular first sorts by the provider's general popularity and uses none of the group's signals, which is what a plain list of well known places does. Taste On sorts by a recovery score that blends taste with closeness. The pool, the gate and the exclusions are identical in all three, so the only difference is the ordering rule. See [docs/EVALUATION.md](docs/EVALUATION.md) for the method and what it can and cannot show.
 
 ## Quick start
 
@@ -146,7 +146,7 @@ The full list is in [docs/LIMITATIONS.md](docs/LIMITATIONS.md). The most importa
 
 ## Responsible use
 
-See [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md). In short: only the city, the venue category, public taste names and phrases, and, when a distance limit is set, the original venue name are sent to Qloo. Titles, party sizes, notes and times stay on the server. Qloo affinities are never presented as predictions about an individual.
+See [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md). In short: only the city, the venue category, public taste names and phrases, and the original venue name, when it is used as a taste signal or a distance limit needs it, are sent to Qloo. Titles, party sizes, notes and times stay on the server. Qloo affinities are never presented as predictions about an individual.
 
 ## Submission
 

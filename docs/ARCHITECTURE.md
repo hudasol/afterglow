@@ -14,11 +14,11 @@ web (React)  ->  HTTP API, plus types and pure functions from the domain
 Pure rules and data shapes.
 
 - **Evidence.** Every fact is a `Fact<T>`: either known, with a value and a provenance (Qloo, simulation, user, user attested, app), or unknown, with a reason. There is no way to hold a value without saying where it came from.
-- **Intent Anchor.** The plan as described once. It requires at least one taste signal and rejects duplicate constraints. It is never modified.
+- **Intent Anchor.** The plan as described once. It requires at least one taste signal, which may be the venue that fell through, and rejects duplicate constraints. It is never modified.
 - **Plan.** Disruptions are applied to the anchor to produce an effective plan. A budget change can only tighten. Weather adds a covered space requirement. A party change adds a seating requirement. Relaxations the person approved remove requirements from the effective plan without touching the anchor.
 - **Feasibility gate.** For each candidate and each hard constraint the gate returns pass, fail or unknown. Any fail rules the place out. Any unknown leaves it needing verification. Only a full set of passes is feasible. A person's attestation overrides data, and the verdict records that basis.
-- **Scoring.** Taste Off orders by distance, then price, then name. Taste On uses 0.75 times the taste score plus 0.25 times the closeness score. The taste score is the Qloo affinity, or a rank derived value when no affinity is returned. Closeness is one minus the distance to the original venue over ten kilometres. Missing components are dropped and the weights are renormalised.
-- **Recommendation.** The gate runs once. Both arms order the same eligible set.
+- **Scoring.** Nearest first (Taste Off) orders by distance, then price, then name. Most popular first orders by the provider's general popularity, with those tie breakers, and uses no group signals. Taste On uses 0.75 times the taste score plus 0.25 times the closeness score. The taste score is the Qloo affinity, or a rank derived value when no affinity is returned. Closeness is one minus the distance to the original venue over ten kilometres. Missing components are dropped and the weights are renormalised.
+- **Recommendation.** The gate runs once. All three orderings (nearest first, most popular first and Taste On) order the same eligible set.
 - **Relaxation.** Offered only when no option remains. It proposes the smallest sets of requirements, up to three, that would admit at least one place, and applies one only on the person's agreement.
 - **Case events.** A case is an append only list of typed events: opened, matches recorded, choices made, disruptions, searches completed or failed, attestations, relaxations, rejections, attempts started, confirmed or failed, and closure. Folding the events gives the case state. A view builder turns state into the structure the interface shows.
 
