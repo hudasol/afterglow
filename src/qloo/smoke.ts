@@ -3,11 +3,11 @@
  * AFTERGLOW depends on? It runs against the live API and reports facts. It stores no venue data,
  * only counts, key names and rankings of public cultural entities used as probes.
  */
-import type { CallTrace } from '../domain/case.js';
+import type { CallTrace, ResolutionKind, TasteResolution } from '../domain/case.js';
 import { kendallTau, overlapAtK } from '../domain/metrics.js';
 import type { QlooClient } from './client.js';
 import { QlooError } from './errors.js';
-import { asRecord, resultArray, toCandidate, toTasteScores } from './normalize.js';
+import { asRecord, resultArray, toCandidate, toEntityRef, toTasteScores } from './normalize.js';
 import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
 
 export interface SmokeOptions {
@@ -25,6 +25,16 @@ export interface SmokeCheck {
 }
 
 export type SmokeVerdict = 'go' | 'conditional' | 'no_go';
+
+export interface ProbeObservation {
+  kind: ResolutionKind;
+  input: string;
+  status: string;
+  candidates: Array<{ name: string; type?: string }>;
+  warnings: string[];
+  /** Set for the extra lookups that test a request option rather than the product's own lookup. */
+  note?: string;
+}
 
 export interface SmokeReport {
   generatedAt: string;
@@ -46,6 +56,10 @@ export interface SmokeReport {
     /** The value type of each property key on the first place, for example price_level: number. No values. */
     propertyShape: Record<string, string>;
     hoursLikeKeys: string[];
+    /** Masked structure of selected nested fields on the first place. Letters and digits are masked. */
+    nestedShapes: Record<string, unknown>;
+    /** What each probe lookup returned: names and types of public cultural entries, nothing else. */
+    probes: ProbeObservation[];
     signalSensitivity: { overlapAt3: number | null; kendallTau: number | null } | null;
     callCount: number;
     callErrors: string[];
@@ -71,6 +85,48 @@ function shapeOf(value: unknown): Record<string, string> {
   );
 }
 
+/** Replaces letters and digits so a string shows its format and nothing else. */
+export function maskString(value: string): string {
+  return value.slice(0, 32).replace(/[A-Z]/gu, 'A').replace(/[a-z]/gu, 'a').replace(/\d/gu, '9');
+}
+
+/**
+ * The structure of a value to a limited depth: keys, types and masked string formats, never the
+ * values themselves. It lets a report show how opening hours or tags are written without storing
+ * venue data.
+ */
+export function skeletonOf(value: unknown, depth = 0): unknown {
+  if (value === null) return 'null';
+  if (Array.isArray(value)) {
+    return depth >= 4
+      ? `array(${value.length})`
+      : { array: value.length, first: value.length > 0 ? skeletonOf(value[0], depth + 1) : null };
+  }
+  if (typeof value === 'string') return `string ${maskString(value)}`;
+  if (typeof value !== 'object') return typeof value;
+  if (depth >= 4) return 'object';
+  return Object.fromEntries(
+    Object.keys(value)
+      .sort()
+      .slice(0, 30)
+      .map((key) => [key, skeletonOf((value as Record<string, unknown>)[key], depth + 1)]),
+  );
+}
+
+function observeProbe(resolution: TasteResolution): ProbeObservation {
+  const shown = resolution.candidates ?? (resolution.selected ? [resolution.selected] : []);
+  return {
+    kind: resolution.kind,
+    input: resolution.input,
+    status: resolution.status,
+    candidates: shown.slice(0, 5).map((ref) => ({
+      name: ref.name.slice(0, 80),
+      ...(ref.type ? { type: ref.type } : {}),
+    })),
+    warnings: (resolution.warnings ?? []).map((w) => w.slice(0, 200)),
+  };
+}
+
 export async function runSmoke(
   client: QlooClient,
   options: SmokeOptions,
@@ -92,6 +148,8 @@ export async function runSmoke(
     propertyKeys: [],
     propertyShape: {},
     hoursLikeKeys: [],
+    nestedShapes: {},
+    probes: [],
     signalSensitivity: null,
     callCount: 0,
     callErrors: [],
@@ -123,8 +181,12 @@ export async function runSmoke(
   for (const seed of [options.seedA, options.seedB]) {
     resolutions.push(await resolveEntity(client, 'entity', seed, options.city, traces));
   }
-  const entityA = resolutions[0]?.selected;
-  const entityB = resolutions[1]?.selected;
+  observed.probes.push(...resolutions.map(observeProbe));
+  // The ranking checks below test the ranking calls. They go ahead with the first candidate of an
+  // ambiguous probe so that a naming question does not hide whether ranking works. The product
+  // never does this: it asks the person to choose.
+  const entityA = resolutions[0]?.selected ?? resolutions[0]?.candidates?.[0];
+  const entityB = resolutions[1]?.selected ?? resolutions[1]?.candidates?.[0];
   check(
     'entity resolution',
     resolutions.every((r) => r.status === 'resolved'),
@@ -135,9 +197,43 @@ export async function runSmoke(
       )
       .join('; '),
   );
+  // Does the search accept a type filter, and does it narrow an ambiguous name? Information only.
+  for (const [seed, type] of [
+    [options.seedA, 'urn:entity:artist'],
+    [options.seedB, 'urn:entity:artist'],
+  ] as const) {
+    try {
+      const typed = await client.get('/search', { query: seed, take: 5, types: type }, traces);
+      const refs = resultArray(typed, 'entities')
+        .map(toEntityRef)
+        .filter((ref): ref is NonNullable<typeof ref> => ref !== undefined);
+      observed.probes.push({
+        kind: 'entity',
+        input: seed,
+        status: `typed search returned ${refs.length}`,
+        candidates: refs.slice(0, 5).map((ref) => ({
+          name: ref.name.slice(0, 80),
+          ...(ref.type ? { type: ref.type } : {}),
+        })),
+        warnings: [],
+        note: `search with types=${type}`,
+      });
+    } catch (error) {
+      observed.probes.push({
+        kind: 'entity',
+        input: seed,
+        status: `typed search failed with ${error instanceof QlooError ? error.code : 'an error'}`,
+        candidates: [],
+        warnings: [],
+        note: `search with types=${type}`,
+      });
+    }
+  }
   if (!entityA || !entityB) {
+    reasons.push('A probe entity returned no candidate, so the ranking checks were skipped.');
+  } else if (resolutions.some((r) => r.status !== 'resolved')) {
     reasons.push(
-      'A probe entity did not resolve to a single exact match. Choose different probe names with --seed-a and --seed-b.',
+      'A probe name matched more than one entry, so the ranking checks used the first candidate. The product asks the person to choose in this case.',
     );
   }
 
@@ -148,7 +244,9 @@ export async function runSmoke(
     category.status === 'resolved',
     `${options.category}: ${category.status}`,
   );
+  observed.probes.push(observeProbe(category));
   const vibe = await resolveTag(client, 'tag', 'jazz', traces);
+  observed.probes.push(observeProbe(vibe));
   check(
     'tag resolution for a vibe phrase',
     vibe.status !== 'not_found',
@@ -192,6 +290,34 @@ export async function runSmoke(
   observed.hoursLikeKeys = [...observed.entityKeys, ...observed.propertyKeys].filter((key) =>
     /hour|open|close|schedule/iu.test(key),
   );
+  const nestedKeys = [
+    'hours',
+    'is_closed',
+    'price_range',
+    'price_level',
+    'good_for',
+    'locality',
+    'geocode',
+    'business_rating',
+    'primary_genre',
+  ];
+  for (const key of nestedKeys) {
+    const value = asRecord(first?.['properties'])?.[key];
+    if (value !== undefined) observed.nestedShapes[`properties.${key}`] = skeletonOf(value);
+  }
+  for (const key of [
+    'location',
+    'tags',
+    'external',
+    'references',
+    'query',
+    'disambiguation',
+    'type',
+    'subtype',
+  ]) {
+    const value = first?.[key];
+    if (value !== undefined) observed.nestedShapes[key] = skeletonOf(value);
+  }
   check(
     'place pool for the city',
     candidates.length >= 10,

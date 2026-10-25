@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { QlooClient } from '../../src/qloo/client.js';
-import { runSmoke } from '../../src/qloo/smoke.js';
+import { maskString, runSmoke, skeletonOf } from '../../src/qloo/smoke.js';
 import { jsonResponse } from '../helpers/qloo-fixtures.js';
 
 /** A synthetic Qloo stand in. It exercises the experiment's logic only and proves nothing about the real API. */
@@ -103,6 +103,43 @@ describe('qloo smoke experiment', () => {
     expect(JSON.stringify(report.observed.propertyShape)).not.toContain('Test Road');
   });
 
+  it('records what each probe lookup returned, as names and types only', async () => {
+    const report = await runSmoke(
+      client(fakeQloo({ poolSize: 20, sensitive: true })),
+      options,
+      new Date('2026-10-24T00:00:00Z'),
+    );
+    const miles = report.observed.probes.find(
+      (probe) => probe.input === 'Miles Davis' && probe.kind === 'entity' && !probe.note,
+    );
+    expect(miles?.status).toBe('resolved');
+    expect(miles?.candidates).toEqual([{ name: 'Miles Davis', type: 'urn:entity:artist' }]);
+    expect(
+      report.observed.probes.some((probe) => probe.note?.startsWith('search with types=')),
+    ).toBe(true);
+  });
+
+  it('carries on with the first candidate of an ambiguous probe and says so', async () => {
+    const base = fakeQloo({ poolSize: 20, sensitive: true });
+    const twoMatches = (async (input: Request | URL | string, init?: RequestInit) => {
+      const url = new URL(String(input));
+      if (url.pathname === '/search' && url.searchParams.get('query') === 'Metallica') {
+        return jsonResponse({
+          results: [
+            { entity_id: 'e-Metallica', name: 'Metallica', types: ['urn:entity:artist'] },
+            { entity_id: 'a-Metallica', name: 'Metallica', types: ['urn:entity:album'] },
+          ],
+        });
+      }
+      return base(input, init);
+    }) as typeof fetch;
+    const report = await runSmoke(client(twoMatches), options, new Date());
+    expect(report.checks.find((c) => c.name === 'entity resolution')?.ok).toBe(false);
+    expect(report.checks.find((c) => c.name === 'signal sensitivity')).toBeDefined();
+    expect(report.reasons.join(' ')).toContain('first candidate');
+    expect(report.verdict).toBe('conditional');
+  });
+
   it('returns no go when different signals give the same ranking', async () => {
     const report = await runSmoke(
       client(fakeQloo({ poolSize: 20, sensitive: false })),
@@ -141,5 +178,33 @@ describe('qloo smoke experiment', () => {
     );
     expect(report.verdict).toBe('no_go');
     expect(report.checks[0]?.detail).toContain('QLOO_AUTH');
+  });
+});
+
+describe('response shape helpers', () => {
+  it('masks letters and digits so only the format remains', () => {
+    expect(maskString('Monday 11:30 AM')).toBe('Aaaaaa 99:99 AA');
+    expect(maskString('x'.repeat(100))).toHaveLength(32);
+  });
+
+  it('describes structure without values', () => {
+    const shape = skeletonOf({
+      Monday: [{ open: '11:00', close: '22:30' }],
+      closed: false,
+      note: null,
+      rating: 4.5,
+    });
+    expect(shape).toEqual({
+      Monday: { array: 1, first: { close: 'string 99:99', open: 'string 99:99' } },
+      closed: 'boolean',
+      note: 'null',
+      rating: 'number',
+    });
+    expect(JSON.stringify(shape)).not.toContain('22:30');
+  });
+
+  it('stops at a fixed depth', () => {
+    const deep = { a: { b: { c: { d: { e: { f: 1 } } } } } };
+    expect(JSON.stringify(skeletonOf(deep))).toContain('"object"');
   });
 });
