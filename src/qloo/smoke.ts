@@ -83,6 +83,8 @@ export interface SmokeReport {
     taxonomy: {
       goodFor: Array<{ name: string; count: number }>;
       tags: Array<{ name: string; type?: string; count: number }>;
+      /** Tags that bear on a hard requirement (diet, access, seating, groups), with their ids. */
+      practical: Array<{ id: string; name: string; type?: string; count: number }>;
     };
     /** Raw tag lookups: what Qloo returns for a phrase, with and without a place parent filter. */
     tagLookups: TagLookupObservation[];
@@ -178,6 +180,33 @@ function tally(items: unknown[]): Array<{ name: string; type?: string; count: nu
     .slice(0, 60);
 }
 
+const PRACTICAL_TYPE =
+  /diet|accessib|seating|outdoor|indoor|covered|capacity|reserv|group|weather|shelter/iu;
+
+function isPracticalTag(tag: unknown): boolean {
+  const type = asRecord(tag)?.['type'];
+  return typeof type === 'string' && PRACTICAL_TYPE.test(type);
+}
+
+function tallyWithId(
+  items: unknown[],
+): Array<{ id: string; name: string; type?: string; count: number }> {
+  const counts = new Map<string, { id: string; name: string; type?: string; count: number }>();
+  for (const item of items) {
+    const record = asRecord(item);
+    const id = typeof record?.['id'] === 'string' ? record['id'].slice(0, 120) : undefined;
+    const name = typeof record?.['name'] === 'string' ? record['name'].slice(0, 60) : undefined;
+    if (!id || !name) continue;
+    const type = typeof record?.['type'] === 'string' ? record['type'].slice(0, 80) : undefined;
+    const entry = counts.get(id) ?? { id, name, ...(type ? { type } : {}), count: 0 };
+    entry.count += 1;
+    counts.set(id, entry);
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count || a.id.localeCompare(b.id))
+    .slice(0, 80);
+}
+
 function observeProbe(resolution: TasteResolution): ProbeObservation {
   const shown = resolution.candidates ?? (resolution.selected ? [resolution.selected] : []);
   return {
@@ -219,7 +248,7 @@ export async function runSmoke(
     withGoodFor: 0,
     withCategoryTag: null,
     markedClosed: 0,
-    taxonomy: { goodFor: [], tags: [] },
+    taxonomy: { goodFor: [], tags: [], practical: [] },
     nestedShapes: {},
     probes: [],
     signalSensitivity: null,
@@ -326,7 +355,7 @@ export async function runSmoke(
     `${options.category}: ${category.status}`,
   );
   observed.probes.push(observeProbe(category));
-  const vibe = await resolveTag(client, 'tag', 'jazz', traces);
+  const vibe = await resolveTag(client, 'tag', 'jazz', traces, PLACE_TYPE);
   observed.probes.push(observeProbe(vibe));
   check(
     'tag resolution for a vibe phrase',
@@ -418,6 +447,7 @@ export async function runSmoke(
       ({ name, count }) => ({ name, count }),
     ),
     tags: tally(records.flatMap((r) => asArrayOf(r['tags']))),
+    practical: tallyWithId(records.flatMap((r) => asArrayOf(r['tags'])).filter(isPracticalTag)),
   };
   if (category.selected) {
     const wantedId = category.selected.id;
