@@ -129,13 +129,16 @@ export interface RunnerOptions {
   placeboFor?: (scenarioId: string) => ScenarioSpec | undefined;
 }
 
-interface OpenedCase {
+export interface OpenedCase {
   view: CaseView;
   close: () => void;
 }
 
 /** Opens a case in a private in memory store and settles any ambiguous signals as the scenario says. */
-async function openCaseView(provider: TasteProvider, spec: ScenarioSpec): Promise<OpenedCase> {
+export async function openCaseView(
+  provider: TasteProvider,
+  spec: ScenarioSpec,
+): Promise<OpenedCase> {
   const db = new Database(':memory:');
   db.migrate(new URL('../../migrations', import.meta.url).pathname);
   const providers = { demo: provider, live: provider } as Record<'demo' | 'live', TasteProvider>;

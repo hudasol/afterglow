@@ -6,6 +6,8 @@
  *   npm run eval:live                  The preregistered live run. Needs QLOO_API_KEY.
  *   npm run eval:preflight             Checks that the live scenarios can be resolved. No ranking.
  *   npm run eval:render                Rewrites docs/EVALUATION_LIVE.md from results/live-qloo.json.
+ *   npm run eval -- --diagnose file.json [id ...]
+ *                                      Prints why scenarios came out as they did. Writes nothing.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -15,6 +17,7 @@ import {
   summariseLive,
   type LiveResultsFile,
 } from '../evaluation/live-report.js';
+import { diagnoseScenario } from '../evaluation/diagnose.js';
 import { renderReport } from '../evaluation/report-markdown.js';
 import { runEvaluation } from '../evaluation/runner.js';
 import type { ResolutionKind } from '../domain/case.js';
@@ -113,6 +116,36 @@ async function main(): Promise<void> {
     const file = JSON.parse(readFileSync(resolve(root, LIVE_RESULTS), 'utf8')) as LiveResultsFile;
     writeFileSync(resolve(root, LIVE_DOC), renderLiveReport(file));
     console.log(`Wrote ${LIVE_DOC} from ${LIVE_RESULTS}.`);
+    return;
+  }
+  const diagnoseIndex = args.indexOf('--diagnose');
+  if (diagnoseIndex !== -1) {
+    const target = args[diagnoseIndex + 1];
+    if (!target) throw new Error('Pass the path of a scenarios file after --diagnose.');
+    const only = args.slice(diagnoseIndex + 2).filter((arg) => !arg.startsWith('--'));
+    const client = liveClient();
+    if (!client) {
+      console.error('QLOO_API_KEY is not set, so nothing was requested.');
+      process.exitCode = 2;
+      return;
+    }
+    const provider = new QlooTasteProvider(client);
+    for (const scenario of loadLiveScenarios(target)) {
+      if (only.length > 0 && !only.includes(scenario.id)) continue;
+      const { choices, placeboFrom, ...item } = scenario;
+      void placeboFrom;
+      const spec: ScenarioSpec = { ...item, featured: false, ...(choices ? { choices } : {}) };
+      try {
+        console.log(JSON.stringify(await diagnoseScenario(provider, spec)));
+      } catch (error) {
+        console.log(
+          JSON.stringify({
+            id: scenario.id,
+            error: error instanceof Error ? error.message : 'failed',
+          }),
+        );
+      }
+    }
     return;
   }
   const preflightIndex = args.indexOf('--preflight');

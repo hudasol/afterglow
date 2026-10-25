@@ -6,10 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: preflight only resolves the scenario inputs and ranks nothing. run is the preregistered evaluation.
+        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. run is the preregistered evaluation.
         type: choice
         options:
           - preflight
+          - diagnose
           - run
         default: preflight
 
@@ -40,6 +41,9 @@ jobs:
       - name: Resolve the scenario inputs
         if: ${{ inputs.mode == 'preflight' }}
         run: npm run eval:preflight
+      - name: Explain how each scenario came out
+        if: ${{ inputs.mode == 'diagnose' }}
+        run: npm run eval -- --diagnose evaluation/live-scenarios.json
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live
