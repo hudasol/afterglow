@@ -2,7 +2,7 @@ import type { ProviderDescriptor, TasteProvider } from '../application/ports.js'
 import { RecoveryService } from '../application/recovery-service.js';
 import type { CaseView, OptionView } from '../domain/case-view.js';
 import { isKnown } from '../domain/evidence.js';
-import { mean } from '../domain/metrics.js';
+import { kendallTau, mean, overlapAtK } from '../domain/metrics.js';
 import { normaliseName } from '../domain/venue.js';
 import { Database } from '../infrastructure/database.js';
 import { SqliteCaseRepository } from '../infrastructure/sqlite-case-repository.js';
@@ -43,6 +43,25 @@ export interface ScenarioResult {
   noFeasibleOption: boolean;
   relaxationsOffered: number;
   unknownFactShare: number;
+  /** Share of the pool for which each practical fact was known. Dietary is null when the plan has no dietary requirement. */
+  factCoverage: { openWindow: number; stepFree: number; dietary: number | null };
+  /** Requests that reached the provider, not counting answers served from the cache. */
+  providerCalls: number;
+  /** How many of the Taste On top three passed every hard requirement on known facts. */
+  tasteOnFeasibleTop: number;
+  /**
+   * The same case run again with taste signals taken from a different scenario. It shows whether
+   * the ranking responds to the person's own signals. Null when no placebo was requested.
+   */
+  placebo: {
+    from: string;
+    tasteOnTop: string[];
+    overlapAt3: number | null;
+    kendallTau: number | null;
+    topChoiceChanged: boolean | null;
+    /** Set when the second run failed, in which case the comparison fields are empty. */
+    error?: string;
+  } | null;
 }
 
 export interface AggregateResult {
@@ -101,8 +120,54 @@ function preservedShare(view: CaseView, ids: string[]): number | null {
 }
 
 export interface RunnerOptions {
-  /** When false the independent oracle is skipped, because live venues lack most facts. */
+  /** When false the independent oracle is skipped. */
   useOracle: boolean;
+  /**
+   * Returns a scenario whose taste signals stand in for this one's, or nothing. The case is then
+   * run again with those signals so the two Taste On rankings can be compared.
+   */
+  placeboFor?: (scenarioId: string) => ScenarioSpec | undefined;
+}
+
+interface OpenedCase {
+  view: CaseView;
+  close: () => void;
+}
+
+/** Opens a case in a private in memory store and settles any ambiguous signals as the scenario says. */
+async function openCaseView(provider: TasteProvider, spec: ScenarioSpec): Promise<OpenedCase> {
+  const db = new Database(':memory:');
+  db.migrate(new URL('../../migrations', import.meta.url).pathname);
+  const providers = { demo: provider, live: provider } as Record<'demo' | 'live', TasteProvider>;
+  const service = new RecoveryService({
+    repo: new SqliteCaseRepository(db),
+    providers,
+    caseTtlHours: 1,
+  });
+  try {
+    let view = await service.openCase(SESSION, {
+      mode: provider.descriptor.mode,
+      anchor: spec.anchor,
+      disruption: spec.disruption,
+    });
+    for (const pending of view.pendingChoices) {
+      // A choice names an entry by its id or by its type, because the ids of a live service are
+      // not known when a scenario is written.
+      const wanted = spec.choices?.[normaliseName(pending.input)] ?? spec.choices?.[pending.input];
+      const chosen = (pending.candidates ?? []).find(
+        (candidate) => candidate.id === wanted || candidate.type === wanted,
+      );
+      const chosenId = chosen?.id ?? wanted;
+      view = await service.chooseResolution(SESSION, view.id, {
+        key: pending.key,
+        ...(chosenId ? { chosenId } : { skip: true }),
+      });
+    }
+    return { view, close: () => db.close() };
+  } catch (error) {
+    db.close();
+    throw error;
+  }
 }
 
 export async function evaluateScenario(
@@ -110,17 +175,6 @@ export async function evaluateScenario(
   spec: ScenarioSpec,
   options: RunnerOptions,
 ): Promise<ScenarioResult> {
-  const db = new Database(':memory:');
-  db.migrate(new URL('../../migrations', import.meta.url).pathname);
-  const providers = {
-    demo: provider,
-    live: provider,
-  } as Record<'demo' | 'live', TasteProvider>;
-  const service = new RecoveryService({
-    repo: new SqliteCaseRepository(db),
-    providers,
-    caseTtlHours: 1,
-  });
   const empty = (error: string): ScenarioResult => ({
     id: spec.id,
     title: spec.title,
@@ -147,23 +201,16 @@ export async function evaluateScenario(
     noFeasibleOption: false,
     relaxationsOffered: 0,
     unknownFactShare: 0,
+    factCoverage: { openWindow: 0, stepFree: 0, dietary: null },
+    providerCalls: 0,
+    tasteOnFeasibleTop: 0,
+    placebo: null,
   });
 
+  let opened: OpenedCase | undefined;
   try {
-    const mode = provider.descriptor.mode;
-    let view = await service.openCase(SESSION, {
-      mode,
-      anchor: spec.anchor,
-      disruption: spec.disruption,
-    });
-    for (const pending of view.pendingChoices) {
-      const chosenId =
-        spec.choices?.[normaliseName(pending.input)] ?? spec.choices?.[pending.input];
-      view = await service.chooseResolution(SESSION, view.id, {
-        key: pending.key,
-        ...(chosenId ? { chosenId } : { skip: true }),
-      });
-    }
+    opened = await openCaseView(provider, spec);
+    const view = opened.view;
     if (!view.run)
       return empty(
         view.searchFailure
@@ -226,6 +273,51 @@ export async function evaluateScenario(
         new Set(offIds).size === new Set(onIds).size &&
         offIds.every((id) => onIds.includes(id)));
 
+    const shareKnown = (fact: (o: OptionView) => { status: string }): number =>
+      pool.length === 0 ? 0 : pool.filter((o) => fact(o).status === 'known').length / pool.length;
+
+    const placeboRun = async (): Promise<ScenarioResult['placebo']> => {
+      const stand = options.placeboFor?.(spec.id);
+      if (!stand) return null;
+      // Only the person's own taste signals are swapped. The plan, the constraints, the original
+      // venue and the pool are the same, so any difference comes from the signals.
+      const swapped: ScenarioSpec = {
+        ...spec,
+        anchor: {
+          ...spec.anchor,
+          tasteEntities: stand.anchor.tasteEntities,
+          tasteTags: stand.anchor.tasteTags,
+        },
+        choices: { ...spec.choices, ...stand.choices },
+      };
+      let other: OpenedCase;
+      try {
+        other = await openCaseView(provider, swapped);
+      } catch (error) {
+        return {
+          from: stand.id,
+          tasteOnTop: [],
+          overlapAt3: null,
+          kendallTau: null,
+          topChoiceChanged: null,
+          error: error instanceof Error ? error.message.slice(0, 200) : 'The second run failed.',
+        };
+      }
+      try {
+        const otherOn = rankedIds(other.view, 'taste_on');
+        return {
+          from: stand.id,
+          tasteOnTop: otherOn.slice(0, TOP).map((id) => nameOf(other.view, id)),
+          overlapAt3: overlapAtK(onIds, otherOn, TOP),
+          kendallTau: kendallTau(onIds, otherOn),
+          topChoiceChanged:
+            onIds[0] !== undefined && otherOn[0] !== undefined ? onIds[0] !== otherOn[0] : null,
+        };
+      } finally {
+        other.close();
+      }
+    };
+
     return {
       id: spec.id,
       title: spec.title,
@@ -264,11 +356,25 @@ export async function evaluateScenario(
       noFeasibleOption: eligible.length === 0,
       relaxationsOffered: view.relaxations.length,
       unknownFactShare: unknownShare,
+      factCoverage: {
+        openWindow: shareKnown((o) => o.candidate.facts.openWindow),
+        stepFree: shareKnown((o) => o.candidate.facts.stepFree),
+        dietary: view.plan.hardConstraints.some((c) => c.kind === 'dietary')
+          ? shareKnown((o) => o.candidate.facts.dietary)
+          : null,
+      },
+      providerCalls: [...view.resolutionTraces, ...view.run.traces].filter(
+        (trace) => trace.cache === 'miss',
+      ).length,
+      tasteOnFeasibleTop: onIds
+        .slice(0, TOP)
+        .filter((id) => pool.find((o) => o.candidate.id === id)?.feasibility === 'feasible').length,
+      placebo: await placeboRun(),
     };
   } catch (error) {
     return empty(error instanceof Error ? error.message : 'Unknown error');
   } finally {
-    db.close();
+    opened?.close();
   }
 }
 
@@ -375,9 +481,9 @@ export async function runEvaluation(
           'No people were involved in this evaluation.',
         ]
       : [
-          'Results depend on the city, the seed signals and the places Qloo returned on the day of the run.',
+          'Results depend on the cities, the signals and the places Qloo returned on the day of the run.',
           'Qloo affinity describes what groups tend to like. It does not establish what a given person will enjoy.',
-          'Opening hours, dietary options, accessibility and capacity were not available from Qloo, so those constraints stay unverified.',
+          'Opening hours, step free access and dietary options are read from Qloo when it states them. It never states group capacity or covered seating, so requirements on those stay unverified.',
           'No people were involved in this evaluation.',
         ],
   };

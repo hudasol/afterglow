@@ -36,6 +36,9 @@
     "qloo:smoke": "node --env-file-if-exists=.env --import tsx src/cli/qloo-smoke.ts",
     "osm:smoke": "node --env-file-if-exists=.env --import tsx src/cli/osm-smoke.ts",
     "eval": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts",
+    "eval:preflight": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts --preflight evaluation/live-scenarios.json",
+    "eval:live": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts --live evaluation/live-scenarios.json",
+    "eval:render": "node --import tsx src/cli/run-evaluation.ts --render-live",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
   },
   "dependencies": {

@@ -1,0 +1,57 @@
+# Runs the live Qloo evaluation from GitHub, so the personal key never has to leave GitHub.
+# It runs only when started by hand. The key comes from the repository secret QLOO_API_KEY.
+name: Live evaluation
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: preflight only resolves the scenario inputs and ranks nothing. run is the preregistered evaluation.
+        type: choice
+        options:
+          - preflight
+          - run
+        default: preflight
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    name: Live evaluation on Qloo
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      QLOO_API_KEY: ${{ secrets.QLOO_API_KEY }}
+      MODE: ${{ inputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Check that the secret is set
+        run: |
+          if [ -z "$QLOO_API_KEY" ]; then
+            echo "The repository secret QLOO_API_KEY is not set. Nothing was requested."
+            exit 2
+          fi
+      - name: Resolve the scenario inputs
+        if: ${{ inputs.mode == 'preflight' }}
+        run: npm run eval:preflight
+      - name: Run the preregistered evaluation
+        if: ${{ inputs.mode == 'run' }}
+        run: npm run eval:live
+      - name: Print the results file
+        if: ${{ inputs.mode == 'run' && always() }}
+        run: |
+          echo "-----BEGIN RESULTS-----"
+          cat results/live-qloo.json 2>/dev/null || echo "No results were written."
+          echo "-----END RESULTS-----"
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.mode == 'run' && always() }}
+        with:
+          name: live-evaluation-results
+          path: results/live-qloo.json
+          if-no-files-found: ignore

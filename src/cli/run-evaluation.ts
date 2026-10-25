@@ -3,13 +3,22 @@
  *
  *   npm run eval                       Offline run over the labelled simulated catalogue.
  *   npm run eval -- --live file.json   Live run over scenarios you supply. Needs QLOO_API_KEY.
+ *   npm run eval:live                  The preregistered live run. Needs QLOO_API_KEY.
+ *   npm run eval:preflight             Checks that the live scenarios can be resolved. No ranking.
+ *   npm run eval:render                Rewrites docs/EVALUATION_LIVE.md from results/live-qloo.json.
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
+import {
+  renderLiveReport,
+  summariseLive,
+  type LiveResultsFile,
+} from '../evaluation/live-report.js';
 import { renderReport } from '../evaluation/report-markdown.js';
 import { runEvaluation } from '../evaluation/runner.js';
-import { intentAnchorInputSchema } from '../domain/intent.js';
+import type { ResolutionKind } from '../domain/case.js';
+import { categoryTagPhrase, intentAnchorInputSchema } from '../domain/intent.js';
 import { disruptionSchema } from '../domain/plan.js';
 import { loadConfig } from '../infrastructure/config.js';
 import { QlooClient } from '../qloo/client.js';
@@ -23,8 +32,75 @@ const liveScenarioSchema = z.object({
   summary: z.string().default(''),
   anchor: intentAnchorInputSchema,
   disruption: disruptionSchema,
+  /** An id or a type for each ambiguous input, so a scenario can name its choice before the ids are known. */
   choices: z.record(z.string(), z.string()).optional(),
+  /** Another scenario whose taste signals are swapped in for the placebo comparison. */
+  placeboFrom: z.string().min(1).optional(),
 });
+
+const LIVE_RESULTS = 'results/live-qloo.json';
+const LIVE_DOC = 'docs/EVALUATION_LIVE.md';
+
+function loadLiveScenarios(file: string): Array<z.infer<typeof liveScenarioSchema>> {
+  return z.array(liveScenarioSchema).parse(JSON.parse(readFileSync(resolve(file), 'utf8')));
+}
+
+function liveClient(): QlooClient | null {
+  const config = loadConfig();
+  if (!config.QLOO_API_KEY) return null;
+  return new QlooClient({
+    apiKey: config.QLOO_API_KEY,
+    baseUrl: config.QLOO_API_URL,
+    timeoutMs: config.QLOO_TIMEOUT_MS,
+    dailyCallCap: config.QLOO_DAILY_CALL_CAP,
+  });
+}
+
+/** Resolves every signal, category and original venue in the scenarios, and ranks nothing. */
+async function preflight(file: string): Promise<void> {
+  const client = liveClient();
+  if (!client) {
+    console.error('QLOO_API_KEY is not set, so nothing was requested.');
+    process.exitCode = 2;
+    return;
+  }
+  const provider = new QlooTasteProvider(client);
+  const seen = new Set<string>();
+  let unresolved = 0;
+  for (const scenario of loadLiveScenarios(file)) {
+    const { anchor } = scenario;
+    const inputs: Array<[ResolutionKind, string]> = [
+      ['category', categoryTagPhrase[anchor.category]],
+      ['original_venue', anchor.originalVenue.name],
+      ...anchor.tasteEntities.map((name): [ResolutionKind, string] => ['entity', name]),
+      ...anchor.tasteTags.map((name): [ResolutionKind, string] => ['tag', name]),
+    ];
+    for (const [kind, input] of inputs) {
+      const key = `${kind}:${anchor.city}:${input}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const resolution = await provider.resolve(kind, input, { traces: [], city: anchor.city });
+      const chosen = scenario.choices?.[input];
+      const picked = (resolution.candidates ?? []).find(
+        (c) => c.id === chosen || c.type === chosen,
+      );
+      const settled =
+        resolution.status === 'resolved' ||
+        (resolution.status === 'ambiguous' && picked !== undefined);
+      if (!settled) unresolved += 1;
+      const shown = (resolution.candidates ?? [])
+        .map((c) => `${c.name} [${c.type ?? 'no type'}]`)
+        .join('; ');
+      console.log(
+        `${settled ? 'OK  ' : 'FAIL'} ${scenario.id} ${kind} "${input}" (${anchor.city}): ${resolution.status}${picked ? ` settled by choice ${chosen}` : ''}${shown ? ` -> ${shown}` : ''}`,
+      );
+    }
+  }
+  console.log(
+    `\n${unresolved === 0 ? 'Every input can be resolved.' : `${unresolved} inputs cannot be resolved.`}`,
+  );
+  if (unresolved > 0) process.exitCode = 1;
+}
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -32,6 +108,20 @@ async function main(): Promise<void> {
   const root = resolve(import.meta.dirname, '../..');
   const outDir = resolve(root, 'data/evaluation');
   mkdirSync(outDir, { recursive: true });
+
+  if (args.includes('--render-live')) {
+    const file = JSON.parse(readFileSync(resolve(root, LIVE_RESULTS), 'utf8')) as LiveResultsFile;
+    writeFileSync(resolve(root, LIVE_DOC), renderLiveReport(file));
+    console.log(`Wrote ${LIVE_DOC} from ${LIVE_RESULTS}.`);
+    return;
+  }
+  const preflightIndex = args.indexOf('--preflight');
+  if (preflightIndex !== -1) {
+    const target = args[preflightIndex + 1];
+    if (!target) throw new Error('Pass the path of a scenarios file after --preflight.');
+    await preflight(target);
+    return;
+  }
 
   if (liveIndex === -1) {
     const report = await runEvaluation(new SimulatedTasteProvider(), scenarios, {
@@ -61,38 +151,40 @@ async function main(): Promise<void> {
 
   const file = args[liveIndex + 1];
   if (!file) throw new Error('Pass the path of a scenarios file after --live.');
-  const config = loadConfig();
-  if (!config.QLOO_API_KEY) {
+  const client = liveClient();
+  if (!client) {
     console.error('QLOO_API_KEY is not set, so a live evaluation cannot run. Nothing was written.');
     process.exitCode = 2;
     return;
   }
-  const parsed = z.array(liveScenarioSchema).parse(JSON.parse(readFileSync(resolve(file), 'utf8')));
-  const specs: ScenarioSpec[] = parsed.map(({ choices, ...item }) => ({
+  const parsed = loadLiveScenarios(file);
+  const specs: ScenarioSpec[] = parsed.map(({ choices, placeboFrom: _from, ...item }) => ({
     ...item,
     featured: false,
     ...(choices ? { choices } : {}),
   }));
-  const client = new QlooClient({
-    apiKey: config.QLOO_API_KEY,
-    baseUrl: config.QLOO_API_URL,
-    timeoutMs: config.QLOO_TIMEOUT_MS,
-    dailyCallCap: config.QLOO_DAILY_CALL_CAP,
-  });
+  const byId = new Map(specs.map((spec) => [spec.id, spec]));
+  const standIn = new Map(parsed.map((item) => [item.id, item.placeboFrom]));
   const report = await runEvaluation(new QlooTasteProvider(client), specs, {
     kind: 'live_qloo',
-    useOracle: false,
+    useOracle: true,
     now: new Date(),
+    placeboFor: (id) => {
+      const from = standIn.get(id);
+      return from ? byId.get(from) : undefined;
+    },
   });
-  const stamp = report.generatedAt.slice(0, 10);
-  writeFileSync(
-    resolve(outDir, `report-live-${stamp}.json`),
-    `${JSON.stringify(report, null, 2)}\n`,
-  );
-  writeFileSync(resolve(root, `docs/EVALUATION_LIVE_${stamp}.md`), renderReport(report));
+  const results: LiveResultsFile = { ...report, live: summariseLive(report.results) };
+  mkdirSync(resolve(root, 'results'), { recursive: true });
+  writeFileSync(resolve(root, LIVE_RESULTS), `${JSON.stringify(results, null, 2)}\n`);
+  writeFileSync(resolve(root, LIVE_DOC), renderLiveReport(results));
   console.log(
     `Live evaluation: ${report.summary.completed} of ${report.summary.scenarios} scenarios completed.`,
   );
+  console.log(
+    `Predictions: ${results.live.hits} HIT, ${results.live.misses} MISS, ${results.live.notEvaluated} not evaluated.`,
+  );
+  console.log(`Wrote ${LIVE_RESULTS} and ${LIVE_DOC}.`);
 }
 
 main().catch((error: unknown) => {

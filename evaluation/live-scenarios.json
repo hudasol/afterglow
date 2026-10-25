@@ -1,0 +1,847 @@
+[
+  {
+    "id": "ny-a-friday-anniversary",
+    "title": "New York: Friday anniversary dinner",
+    "summary": "Friday anniversary dinner in New York. The original restaurant falls through.",
+    "anchor": {
+      "title": "Friday anniversary dinner",
+      "occasion": "date",
+      "partySize": 2,
+      "city": "New York",
+      "planStart": "2026-11-06T20:00:00-05:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Katz's Delicatessen"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["A table where we can talk", "Something that feels special"],
+      "tasteEntities": ["Miles Davis"],
+      "tasteTags": ["romantic"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 6
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The booked restaurant cannot host the dinner."
+    },
+    "choices": {
+      "Miles Davis": "urn:entity:artist"
+    },
+    "placeboFrom": "ny-b-saturday-vegetarian"
+  },
+  {
+    "id": "ny-b-saturday-vegetarian",
+    "title": "New York: Saturday dinner with vegetarian friends",
+    "summary": "Saturday dinner with vegetarian friends in New York. The original restaurant falls through.",
+    "anchor": {
+      "title": "Saturday dinner with vegetarian friends",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "New York",
+      "planStart": "2026-11-07T19:30:00-05:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Balthazar"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
+      "tasteEntities": ["Radiohead"],
+      "tasteTags": ["cozy", "live music"],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "vegetarian"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant cancelled the booking."
+    },
+    "choices": {
+      "Radiohead": "urn:entity:artist"
+    },
+    "placeboFrom": "ny-c-monday-budget"
+  },
+  {
+    "id": "ny-c-monday-budget",
+    "title": "New York: Monday budget dinner",
+    "summary": "Monday budget dinner in New York. The original restaurant falls through.",
+    "anchor": {
+      "title": "Monday budget dinner",
+      "occasion": "friends",
+      "partySize": 3,
+      "city": "New York",
+      "planStart": "2026-11-02T19:00:00-05:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Gramercy Tavern"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Affordable", "Easy to get to"],
+      "tasteEntities": ["Amélie", "Nina Simone"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant is closed unexpectedly."
+    },
+    "choices": {
+      "Amélie": "urn:entity:movie",
+      "Nina Simone": "urn:entity:artist"
+    },
+    "placeboFrom": "ny-d-wednesday-group"
+  },
+  {
+    "id": "ny-d-wednesday-group",
+    "title": "New York: Wednesday dinner for eight",
+    "summary": "Wednesday dinner for eight in New York. The original restaurant falls through.",
+    "anchor": {
+      "title": "Wednesday dinner for eight",
+      "occasion": "celebration",
+      "partySize": 8,
+      "city": "New York",
+      "planStart": "2026-11-04T19:30:00-05:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Carbone"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Room for the whole group", "Lively atmosphere"],
+      "tasteEntities": [],
+      "tasteTags": ["lively", "rooftop"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 10
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant lost our table."
+    },
+    "choices": {},
+    "placeboFrom": "ny-a-friday-anniversary"
+  },
+  {
+    "id": "lon-a-friday-anniversary",
+    "title": "London: Friday anniversary dinner",
+    "summary": "Friday anniversary dinner in London. The original restaurant falls through.",
+    "anchor": {
+      "title": "Friday anniversary dinner",
+      "occasion": "date",
+      "partySize": 2,
+      "city": "London",
+      "planStart": "2026-11-06T20:00:00+00:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Dishoom"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["A table where we can talk", "Something that feels special"],
+      "tasteEntities": ["Fleetwood Mac"],
+      "tasteTags": ["romantic"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 6
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The booked restaurant cannot host the dinner."
+    },
+    "choices": {
+      "Fleetwood Mac": "urn:entity:artist"
+    },
+    "placeboFrom": "lon-b-saturday-vegetarian"
+  },
+  {
+    "id": "lon-b-saturday-vegetarian",
+    "title": "London: Saturday dinner with vegetarian friends",
+    "summary": "Saturday dinner with vegetarian friends in London. The original restaurant falls through.",
+    "anchor": {
+      "title": "Saturday dinner with vegetarian friends",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "London",
+      "planStart": "2026-11-07T19:30:00+00:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "The Ivy"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
+      "tasteEntities": ["Björk"],
+      "tasteTags": ["cozy", "craft cocktails"],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "vegetarian"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant cancelled the booking."
+    },
+    "choices": {
+      "Björk": "urn:entity:artist"
+    },
+    "placeboFrom": "lon-c-monday-budget"
+  },
+  {
+    "id": "lon-c-monday-budget",
+    "title": "London: Monday budget dinner",
+    "summary": "Monday budget dinner in London. The original restaurant falls through.",
+    "anchor": {
+      "title": "Monday budget dinner",
+      "occasion": "friends",
+      "partySize": 3,
+      "city": "London",
+      "planStart": "2026-11-02T19:00:00+00:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Hawksmoor"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Affordable", "Easy to get to"],
+      "tasteEntities": ["Pulp Fiction", "Daft Punk"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant is closed unexpectedly."
+    },
+    "choices": {
+      "Pulp Fiction": "urn:entity:movie",
+      "Daft Punk": "urn:entity:artist"
+    },
+    "placeboFrom": "lon-d-wednesday-group"
+  },
+  {
+    "id": "lon-d-wednesday-group",
+    "title": "London: Wednesday dinner for eight",
+    "summary": "Wednesday dinner for eight in London. The original restaurant falls through.",
+    "anchor": {
+      "title": "Wednesday dinner for eight",
+      "occasion": "celebration",
+      "partySize": 8,
+      "city": "London",
+      "planStart": "2026-11-04T19:30:00+00:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Padella"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Room for the whole group", "Lively atmosphere"],
+      "tasteEntities": [],
+      "tasteTags": ["lively", "outdoor seating"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 10
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant lost our table."
+    },
+    "choices": {},
+    "placeboFrom": "lon-a-friday-anniversary"
+  },
+  {
+    "id": "par-a-friday-anniversary",
+    "title": "Paris: Friday anniversary dinner",
+    "summary": "Friday anniversary dinner in Paris. The original restaurant falls through.",
+    "anchor": {
+      "title": "Friday anniversary dinner",
+      "occasion": "date",
+      "partySize": 2,
+      "city": "Paris",
+      "planStart": "2026-11-06T20:00:00+01:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Le Comptoir du Relais"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["A table where we can talk", "Something that feels special"],
+      "tasteEntities": ["Édith Piaf"],
+      "tasteTags": ["romantic"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 6
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The booked restaurant cannot host the dinner."
+    },
+    "choices": {
+      "Édith Piaf": "urn:entity:artist"
+    },
+    "placeboFrom": "par-b-saturday-vegetarian"
+  },
+  {
+    "id": "par-b-saturday-vegetarian",
+    "title": "Paris: Saturday dinner with vegetarian friends",
+    "summary": "Saturday dinner with vegetarian friends in Paris. The original restaurant falls through.",
+    "anchor": {
+      "title": "Saturday dinner with vegetarian friends",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Paris",
+      "planStart": "2026-11-07T19:30:00+01:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Café de Flore"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
+      "tasteEntities": ["Daft Punk"],
+      "tasteTags": ["cozy", "jazz"],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "vegetarian"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant cancelled the booking."
+    },
+    "choices": {
+      "Daft Punk": "urn:entity:artist"
+    },
+    "placeboFrom": "par-c-monday-budget"
+  },
+  {
+    "id": "par-c-monday-budget",
+    "title": "Paris: Monday budget dinner",
+    "summary": "Monday budget dinner in Paris. The original restaurant falls through.",
+    "anchor": {
+      "title": "Monday budget dinner",
+      "occasion": "friends",
+      "partySize": 3,
+      "city": "Paris",
+      "planStart": "2026-11-02T19:00:00+01:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Bouillon Chartier"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Affordable", "Easy to get to"],
+      "tasteEntities": ["Amélie", "Serge Gainsbourg"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant is closed unexpectedly."
+    },
+    "choices": {
+      "Amélie": "urn:entity:movie",
+      "Serge Gainsbourg": "urn:entity:artist"
+    },
+    "placeboFrom": "par-d-wednesday-group"
+  },
+  {
+    "id": "par-d-wednesday-group",
+    "title": "Paris: Wednesday dinner for eight",
+    "summary": "Wednesday dinner for eight in Paris. The original restaurant falls through.",
+    "anchor": {
+      "title": "Wednesday dinner for eight",
+      "occasion": "celebration",
+      "partySize": 8,
+      "city": "Paris",
+      "planStart": "2026-11-04T19:30:00+01:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Breizh Café"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Room for the whole group", "Lively atmosphere"],
+      "tasteEntities": [],
+      "tasteTags": ["lively", "rooftop"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 10
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant lost our table."
+    },
+    "choices": {},
+    "placeboFrom": "par-a-friday-anniversary"
+  },
+  {
+    "id": "tok-a-friday-anniversary",
+    "title": "Tokyo: Friday anniversary dinner",
+    "summary": "Friday anniversary dinner in Tokyo. The original restaurant falls through.",
+    "anchor": {
+      "title": "Friday anniversary dinner",
+      "occasion": "date",
+      "partySize": 2,
+      "city": "Tokyo",
+      "planStart": "2026-11-06T20:00:00+09:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Ichiran"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["A table where we can talk", "Something that feels special"],
+      "tasteEntities": ["Spirited Away"],
+      "tasteTags": ["quiet"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 6
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The booked restaurant cannot host the dinner."
+    },
+    "choices": {
+      "Spirited Away": "urn:entity:movie"
+    },
+    "placeboFrom": "tok-b-saturday-vegetarian"
+  },
+  {
+    "id": "tok-b-saturday-vegetarian",
+    "title": "Tokyo: Saturday dinner with vegetarian friends",
+    "summary": "Saturday dinner with vegetarian friends in Tokyo. The original restaurant falls through.",
+    "anchor": {
+      "title": "Saturday dinner with vegetarian friends",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Tokyo",
+      "planStart": "2026-11-07T19:30:00+09:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Gonpachi"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
+      "tasteEntities": ["Ryuichi Sakamoto"],
+      "tasteTags": ["cozy", "jazz"],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "vegetarian"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant cancelled the booking."
+    },
+    "choices": {
+      "Ryuichi Sakamoto": "urn:entity:artist"
+    },
+    "placeboFrom": "tok-c-monday-budget"
+  },
+  {
+    "id": "tok-c-monday-budget",
+    "title": "Tokyo: Monday budget dinner",
+    "summary": "Monday budget dinner in Tokyo. The original restaurant falls through.",
+    "anchor": {
+      "title": "Monday budget dinner",
+      "occasion": "friends",
+      "partySize": 3,
+      "city": "Tokyo",
+      "planStart": "2026-11-02T19:00:00+09:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Afuri"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Affordable", "Easy to get to"],
+      "tasteEntities": ["Lost in Translation", "Hikaru Utada"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant is closed unexpectedly."
+    },
+    "choices": {
+      "Lost in Translation": "urn:entity:movie",
+      "Hikaru Utada": "urn:entity:artist"
+    },
+    "placeboFrom": "tok-d-wednesday-group"
+  },
+  {
+    "id": "tok-d-wednesday-group",
+    "title": "Tokyo: Wednesday dinner for eight",
+    "summary": "Wednesday dinner for eight in Tokyo. The original restaurant falls through.",
+    "anchor": {
+      "title": "Wednesday dinner for eight",
+      "occasion": "celebration",
+      "partySize": 8,
+      "city": "Tokyo",
+      "planStart": "2026-11-04T19:30:00+09:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Sushi Dai"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Room for the whole group", "Lively atmosphere"],
+      "tasteEntities": [],
+      "tasteTags": ["lively", "craft cocktails"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 10
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant lost our table."
+    },
+    "choices": {},
+    "placeboFrom": "tok-a-friday-anniversary"
+  },
+  {
+    "id": "dxb-a-friday-anniversary",
+    "title": "Dubai: Friday anniversary dinner",
+    "summary": "Friday anniversary dinner in Dubai. The original restaurant falls through.",
+    "anchor": {
+      "title": "Friday anniversary dinner",
+      "occasion": "date",
+      "partySize": 2,
+      "city": "Dubai",
+      "planStart": "2026-11-06T20:00:00+04:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Zuma"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["A table where we can talk", "Something that feels special"],
+      "tasteEntities": ["Fairuz"],
+      "tasteTags": ["romantic"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 6
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The booked restaurant cannot host the dinner."
+    },
+    "choices": {
+      "Fairuz": "urn:entity:artist"
+    },
+    "placeboFrom": "dxb-b-saturday-vegetarian"
+  },
+  {
+    "id": "dxb-b-saturday-vegetarian",
+    "title": "Dubai: Saturday dinner with vegetarian friends",
+    "summary": "Saturday dinner with vegetarian friends in Dubai. The original restaurant falls through.",
+    "anchor": {
+      "title": "Saturday dinner with vegetarian friends",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Dubai",
+      "planStart": "2026-11-07T19:30:00+04:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Nobu"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
+      "tasteEntities": ["Coldplay"],
+      "tasteTags": ["cozy", "live music"],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "vegetarian"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant cancelled the booking."
+    },
+    "choices": {
+      "Coldplay": "urn:entity:artist"
+    },
+    "placeboFrom": "dxb-c-monday-budget"
+  },
+  {
+    "id": "dxb-c-monday-budget",
+    "title": "Dubai: Monday budget dinner",
+    "summary": "Monday budget dinner in Dubai. The original restaurant falls through.",
+    "anchor": {
+      "title": "Monday budget dinner",
+      "occasion": "friends",
+      "partySize": 3,
+      "city": "Dubai",
+      "planStart": "2026-11-02T19:00:00+04:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Al Fanar Restaurant"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Affordable", "Easy to get to"],
+      "tasteEntities": ["The Godfather", "Bob Marley"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant is closed unexpectedly."
+    },
+    "choices": {
+      "The Godfather": "urn:entity:movie",
+      "Bob Marley": "urn:entity:artist"
+    },
+    "placeboFrom": "dxb-d-wednesday-group"
+  },
+  {
+    "id": "dxb-d-wednesday-group",
+    "title": "Dubai: Wednesday dinner for eight",
+    "summary": "Wednesday dinner for eight in Dubai. The original restaurant falls through.",
+    "anchor": {
+      "title": "Wednesday dinner for eight",
+      "occasion": "celebration",
+      "partySize": 8,
+      "city": "Dubai",
+      "planStart": "2026-11-04T19:30:00+04:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Ravi Restaurant"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Room for the whole group", "Lively atmosphere"],
+      "tasteEntities": [],
+      "tasteTags": ["lively", "outdoor seating"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 10
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "venue_unavailable",
+      "note": "The restaurant lost our table."
+    },
+    "choices": {},
+    "placeboFrom": "dxb-a-friday-anniversary"
+  }
+]
