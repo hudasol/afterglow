@@ -46,6 +46,19 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - name: Time a few raw queries against each endpoint
+        continue-on-error: true
+        run: |
+          for url in https://overpass-api.de/api/interpreter https://overpass.kumi.systems/api/interpreter; do
+            echo "== $url"
+            curl -sS -m 25 -o /dev/null -w "status page: %{http_code} in %{time_total}s\n" "${url%/interpreter}/status" || echo "status page: failed"
+            curl -sS -m 25 -o /dev/null -w "one node filter: %{http_code} in %{time_total}s, %{size_download} bytes\n" \
+              --data-urlencode 'data=[out:json][timeout:10];node(around:100,40.758,-73.9855)["amenity"="restaurant"];out tags 5;' "$url" || echo "one node filter: failed"
+            curl -sS -m 25 -o /dev/null -w "regex on amenity, 150 m: %{http_code} in %{time_total}s, %{size_download} bytes\n" \
+              --data-urlencode 'data=[out:json][timeout:20];nwr(around:150,40.758,-73.9855)["name"]["amenity"~"^(restaurant|bar|pub|cafe)$"];out tags center 100;' "$url" || echo "regex: failed"
+            curl -sS -m 25 -o /dev/null -w "exact values, 150 m: %{http_code} in %{time_total}s, %{size_download} bytes\n" \
+              --data-urlencode 'data=[out:json][timeout:20];(nwr["amenity"="restaurant"](around:150,40.758,-73.9855);nwr["amenity"="bar"](around:150,40.758,-73.9855);nwr["amenity"="pub"](around:150,40.758,-73.9855);nwr["amenity"="cafe"](around:150,40.758,-73.9855););out tags center 100;' "$url" || echo "exact: failed"
+          done
       - name: Run the check
         run: npm run osm:smoke -- --lat "$LAT" --lon "$LON" --radius "$RADIUS" --points "$POINTS"
       - name: Show the redacted report
