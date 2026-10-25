@@ -7,7 +7,14 @@ import type { CallTrace, ResolutionKind, TasteResolution } from '../domain/case.
 import { kendallTau, overlapAtK } from '../domain/metrics.js';
 import type { QlooClient } from './client.js';
 import { QlooError } from './errors.js';
-import { asRecord, resultArray, toCandidate, toEntityRef, toTasteScores } from './normalize.js';
+import {
+  asRecord,
+  resultArray,
+  toCandidate,
+  toEntityRef,
+  toTagRef,
+  toTasteScores,
+} from './normalize.js';
 import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
 
 export interface SmokeOptions {
@@ -36,6 +43,13 @@ export interface ProbeObservation {
   note?: string;
 }
 
+export interface TagLookupObservation {
+  phrase: string;
+  parentFilter: string | null;
+  status: string;
+  results: Array<{ id: string; name: string; type?: string; parentTypes: string[] }>;
+}
+
 export interface SmokeReport {
   generatedAt: string;
   options: SmokeOptions;
@@ -56,6 +70,15 @@ export interface SmokeReport {
     /** The value type of each property key on the first place, for example price_level: number. No values. */
     propertyShape: Record<string, string>;
     hoursLikeKeys: string[];
+    withHours: number;
+    withGoodFor: number;
+    /** Qloo's own taxonomy labels seen across the pool, counted. These are labels, not venue data. */
+    taxonomy: {
+      goodFor: Array<{ name: string; count: number }>;
+      tags: Array<{ name: string; type?: string; count: number }>;
+    };
+    /** Raw tag lookups: what Qloo returns for a phrase, with and without a place parent filter. */
+    tagLookups: TagLookupObservation[];
     /** Masked structure of selected nested fields on the first place. Letters and digits are masked. */
     nestedShapes: Record<string, unknown>;
     /** What each probe lookup returned: names and types of public cultural entries, nothing else. */
@@ -85,6 +108,9 @@ function shapeOf(value: unknown): Record<string, string> {
   );
 }
 
+/** A time of day carries no venue identity, so its exact notation is kept to show the format. */
+const TIME_OF_DAY = /^T?\d{2}:\d{2}(:\d{2})?(\.\d+)?(Z|[+-]\d{2}:?\d{2})?$/u;
+
 /** Replaces letters and digits so a string shows its format and nothing else. */
 export function maskString(value: string): string {
   return value.slice(0, 32).replace(/[A-Z]/gu, 'A').replace(/[a-z]/gu, 'a').replace(/\d/gu, '9');
@@ -102,7 +128,9 @@ export function skeletonOf(value: unknown, depth = 0): unknown {
       ? `array(${value.length})`
       : { array: value.length, first: value.length > 0 ? skeletonOf(value[0], depth + 1) : null };
   }
-  if (typeof value === 'string') return `string ${maskString(value)}`;
+  if (typeof value === 'string') {
+    return TIME_OF_DAY.test(value) ? `time ${value}` : `string ${maskString(value)}`;
+  }
   if (typeof value !== 'object') return typeof value;
   if (depth >= 4) return 'object';
   return Object.fromEntries(
@@ -111,6 +139,36 @@ export function skeletonOf(value: unknown, depth = 0): unknown {
       .slice(0, 30)
       .map((key) => [key, skeletonOf((value as Record<string, unknown>)[key], depth + 1)]),
   );
+}
+
+function asArrayOf(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function hasAnyHours(value: unknown): boolean {
+  const hours = asRecord(value);
+  if (!hours) return false;
+  return Object.values(hours).some((day) =>
+    asArrayOf(day).some((slot) => typeof asRecord(slot)?.['opens'] === 'string'),
+  );
+}
+
+/** Counts labelled entries such as tags, most frequent first. Only names and types are kept. */
+function tally(items: unknown[]): Array<{ name: string; type?: string; count: number }> {
+  const counts = new Map<string, { name: string; type?: string; count: number }>();
+  for (const item of items) {
+    const record = asRecord(item);
+    const name = typeof record?.['name'] === 'string' ? record['name'].slice(0, 60) : undefined;
+    if (!name) continue;
+    const type = typeof record?.['type'] === 'string' ? record['type'].slice(0, 80) : undefined;
+    const key = `${type ?? ''}|${name}`;
+    const entry = counts.get(key) ?? { name, ...(type ? { type } : {}), count: 0 };
+    entry.count += 1;
+    counts.set(key, entry);
+  }
+  return [...counts.values()]
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 60);
 }
 
 function observeProbe(resolution: TasteResolution): ProbeObservation {
@@ -148,6 +206,10 @@ export async function runSmoke(
     propertyKeys: [],
     propertyShape: {},
     hoursLikeKeys: [],
+    tagLookups: [],
+    withHours: 0,
+    withGoodFor: 0,
+    taxonomy: { goodFor: [], tags: [] },
     nestedShapes: {},
     probes: [],
     signalSensitivity: null,
@@ -253,6 +315,46 @@ export async function runSmoke(
     `jazz: ${vibe.status} (${vibe.candidates?.length ?? (vibe.selected ? 1 : 0)} candidates)`,
   );
 
+  // Raw tag lookups, to see which tags apply to places. Information only.
+  for (const phrase of [options.category, 'jazz']) {
+    for (const parentFilter of [null, PLACE_TYPE]) {
+      try {
+        const raw = await client.get(
+          '/v2/tags',
+          {
+            'filter.query': phrase,
+            'feature.semantic_search': true,
+            take: 20,
+            ...(parentFilter ? { 'filter.parents.types': parentFilter } : {}),
+          },
+          traces,
+          { bypassCache: true },
+        );
+        const tags = resultArray(raw, 'tags')
+          .map(toTagRef)
+          .filter((tag): tag is NonNullable<typeof tag> => tag !== undefined);
+        observed.tagLookups.push({
+          phrase,
+          parentFilter,
+          status: `${tags.length} returned`,
+          results: tags.slice(0, 12).map((tag) => ({
+            id: tag.id,
+            name: tag.name.slice(0, 60),
+            ...(tag.type ? { type: tag.type } : {}),
+            parentTypes: tag.parentTypes.slice(0, 6),
+          })),
+        });
+      } catch (error) {
+        observed.tagLookups.push({
+          phrase,
+          parentFilter,
+          status: `failed with ${error instanceof QlooError ? error.code : 'an error'}`,
+          results: [],
+        });
+      }
+    }
+  }
+
   // 4. The candidate pool for the city.
   let poolResponse: unknown;
   try {
@@ -283,6 +385,21 @@ export async function runSmoke(
   observed.withAddress = candidates.filter((c) => c.facts.address.status === 'known').length;
   observed.withTags = candidates.filter((c) => (c.taste.tagNames?.length ?? 0) > 0).length;
   observed.withPopularity = candidates.filter((c) => c.taste.popularity !== undefined).length;
+  const records = rawPlaces
+    .map(asRecord)
+    .filter((r): r is NonNullable<typeof r> => r !== undefined);
+  observed.withHours = records.filter((r) =>
+    hasAnyHours(asRecord(r['properties'])?.['hours']),
+  ).length;
+  observed.withGoodFor = records.filter(
+    (r) => (asArrayOf(asRecord(r['properties'])?.['good_for']).length ?? 0) > 0,
+  ).length;
+  observed.taxonomy = {
+    goodFor: tally(records.flatMap((r) => asArrayOf(asRecord(r['properties'])?.['good_for']))).map(
+      ({ name, count }) => ({ name, count }),
+    ),
+    tags: tally(records.flatMap((r) => asArrayOf(r['tags']))),
+  };
   const first = asRecord(rawPlaces[0]);
   observed.entityKeys = keysOf(first);
   observed.propertyKeys = keysOf(first?.['properties']);
