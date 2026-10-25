@@ -1,0 +1,258 @@
+{
+  "kind": "affinity_spread",
+  "recordedAt": "2026-10-25",
+  "source": "Diagnose mode of the Live evaluation workflow, run on commit fa6fa52, after the second run. Read only: it opens one case per scenario and writes no evaluation results.",
+  "note": "Counts and numbers only. Places scored is the number of places in the pool of 40 for which Qloo returned an affinity value.",
+  "scenarios": [
+    {
+      "id": "ny-a-friday-anniversary",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 10,
+      "affinityMin": 0.8324205245087269,
+      "affinityMedian": 0.8747358183091614,
+      "affinityMax": 0.8850318642305043,
+      "affinitySpread": 0.052611
+    },
+    {
+      "id": "ny-b-saturday-vegetarian",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 20,
+      "affinityMin": 0.8129471019030458,
+      "affinityMedian": 0.8617164398411399,
+      "affinityMax": 0.8795043789515227,
+      "affinitySpread": 0.066557
+    },
+    {
+      "id": "ny-c-monday-budget",
+      "signalKinds": [
+        "entity"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.6908906855590279,
+      "affinityMedian": 0.783485299097514,
+      "affinityMax": 0.8493831068856644,
+      "affinitySpread": 0.158492
+    },
+    {
+      "id": "ny-d-wednesday-group",
+      "signalKinds": [
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7649962877984056,
+      "affinityMedian": 0.7649962877984056,
+      "affinityMax": 0.7649962877984056,
+      "affinitySpread": 0.0
+    },
+    {
+      "id": "lon-a-friday-anniversary",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 16,
+      "affinityMin": 0.7837292024370754,
+      "affinityMedian": 0.8359257293721756,
+      "affinityMax": 0.8857056864319204,
+      "affinitySpread": 0.101976
+    },
+    {
+      "id": "lon-b-saturday-vegetarian",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 20,
+      "affinityMin": 0.8016598396019544,
+      "affinityMedian": 0.8291762075406983,
+      "affinityMax": 0.8451140083937249,
+      "affinitySpread": 0.043454
+    },
+    {
+      "id": "lon-c-monday-budget",
+      "signalKinds": [
+        "entity"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7631011591183893,
+      "affinityMedian": 0.8021475052040934,
+      "affinityMax": 0.8655360277211662,
+      "affinitySpread": 0.102435
+    },
+    {
+      "id": "lon-d-wednesday-group",
+      "signalKinds": [
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7649962877984056,
+      "affinityMedian": 0.7649962877984056,
+      "affinityMax": 0.7649962877984056,
+      "affinitySpread": 0.0
+    },
+    {
+      "id": "par-a-friday-anniversary",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 1,
+      "affinityMin": 0.8673896577436322,
+      "affinityMedian": 0.8673896577436322,
+      "affinityMax": 0.8673896577436322,
+      "affinitySpread": 0.0
+    },
+    {
+      "id": "par-b-saturday-vegetarian",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 23,
+      "affinityMin": 0.818542839972649,
+      "affinityMedian": 0.832968677096593,
+      "affinityMax": 0.8553639160518604,
+      "affinitySpread": 0.036821
+    },
+    {
+      "id": "par-c-monday-budget",
+      "signalKinds": [
+        "entity"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.8229718593889884,
+      "affinityMedian": 0.8768541173174609,
+      "affinityMax": 0.9566039694441206,
+      "affinitySpread": 0.133632
+    },
+    {
+      "id": "par-d-wednesday-group",
+      "signalKinds": [
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7649962877984056,
+      "affinityMedian": 0.7649962877984056,
+      "affinityMax": 0.7649962877984056,
+      "affinitySpread": 0.0
+    },
+    {
+      "id": "tok-a-friday-anniversary",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 3,
+      "affinityMin": 0.7797639925589811,
+      "affinityMedian": 0.7828792479466499,
+      "affinityMax": 0.792373755666005,
+      "affinitySpread": 0.01261
+    },
+    {
+      "id": "tok-b-saturday-vegetarian",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 5,
+      "affinityMin": 0.8460049072074876,
+      "affinityMedian": 0.8465479870805066,
+      "affinityMax": 0.8894105690849797,
+      "affinitySpread": 0.043406
+    },
+    {
+      "id": "tok-c-monday-budget",
+      "signalKinds": [
+        "entity"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7267251387360488,
+      "affinityMedian": 0.8438115574805467,
+      "affinityMax": 0.8583276165712604,
+      "affinitySpread": 0.131602
+    },
+    {
+      "id": "tok-d-wednesday-group",
+      "signalKinds": [
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7649962877984056,
+      "affinityMedian": 0.7649962877984056,
+      "affinityMax": 0.7649962877984056,
+      "affinitySpread": 0.0
+    },
+    {
+      "id": "dxb-a-friday-anniversary",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 29,
+      "affinityMin": 0.7783193254803403,
+      "affinityMedian": 0.8512938055092744,
+      "affinityMax": 0.9069525768468298,
+      "affinitySpread": 0.128633
+    },
+    {
+      "id": "dxb-b-saturday-vegetarian",
+      "signalKinds": [
+        "entity",
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 32,
+      "affinityMin": 0.8101835296917271,
+      "affinityMedian": 0.8309292273741465,
+      "affinityMax": 0.8656018988604397,
+      "affinitySpread": 0.055418
+    },
+    {
+      "id": "dxb-c-monday-budget",
+      "signalKinds": [
+        "entity"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.5784623210375728,
+      "affinityMedian": 0.6604074428426402,
+      "affinityMax": 0.7156165458981992,
+      "affinitySpread": 0.137154
+    },
+    {
+      "id": "dxb-d-wednesday-group",
+      "signalKinds": [
+        "tag"
+      ],
+      "poolSize": 40,
+      "placesScored": 40,
+      "affinityMin": 0.7649962877984056,
+      "affinityMedian": 0.7649962877984056,
+      "affinityMax": 0.7649962877984056,
+      "affinitySpread": 0.0
+    }
+  ]
+}
