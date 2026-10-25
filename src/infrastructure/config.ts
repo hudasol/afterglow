@@ -25,6 +25,14 @@ const ConfigSchema = z.object({
   /** Qloo calls allowed per UTC day. 0 turns the cap off. */
   QLOO_DAILY_CALL_CAP: z.coerce.number().int().min(0).max(1_000_000).default(2000),
 
+  /**
+   * Looks up opening hours, diet, wheelchair and capacity tags on OpenStreetMap for live cases,
+   * because Qloo does not supply them. Only public venue coordinates are sent.
+   */
+  AFTERGLOW_OSM_FACTS: flag('true'),
+  OVERPASS_URL: z.string().url().default('https://overpass-api.de/api/interpreter'),
+  OVERPASS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60_000).default(20_000),
+
   /** Allows a non loopback HOST without a token, for the hosted judging demo. */
   AFTERGLOW_PUBLIC_DEMO: flag('false'),
   /** When set, /api requires "Authorization: Bearer <token>". Needed when HOST is not loopback. */

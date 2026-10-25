@@ -30,6 +30,8 @@ export interface IntegrationStatus {
   qlooBaseUrl: string;
   qlooCallsToday: number | null;
   qlooDailyCap: number;
+  /** True when live cases may look up opening hours and similar facts on OpenStreetMap. */
+  placeFactsEnabled: boolean;
   /** Runs a minimal authenticated call to Qloo. Null when no key is configured. */
   probe: (() => Promise<ProbeResult>) | null;
 }
@@ -207,6 +209,7 @@ export function createApp(options: AppOptions): express.Express {
           baseUrl: integration.qlooBaseUrl,
           callsToday: integration.qlooCallsToday,
           dailyCap: integration.qlooDailyCap,
+          placeFacts: integration.placeFactsEnabled,
         },
         demo: {
           configured: true,

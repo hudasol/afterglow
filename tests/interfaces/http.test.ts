@@ -20,7 +20,15 @@ describe('http interface', () => {
     const status = await (await server.request('/api/status')).json();
     expect(status.modes.live).toMatchObject({ configured: true, callsToday: 3, dailyCap: 2000 });
     expect(status.modes.demo.label).toContain('Simulated');
+    expect(status.modes.live.placeFacts).toBe(false);
     expect(JSON.stringify(status)).not.toMatch(/key/iu);
+  });
+
+  it('reports whether live cases may read place facts from OpenStreetMap', async () => {
+    const server = await startServer({}, { placeFactsEnabled: true });
+    closer = server.close;
+    const status = await (await server.request('/api/status')).json();
+    expect(status.modes.live.placeFacts).toBe(true);
   });
 
   it('requires a session header for case routes', async () => {

@@ -56,6 +56,16 @@ export const searchRunSchema = z.object({
   tasteScores: z.array(tasteScoreSchema).max(100).nullable(),
   tasteStatus: z.enum(['applied', 'degraded', 'unavailable']),
   tasteNote: z.string().max(500).optional(),
+  /** Present when a second source was asked for practical facts such as opening hours. */
+  placeFacts: z
+    .object({
+      source: z.literal('openstreetmap'),
+      looked: z.number().int().min(0).max(200),
+      matched: z.number().int().min(0).max(200),
+      filled: z.number().int().min(0).max(1000),
+      note: z.string().max(400).optional(),
+    })
+    .optional(),
   appliedSignals: z.object({
     entityNames: z.array(z.string().max(200)).max(10),
     tagNames: z.array(z.string().max(200)).max(10),

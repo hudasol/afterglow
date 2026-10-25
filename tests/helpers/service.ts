@@ -1,6 +1,7 @@
 import { RecoveryService } from '../../src/application/recovery-service.js';
 import {
   ProviderError,
+  type PlaceFactsProvider,
   type PoolRequest,
   type ProviderContext,
   type RankRequest,
@@ -13,7 +14,9 @@ import { Database } from '../../src/infrastructure/database.js';
 import { SqliteCaseRepository } from '../../src/infrastructure/sqlite-case-repository.js';
 import { SimulatedTasteProvider } from '../../src/simulation/provider.js';
 
-export function makeService(options: { live?: TasteProvider; demo?: TasteProvider } = {}) {
+export function makeService(
+  options: { live?: TasteProvider; demo?: TasteProvider; placeFacts?: PlaceFactsProvider } = {},
+) {
   const db = new Database(':memory:');
   db.migrate('migrations');
   const unconfiguredLive: TasteProvider = {
@@ -36,6 +39,7 @@ export function makeService(options: { live?: TasteProvider; demo?: TasteProvide
       live: options.live ?? unconfiguredLive,
     },
     caseTtlHours: 48,
+    ...(options.placeFacts ? { placeFacts: options.placeFacts } : {}),
     clock: () => new Date('2026-10-24T10:00:00Z'),
     newCaseId: () => `case-${(counter += 1)}`,
   });

@@ -28,6 +28,7 @@ export async function startServer(
       qlooBaseUrl: 'https://hackathon.api.qloo.com',
       qlooCallsToday: null,
       qlooDailyCap: 2000,
+      placeFactsEnabled: false,
       probe: null,
       ...integration,
     },

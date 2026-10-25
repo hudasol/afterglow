@@ -39,6 +39,7 @@ function optionSummary(option: OptionView) {
       outcome: verdict.outcome,
       reason: verdict.reason,
       basis: verdict.basis,
+      ...(verdict.evidence ? { evidence: verdict.evidence } : {}),
     })),
     questionsForThePerson: option.gate.verificationQuestions,
   };
@@ -131,6 +132,7 @@ export function summariseCase(view: CaseView) {
           poolSize: view.run.poolSize,
           tasteStatus: view.run.tasteStatus,
           tasteNote: view.run.tasteNote,
+          placeFacts: view.run.placeFacts,
           signals: view.run.appliedSignals,
         }
       : null,

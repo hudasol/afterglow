@@ -208,21 +208,20 @@ function searchCycle(
   }
 
   const run = view.run;
-  steps.push(
-    {
-      phase: 'act',
-      text: `Fetched ${count(run?.poolSize ?? 0, 'candidate place')} from ${view.providerLabel}.`,
-    },
-    {
-      phase: 'act',
-      text:
-        run?.tasteStatus === 'applied'
-          ? 'Asked for taste affinity for those places. The answer was used.'
-          : run?.tasteStatus === 'degraded'
-            ? `Asked for taste affinity. The answer was partial. ${run.tasteNote ?? ''}`.trim()
-            : `Taste affinity was not available, so places are ordered by distance. ${run?.tasteNote ?? ''}`.trim(),
-    },
-  );
+  steps.push({
+    phase: 'act',
+    text: `Fetched ${count(run?.poolSize ?? 0, 'candidate place')} from ${view.providerLabel}.`,
+  });
+  if (run?.placeFacts) steps.push({ phase: 'act', text: placeFactsText(run.placeFacts) });
+  steps.push({
+    phase: 'act',
+    text:
+      run?.tasteStatus === 'applied'
+        ? 'Asked for taste affinity for those places. The answer was used.'
+        : run?.tasteStatus === 'degraded'
+          ? `Asked for taste affinity. The answer was partial. ${run.tasteNote ?? ''}`.trim()
+          : `Taste affinity was not available, so places are ordered by distance. ${run?.tasteNote ?? ''}`.trim(),
+  });
   const tally = tallyOf(view);
   steps.push(...decisionSteps(view, tally));
   return {
@@ -234,6 +233,15 @@ function searchCycle(
     steps,
     tally,
   };
+}
+
+function placeFactsText(facts: NonNullable<CaseView['run']>['placeFacts'] & object): string {
+  const asked = `Asked OpenStreetMap about ${count(facts.looked, 'place')} for facts the plan depends on and Qloo does not supply.`;
+  if (facts.looked > 0 && facts.matched === 0 && facts.filled === 0 && facts.note) {
+    return `${asked} ${facts.note}`;
+  }
+  const found = `${facts.matched} matched by name and position, ${count(facts.filled, 'fact')} filled in. Anything it could not answer stays unknown and is asked about.`;
+  return facts.note ? `${asked} ${found} ${facts.note}` : `${asked} ${found}`;
 }
 
 function recheckCycle(

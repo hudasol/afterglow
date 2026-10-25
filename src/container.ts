@@ -6,6 +6,8 @@ import { SqliteCaseRepository } from './infrastructure/sqlite-case-repository.js
 import type { IntegrationStatus, ProbeResult } from './interfaces/http/app.js';
 import { QlooClient } from './qloo/client.js';
 import { QlooError } from './qloo/errors.js';
+import { OverpassClient } from './openstreetmap/overpass.js';
+import { OsmPlaceFactsProvider } from './openstreetmap/provider.js';
 import { QlooTasteProvider } from './qloo/provider.js';
 import { SimulatedTasteProvider } from './simulation/provider.js';
 
@@ -39,10 +41,22 @@ export function buildContainer(config: Config = loadConfig()): Container {
       })
     : null;
 
+  const placeFacts =
+    client && config.AFTERGLOW_OSM_FACTS
+      ? new OsmPlaceFactsProvider(
+          new OverpassClient({
+            url: config.OVERPASS_URL,
+            timeoutMs: config.OVERPASS_TIMEOUT_MS,
+            userAgent: 'afterglow-hackathon-demo (+https://github.com/hudasol/afterglow)',
+          }),
+        )
+      : undefined;
+
   const service = new RecoveryService({
     repo: new SqliteCaseRepository(db),
     providers: { live: new QlooTasteProvider(client), demo: new SimulatedTasteProvider() },
     caseTtlHours: config.AFTERGLOW_CASE_TTL_HOURS,
+    ...(placeFacts ? { placeFacts } : {}),
   });
 
   const probe = client
@@ -79,6 +93,7 @@ export function buildContainer(config: Config = loadConfig()): Container {
         return client ? client.callsToday : null;
       },
       qlooDailyCap: config.QLOO_DAILY_CALL_CAP,
+      placeFactsEnabled: placeFacts !== undefined,
       probe,
     },
   };

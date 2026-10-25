@@ -1,4 +1,5 @@
 import type { CallTrace, CaseMode, ResolutionKind, TasteResolution } from '../domain/case.js';
+import type { EffectivePlan } from '../domain/plan.js';
 import type { Candidate, TasteScore } from '../domain/venue.js';
 
 export class ProviderError extends Error {
@@ -59,4 +60,29 @@ export interface TasteProvider {
   resolve(kind: ResolutionKind, input: string, ctx: ProviderContext): Promise<TasteResolution>;
   fetchPool(request: PoolRequest, ctx: ProviderContext): Promise<Candidate[]>;
   rank(request: RankRequest, ctx: ProviderContext): Promise<RankResponse>;
+}
+
+export interface PlaceFactsResult {
+  candidates: Candidate[];
+  /** How many places were looked up, how many were matched, and how many facts were filled in. */
+  looked: number;
+  matched: number;
+  filled: number;
+  /** Set when the lookup failed or was skipped in a way the person should know about. */
+  note?: string;
+}
+
+/**
+ * Fills in practical facts that the taste provider does not supply, such as opening hours. It only
+ * ever sets a fact that is still unknown, it records where each value came from, and when it
+ * cannot answer it leaves the fact unknown so the person is asked instead.
+ */
+export interface PlaceFactsProvider {
+  /** Shown next to the facts it supplied. */
+  readonly label: string;
+  enrich(
+    candidates: readonly Candidate[],
+    plan: EffectivePlan,
+    ctx: ProviderContext,
+  ): Promise<PlaceFactsResult>;
 }

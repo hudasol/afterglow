@@ -83,6 +83,8 @@ export interface RunSummary {
   poolSize: number;
   tasteStatus: SearchRun['tasteStatus'];
   tasteNote: string | null;
+  /** Set when practical facts were looked up on a second source. */
+  placeFacts: SearchRun['placeFacts'] | null;
   appliedSignals: SearchRun['appliedSignals'];
   traces: CallTrace[];
 }
@@ -319,6 +321,7 @@ export function buildCaseView(
           poolSize: run.pool.length,
           tasteStatus: run.tasteStatus,
           tasteNote: run.tasteNote ?? null,
+          placeFacts: run.placeFacts ?? null,
           appliedSignals: run.appliedSignals,
           traces: run.traces,
         }

@@ -21,16 +21,23 @@ import {
   intentAnchorInputSchema,
   type IntentAnchor,
 } from '../domain/intent.js';
-import { disruptionSchema } from '../domain/plan.js';
+import { deriveEffectivePlan, disruptionSchema } from '../domain/plan.js';
 import { buildTrace, type AgentTrace } from '../domain/trace.js';
 import { normaliseName, type Candidate } from '../domain/venue.js';
 import { AppError, statusForProviderCode } from './errors.js';
-import { ProviderError, type ProviderContext, type TasteProvider } from './ports.js';
+import {
+  ProviderError,
+  type PlaceFactsProvider,
+  type ProviderContext,
+  type TasteProvider,
+} from './ports.js';
 import { ConcurrencyError, type CaseRepository, type CaseSummary } from './repository.js';
 
 export interface RecoveryServiceDeps {
   repo: CaseRepository;
   providers: Record<CaseMode, TasteProvider>;
+  /** Optional second source for practical facts. Used for live cases only. */
+  placeFacts?: PlaceFactsProvider;
   caseTtlHours: number;
   clock?: () => Date;
   newCaseId?: () => string;
@@ -63,6 +70,7 @@ export class RecoveryService {
   readonly #newCaseId: () => string;
   readonly #ttlMs: number;
   readonly #poolSize: number;
+  readonly #placeFacts: PlaceFactsProvider | undefined;
   readonly #locks = new Map<string, Promise<unknown>>();
 
   constructor(deps: RecoveryServiceDeps) {
@@ -72,6 +80,7 @@ export class RecoveryService {
     this.#newCaseId = deps.newCaseId ?? randomUUID;
     this.#ttlMs = deps.caseTtlHours * 3_600_000;
     this.#poolSize = deps.poolSize ?? 40;
+    this.#placeFacts = deps.placeFacts;
   }
 
   describeProviders(): Record<CaseMode, TasteProvider['descriptor']> {
@@ -132,6 +141,13 @@ export class RecoveryService {
         tagPhrases: anchor.tasteTags,
         originalVenueName: originalLookedUp ? anchor.originalVenue.name : null,
       },
+      sentToPlaceFacts: run?.placeFacts
+        ? {
+            source: 'OpenStreetMap, through the public Overpass API',
+            sent: 'The public coordinates of venues that Qloo returned. Nothing else.',
+            places: run.placeFacts.looked,
+          }
+        : null,
       keptLocal: [
         'Case title and the statements of what to preserve',
         'Party size, dates and times',
@@ -158,6 +174,7 @@ export class RecoveryService {
             poolSize: run.poolSize,
             tasteStatus: run.tasteStatus,
             tasteNote: run.tasteNote,
+            placeFacts: run.placeFacts,
             shortlist: view.options
               .filter((option) => view.shortlistIds.includes(option.candidate.id))
               .map((option) => ({
@@ -612,6 +629,34 @@ export class RecoveryService {
       return [{ type: 'search_failed', runId, code: failure.code, message: failure.message }];
     }
 
+    // Practical facts the taste provider does not supply come from a second, labelled source. The
+    // plan decides which are needed, so nothing is looked up that the plan does not depend on.
+    let placeFacts: SearchRun['placeFacts'];
+    if (state.opened.mode === 'live' && this.#placeFacts && pool.length > 0) {
+      const plan = deriveEffectivePlan(anchor, state.disruptions, state.relaxedKeys);
+      try {
+        const enriched = await this.#placeFacts.enrich(pool, plan, ctx);
+        pool = enriched.candidates;
+        if (enriched.looked > 0) {
+          placeFacts = {
+            source: 'openstreetmap',
+            looked: enriched.looked,
+            matched: enriched.matched,
+            filled: enriched.filled,
+            ...(enriched.note ? { note: enriched.note } : {}),
+          };
+        }
+      } catch {
+        placeFacts = {
+          source: 'openstreetmap',
+          looked: 0,
+          matched: 0,
+          filled: 0,
+          note: 'The place facts lookup failed. Facts that depend on it stay unknown.',
+        };
+      }
+    }
+
     let tasteScores: SearchRun['tasteScores'] = null;
     let tasteStatus: SearchRun['tasteStatus'] = 'unavailable';
     let tasteNote: string | undefined;
@@ -653,6 +698,7 @@ export class RecoveryService {
       tasteScores,
       tasteStatus,
       ...(tasteNote ? { tasteNote } : {}),
+      ...(placeFacts ? { placeFacts } : {}),
       appliedSignals: {
         entityNames: entities.map((entity) => entity.name),
         tagNames: tags.map((tag) => tag.name),
