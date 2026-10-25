@@ -7,3 +7,6 @@ test-results
 playwright-report
 data/evaluation
 docs/EVALUATION_RESULTS.md
+results
+docs/EVALUATION_LIVE.md
+docs/EVALUATION_LIVE_RUN2.md
