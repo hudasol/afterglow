@@ -120,6 +120,10 @@ Without a key the command reports that credentials are missing, makes no request
 
 The report records counts, key names and rankings of the public cultural entities used as probes. It stores no venue data.
 
+### From GitHub Actions
+
+The same experiment can run from the **Qloo smoke test** workflow, which is started by hand from the Actions tab. It reads the key from a repository secret named `QLOO_API_KEY`, so the key stays inside GitHub and is never pasted anywhere else. Add the secret under Settings, Secrets and variables, Actions. The workflow fails at once, without any request, if the secret is missing. It prints the redacted report and keeps it as a downloadable artifact. Because the log of a public repository is public, the report holds only counts, key names and rankings of public probes, as described above.
+
 ## Troubleshooting
 
 If a request fails with an authentication error, the key was rejected. Ask Qloo support for a replacement and include the error category and time, never the key. If matching is ambiguous or unexpected, refine the phrase rather than forcing a fuzzy match, and describe the assumption in any write up.
