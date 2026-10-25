@@ -88,6 +88,18 @@ The reasoning behind the numbers, so that a miss can be read against it:
 
 Any change to the design after seeing results will be added here as a dated amendment that keeps the original text. There are none at the time of registration.
 
+### Amendment 1, 25 October 2026, written after the first run and before the second
+
+The first run completed 20 of 20 scenarios and met nine of the twelve predictions. Its results are recorded in [EVALUATION_LIVE.md](EVALUATION_LIVE.md) and explained in [EVALUATION_LIVE_NOTES.md](EVALUATION_LIVE_NOTES.md). They stay as the registered result.
+
+Reading the scenario rows showed two defects in the product that had changed what was measured. In three Dubai scenarios the original venue had been matched to a place of the same name in another country, so the gate ruled out every place. In three scenarios Qloo timed out when five or more tag signals were sent, so no taste ranking existed. Two read only tools, `diagnose` and `timing`, were added to the **Live evaluation** workflow to see why. They write no results.
+
+Both defects were fixed in the product, and a related rule was added: a place in the results named after the original venue and its city, such as "Zuma Dubai" for "Zuma", is treated as the venue that fell through and is not offered back. The fixes are in the commits that follow the one that records the first run.
+
+The same 20 scenarios will now be run a second time with the same twelve predictions, thresholds, statistics, oracle and seed. The sentence in the section on seeds that says the run was not repeated described the plan at registration and is superseded by this amendment. The second run is reported in `results/live-qloo-second-run.json` and [EVALUATION_LIVE_SECOND_RUN.md](EVALUATION_LIVE_SECOND_RUN.md), next to the first and never in its place.
+
+The second run is not independent evidence. The fixes were chosen after seeing which scenarios failed, so the second run measures whether those failures are gone and not how the product behaves on plans it has never been shown. Nothing about the recovery score, the weights, the ordering rules, the scenarios or the predictions was changed.
+
 ## Commands
 
 ```sh

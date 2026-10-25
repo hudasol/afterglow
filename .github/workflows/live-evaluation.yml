@@ -6,13 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation.
+        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation. second-run repeats it after fixes and writes separate files.
         type: choice
         options:
           - preflight
           - diagnose
           - timing
           - run
+          - second-run
         default: preflight
 
 permissions:
@@ -54,11 +55,20 @@ jobs:
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live
+      - name: Run the evaluation again after the fixes
+        if: ${{ inputs.mode == 'second-run' }}
+        run: npm run eval:live -- --second-run
       - name: Print the results file
         if: ${{ inputs.mode == 'run' && always() }}
         run: |
           echo "-----BEGIN RESULTS-----"
           cat results/live-qloo.json 2>/dev/null || echo "No results were written."
+          echo "-----END RESULTS-----"
+      - name: Print the results file of the second run
+        if: ${{ inputs.mode == 'second-run' && always() }}
+        run: |
+          echo "-----BEGIN RESULTS-----"
+          cat results/live-qloo-second-run.json 2>/dev/null || echo "No results were written."
           echo "-----END RESULTS-----"
       - uses: actions/upload-artifact@v4
         if: ${{ inputs.mode == 'run' && always() }}

@@ -196,26 +196,41 @@ describe('renderLiveReport', () => {
   });
 });
 
-describe('the recorded live results', () => {
-  const resultsPath = resolve(root, 'results/live-qloo.json');
+describe.each([
+  ['first run', 'results/live-qloo.json', 'docs/EVALUATION_LIVE.md'],
+  ['second run', 'results/live-qloo-second-run.json', 'docs/EVALUATION_LIVE_SECOND_RUN.md'],
+])('the recorded live results of the %s', (_name, resultsFile, docFile) => {
+  const resultsPath = resolve(root, resultsFile);
   const present = existsSync(resultsPath);
+  const load = () => JSON.parse(readFileSync(resultsPath, 'utf8')) as LiveResultsFile;
 
   it.skipIf(!present)('contain the summary that the code computes from the scenarios', () => {
-    const recorded = JSON.parse(readFileSync(resultsPath, 'utf8')) as LiveResultsFile;
+    const recorded = load();
     expect(recorded.kind).toBe('live_qloo');
     expect(recorded.live).toEqual(summariseLive(recorded.results));
     expect(recorded.summary).toEqual(aggregate(recorded.results));
   });
 
-  it.skipIf(!present)('are the numbers shown in docs/EVALUATION_LIVE.md', () => {
-    const recorded = JSON.parse(readFileSync(resultsPath, 'utf8')) as LiveResultsFile;
-    const document = readFileSync(resolve(root, 'docs/EVALUATION_LIVE.md'), 'utf8');
-    expect(document).toBe(renderLiveReport(recorded));
+  it.skipIf(!present)('are the numbers shown in the generated document', () => {
+    const document = readFileSync(resolve(root, docFile), 'utf8');
+    expect(document).toBe(renderLiveReport(load()));
   });
 
   it.skipIf(!present)('judge exactly the predictions written before the run', () => {
-    const recorded = JSON.parse(readFileSync(resultsPath, 'utf8')) as LiveResultsFile;
-    expect(recorded.live.metrics.map((m) => m.id)).toEqual(PREDICTIONS.map((p) => p.id));
+    expect(load().live.metrics.map((m) => m.id)).toEqual(PREDICTIONS.map((p) => p.id));
+  });
+});
+
+describe('a run after the first', () => {
+  it('says what is different about it and points to the registered run', () => {
+    const rendered = renderLiveReport({
+      ...file([result('one')]),
+      run: { label: 'second run', note: 'It was made after two defects were fixed.' },
+    });
+    expect(rendered).toContain('# Live evaluation on Qloo data, second run');
+    expect(rendered).toContain('It was made after two defects were fixed.');
+    expect(rendered).toContain('The registered result is the first run');
+    expect(rendered).not.toContain('before the first run');
   });
 });
 
