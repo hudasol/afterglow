@@ -11,6 +11,7 @@ import express, {
 import { z } from 'zod';
 import { AppError } from '../../application/errors.js';
 import type { RecoveryService } from '../../application/recovery-service.js';
+import { sessionKeyFromToken } from '../../application/session.js';
 import { caseModeSchema } from '../../domain/case.js';
 import { disruptionSchema } from '../../domain/plan.js';
 import { buildShowcase, type Showcase } from '../../evaluation/showcase.js';
@@ -56,7 +57,7 @@ function sessionKeyOf(req: Request): string {
   if (!header || !SESSION_PATTERN.test(header)) {
     throw new AppError('session_required', 'A valid session header is required.', 400);
   }
-  return createHash('sha256').update(`afterglow-session:${header}`).digest('hex');
+  return sessionKeyFromToken(header);
 }
 
 function wrap(
