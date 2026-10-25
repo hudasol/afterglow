@@ -61,7 +61,7 @@ const ConfigSchema = z.object({
         .max(4),
     ),
   /** How long to wait for each Overpass endpoint. */
-  OVERPASS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60_000).default(12_000),
+  OVERPASS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60_000).default(6_000),
 
   /** Allows a non loopback HOST without a token, for the hosted judging demo. */
   AFTERGLOW_PUBLIC_DEMO: flag('false'),

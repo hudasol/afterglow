@@ -165,6 +165,89 @@ describe('OverpassClient', () => {
     });
   });
 
+  describe('pausing after repeated failures', () => {
+    const other = { lat: 25.3, lon: 55.4 };
+
+    function pausing(statusFor: () => number) {
+      let clock = 0;
+      const calls: number[] = [];
+      const instance = new OverpassClient({
+        url: 'https://overpass.test/api/interpreter',
+        timeoutMs: 1000,
+        userAgent: 'afterglow-test',
+        pauseAfterFailures: 2,
+        pauseMs: 60_000,
+        now: () => clock,
+        fetchImpl: (async () => {
+          calls.push(clock);
+          const status = statusFor();
+          return status === 200 ? json(body([])) : json('x', status);
+        }) as typeof fetch,
+      });
+      return { instance, calls, advance: (ms: number) => (clock += ms) };
+    }
+
+    it('stops asking after two failed lookups in a row, and says so without waiting', async () => {
+      const { instance, calls } = pausing(() => 502);
+      await expect(instance.nearby([point], 150, [])).rejects.toMatchObject({
+        code: 'OSM_UPSTREAM',
+      });
+      await expect(instance.nearby([other], 150, [])).rejects.toMatchObject({
+        code: 'OSM_UPSTREAM',
+      });
+      const traces: CallTrace[] = [];
+      await expect(instance.nearby([point], 150, traces)).rejects.toMatchObject({
+        code: 'OSM_PAUSED',
+      });
+      expect(calls).toHaveLength(2);
+      expect(traces[0]).toMatchObject({ attempts: 0, durationMs: 0 });
+      expect(traces[0]?.error).toContain('OSM_PAUSED');
+    });
+
+    it('asks again once the pause is over, and a success clears the count', async () => {
+      let status = 502;
+      const { instance, calls, advance } = pausing(() => status);
+      await expect(instance.nearby([point], 150, [])).rejects.toBeInstanceOf(OverpassError);
+      await expect(instance.nearby([other], 150, [])).rejects.toBeInstanceOf(OverpassError);
+      advance(60_001);
+      status = 200;
+      await instance.nearby([point], 150, []);
+      expect(calls).toHaveLength(3);
+      status = 502;
+      await expect(instance.nearby([other], 150, [])).rejects.toMatchObject({
+        code: 'OSM_UPSTREAM',
+      });
+      await expect(instance.nearby([{ lat: 25.31, lon: 55.41 }], 150, [])).rejects.toMatchObject({
+        code: 'OSM_UPSTREAM',
+      });
+    });
+
+    it('does not count a refused query as a service failure', async () => {
+      const { instance, calls } = pausing(() => 400);
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        await expect(instance.nearby([point], 150, [])).rejects.toMatchObject({
+          code: 'OSM_REJECTED',
+        });
+      }
+      expect(calls).toHaveLength(3);
+    });
+
+    it('still answers from the cache while paused', async () => {
+      let status = 200;
+      const { instance } = pausing(() => status);
+      await instance.nearby([point], 150, []);
+      status = 502;
+      await expect(instance.nearby([other], 150, [])).rejects.toBeInstanceOf(OverpassError);
+      await expect(instance.nearby([{ lat: 25.31, lon: 55.41 }], 150, [])).rejects.toBeInstanceOf(
+        OverpassError,
+      );
+      const traces: CallTrace[] = [];
+      const answer = await instance.nearby([point], 150, traces);
+      expect(answer.has(pointKey(point))).toBe(true);
+      expect(traces[0]).toMatchObject({ cache: 'hit' });
+    });
+  });
+
   it('does not cache a failed lookup', async () => {
     let fail = true;
     const { instance, calls } = client(() => (fail ? json('x', 503) : json(body([]))));

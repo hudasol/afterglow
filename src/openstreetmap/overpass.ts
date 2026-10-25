@@ -14,7 +14,8 @@ export type OverpassErrorCode =
   | 'OSM_RATE_LIMIT'
   | 'OSM_UPSTREAM'
   | 'OSM_REJECTED'
-  | 'OSM_BAD_RESPONSE';
+  | 'OSM_BAD_RESPONSE'
+  | 'OSM_PAUSED';
 
 export class OverpassError extends Error {
   readonly code: OverpassErrorCode;
@@ -59,6 +60,10 @@ export interface OverpassOptions {
   now?: () => number;
   cacheTtlMs?: number;
   maxCachedPoints?: number;
+  /** Failed lookups in a row before further lookups are paused. */
+  pauseAfterFailures?: number;
+  /** How long lookups stay paused, so that a service that is down does not slow every search. */
+  pauseMs?: number;
 }
 
 const AMENITIES =
@@ -100,6 +105,10 @@ export class OverpassClient {
   readonly #ttl: number;
   readonly #max: number;
   readonly #cache = new Map<string, CacheEntry>();
+  readonly #pauseAfter: number;
+  readonly #pauseMs: number;
+  #failuresInARow = 0;
+  #pausedUntil = 0;
 
   constructor(options: OverpassOptions) {
     this.#options = options;
@@ -109,6 +118,8 @@ export class OverpassClient {
     this.#now = options.now ?? Date.now;
     this.#ttl = options.cacheTtlMs ?? 6 * 3_600_000;
     this.#max = options.maxCachedPoints ?? 2000;
+    this.#pauseAfter = options.pauseAfterFailures ?? 2;
+    this.#pauseMs = options.pauseMs ?? 5 * 60_000;
   }
 
   /** Named venues of interest within radiusM of each point, keyed by pointKey. */
@@ -139,6 +150,21 @@ export class OverpassClient {
     }
 
     const started = this.#now();
+    if (started < this.#pausedUntil) {
+      const error = new OverpassError(
+        'OSM_PAUSED',
+        'OpenStreetMap lookups are paused for a few minutes after repeated failures.',
+      );
+      traces.push({
+        endpoint: ENDPOINT,
+        params: { ...params, uncached: String(missing.length) },
+        attempts: 0,
+        durationMs: 0,
+        cache: 'miss',
+        error: `${error.code}: ${error.message}`,
+      });
+      throw error;
+    }
     const query = buildQuery(missing, radiusM);
     let attempts = 0;
     let failure: OverpassError | null = null;
@@ -163,6 +189,13 @@ export class OverpassClient {
     if (!served) {
       const error =
         failure ?? new OverpassError('OSM_NETWORK', 'The OpenStreetMap request failed.');
+      if (error.retryable) {
+        this.#failuresInARow += 1;
+        if (this.#failuresInARow >= this.#pauseAfter) {
+          this.#pausedUntil = this.#now() + this.#pauseMs;
+          this.#failuresInARow = 0;
+        }
+      }
       traces.push({
         endpoint: ENDPOINT,
         params: attemptParams,
@@ -175,6 +208,7 @@ export class OverpassClient {
       throw error;
     }
 
+    this.#failuresInARow = 0;
     const { elements, status } = served.result;
     const radiusKm = radiusM / 1000;
     for (const point of missing) {
