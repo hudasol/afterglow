@@ -92,6 +92,17 @@ describe('qloo smoke experiment', () => {
     expect(JSON.stringify(report)).not.toContain('test-key-never-real');
   });
 
+  it('checks that a place works as a taste signal and records the property shape without values', async () => {
+    const report = await runSmoke(
+      client(fakeQloo({ poolSize: 20, sensitive: true })),
+      options,
+      new Date('2026-10-24T00:00:00Z'),
+    );
+    expect(report.checks.find((c) => c.name === 'a place as a taste signal')?.ok).toBe(true);
+    expect(report.observed.propertyShape).toEqual({ address: 'string', price_level: 'number' });
+    expect(JSON.stringify(report.observed.propertyShape)).not.toContain('Test Road');
+  });
+
   it('returns no go when different signals give the same ranking', async () => {
     const report = await runSmoke(
       client(fakeQloo({ poolSize: 20, sensitive: false })),

@@ -40,8 +40,11 @@ export interface SmokeReport {
     withTags: number;
     withAffinity: number;
     withExplanation: number;
+    withPopularity: number;
     entityKeys: string[];
     propertyKeys: string[];
+    /** The value type of each property key on the first place, for example price_level: number. No values. */
+    propertyShape: Record<string, string>;
     hoursLikeKeys: string[];
     signalSensitivity: { overlapAt3: number | null; kendallTau: number | null } | null;
     callCount: number;
@@ -52,6 +55,20 @@ export interface SmokeReport {
 function keysOf(value: unknown): string[] {
   const record = asRecord(value);
   return record ? Object.keys(record).sort() : [];
+}
+
+/** The type of each key, never the value, so a report shows the shape without storing venue data. */
+function shapeOf(value: unknown): Record<string, string> {
+  const record = asRecord(value);
+  if (!record) return {};
+  return Object.fromEntries(
+    Object.keys(record)
+      .sort()
+      .map((key) => {
+        const item = record[key];
+        return [key, Array.isArray(item) ? 'array' : item === null ? 'null' : typeof item];
+      }),
+  );
 }
 
 export async function runSmoke(
@@ -70,8 +87,10 @@ export async function runSmoke(
     withTags: 0,
     withAffinity: 0,
     withExplanation: 0,
+    withPopularity: 0,
     entityKeys: [],
     propertyKeys: [],
+    propertyShape: {},
     hoursLikeKeys: [],
     signalSensitivity: null,
     callCount: 0,
@@ -165,9 +184,11 @@ export async function runSmoke(
   observed.withPriceLevel = candidates.filter((c) => c.facts.priceLevel.status === 'known').length;
   observed.withAddress = candidates.filter((c) => c.facts.address.status === 'known').length;
   observed.withTags = candidates.filter((c) => (c.taste.tagNames?.length ?? 0) > 0).length;
+  observed.withPopularity = candidates.filter((c) => c.taste.popularity !== undefined).length;
   const first = asRecord(rawPlaces[0]);
   observed.entityKeys = keysOf(first);
   observed.propertyKeys = keysOf(first?.['properties']);
+  observed.propertyShape = shapeOf(first?.['properties']);
   observed.hoursLikeKeys = [...observed.entityKeys, ...observed.propertyKeys].filter((key) =>
     /hour|open|close|schedule/iu.test(key),
   );
@@ -242,7 +263,43 @@ export async function runSmoke(
       return finish('no_go');
     }
 
-    // 6. Tag signals alongside entity signals.
+    // 6. The venue that fell through as a signal: a place entity used as a taste signal.
+    const lostVenueId = ids[0];
+    if (lostVenueId) {
+      try {
+        const response = await client.get(
+          '/v2/insights',
+          {
+            'filter.type': PLACE_TYPE,
+            'filter.results.entities': ids,
+            'signal.interests.entities': [lostVenueId],
+            take: ids.length,
+          },
+          traces,
+          { bypassCache: true },
+        );
+        const scored = toTasteScores(response, idSet).length;
+        check(
+          'a place as a taste signal',
+          scored > 0,
+          `${scored} of ${ids.length} places were scored when a place entity was the only signal.`,
+        );
+        if (scored === 0)
+          reasons.push(
+            'A place entity was not usable as a taste signal, so the lost venue signal will not help.',
+          );
+      } catch (error) {
+        const code = error instanceof QlooError ? error.code : 'QLOO_NETWORK';
+        check(
+          'a place as a taste signal',
+          false,
+          `Failed with ${code}. The lost venue signal would have no effect.`,
+        );
+        reasons.push('A place entity was not accepted as a taste signal.');
+      }
+    }
+
+    // 7. Tag signals alongside entity signals.
     if (vibe.selected || vibe.candidates?.[0]) {
       const tagId = (vibe.selected ?? vibe.candidates?.[0])?.id as string;
       try {
