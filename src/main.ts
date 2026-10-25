@@ -20,6 +20,7 @@ const app = createApp({
   serveWeb: config.SERVE_WEB,
   webRoot: resolve(import.meta.dirname, '../web/dist'),
   evaluationRoot: resolve(import.meta.dirname, '../data/evaluation'),
+  resultsRoot: resolve(import.meta.dirname, '../results'),
   publicDemo: config.AFTERGLOW_PUBLIC_DEMO,
 });
 

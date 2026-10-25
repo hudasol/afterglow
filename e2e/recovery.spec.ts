@@ -28,8 +28,10 @@ test.describe('landing page', () => {
 
   test('has a skip link that moves focus to the main content', async ({ page }) => {
     await page.goto('/');
-    await page.keyboard.press('Tab');
     const skip = page.getByRole('link', { name: 'Skip to the main content' });
+    // The first Tab press can only land on the link once the page has drawn it.
+    await skip.waitFor({ state: 'attached' });
+    await page.keyboard.press('Tab');
     await expect(skip).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(page.locator('main')).toBeFocused();
@@ -164,10 +166,19 @@ test.describe('recovery flow in demo mode', () => {
 });
 
 test.describe('integration status honesty', () => {
-  test('says live Qloo is off and that no live test is recorded', async ({ page }) => {
+  test('says live Qloo is off here and shows the recorded live results with their misses', async ({
+    page,
+  }) => {
     await page.goto('/#/evidence');
     await expect(page.getByText(/No Qloo API key is configured on this server/)).toBeVisible();
-    await expect(page.getByText(/No live smoke test result is recorded/)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Go: every check passed.' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'First run, the registered result' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Second run, after two product fixes' }),
+    ).toBeVisible();
+    await expect(page.getByText('9 predictions met, 3 missed').first()).toBeVisible();
     await expect(page.getByRole('button', { name: 'Check the connection' })).toBeDisabled();
     await expect(page.getByText('Offline evaluation on the simulated catalogue')).toBeVisible();
     await expectNoSeriousAccessibilityIssues(page);

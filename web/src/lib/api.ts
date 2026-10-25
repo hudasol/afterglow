@@ -180,6 +180,28 @@ export interface EvaluationReportFile {
   limits: string[];
 }
 
+export interface LiveRunView {
+  label: string;
+  generatedAt: string;
+  note: string | null;
+  providerLabel: string;
+  scenarios: number;
+  completed: number;
+  hits: number;
+  misses: number;
+  notEvaluated: number;
+  predictions: {
+    id: string;
+    experiment: string;
+    claim: string;
+    predicted: string;
+    observed: string;
+    interval: string;
+    scenarios: string;
+    verdict: 'HIT' | 'MISS' | 'NOT EVALUATED';
+  }[];
+}
+
 export interface SmokeReportFile {
   generatedAt: string;
   verdict: 'go' | 'conditional' | 'no_go';
@@ -209,7 +231,10 @@ export const api = {
   status: () => request<ServerStatus>('GET', '/status'),
   scenarios: () => request<{ scenarios: ScenarioPreset[] }>('GET', '/scenarios'),
   evaluation: () =>
-    request<{ reports: EvaluationReportFile[]; smoke: SmokeReportFile[] }>('GET', '/evaluation'),
+    request<{ reports: EvaluationReportFile[]; smoke: SmokeReportFile[]; liveRuns: LiveRunView[] }>(
+      'GET',
+      '/evaluation',
+    ),
   probe: () => request<ProbeResult>('POST', '/integration/probe'),
   osmProbe: () => request<OsmProbeResult>('POST', '/integration/osm-probe'),
   listCases: () => request<{ cases: CaseListItem[] }>('GET', '/cases'),

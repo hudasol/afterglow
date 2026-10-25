@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import {
   api,
   type EvaluationReportFile,
+  type LiveRunView,
   type OsmProbeResult,
   type ProbeResult,
   type ServerStatus,
   type SmokeReportFile,
 } from '../lib/api';
 import { formatStamp } from '../lib/format';
+
+const REPO = 'https://github.com/hudasol/afterglow';
 
 const VERDICT_TEXT: Record<SmokeReportFile['verdict'], string> = {
   go: 'Go: every check passed.',
@@ -100,6 +103,7 @@ function ReportCard({ report }: { report: EvaluationReportFile }) {
 export function EvidencePage({ status }: { status: ServerStatus | null }) {
   const [reports, setReports] = useState<EvaluationReportFile[] | null>(null);
   const [smoke, setSmoke] = useState<SmokeReportFile[]>([]);
+  const [liveRuns, setLiveRuns] = useState<LiveRunView[]>([]);
   const [probe, setProbe] = useState<ProbeResult | null>(null);
   const [probing, setProbing] = useState(false);
   const [osm, setOsm] = useState<OsmProbeResult | { error: string } | null>(null);
@@ -113,6 +117,7 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         if (cancelled) return;
         setReports(result.reports);
         setSmoke(result.smoke);
+        setLiveRuns(result.liveRuns);
       })
       .catch(() => !cancelled && setReports([]));
     return () => {
@@ -293,6 +298,74 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
                           </span>
                         </td>
                         <td>{check.detail}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          ))
+        )}
+      </section>
+
+      <section aria-labelledby="ev-live" className="stack">
+        <h2 id="ev-live">Live evaluation on Qloo data</h2>
+        <p className="muted-text">
+          Twelve numeric predictions were written down before the first run and committed to the
+          repository. They were then tested on 20 plans in five cities with real Qloo data. The
+          plans, cities and signals were chosen by the team that built the method, and no people
+          took part. Misses are kept. The full documents are in the{' '}
+          <a href={`${REPO}/blob/main/docs/PREREGISTRATION.md`}>preregistration</a>,{' '}
+          <a href={`${REPO}/blob/main/docs/EVALUATION_LIVE.md`}>registered result</a>,{' '}
+          <a href={`${REPO}/blob/main/docs/EVALUATION_LIVE_SECOND_RUN.md`}>second run</a> and{' '}
+          <a href={`${REPO}/blob/main/docs/EVALUATION_LIVE_NOTES.md`}>notes on the misses</a>.
+        </p>
+        {liveRuns.length === 0 ? (
+          <div className="callout warn">No live evaluation result is recorded with this build.</div>
+        ) : (
+          liveRuns.map((run) => (
+            <article className="panel" key={run.label} aria-labelledby={`live-${run.label}`}>
+              <h3 id={`live-${run.label}`}>{run.label}</h3>
+              <p className="small muted-text">
+                {run.providerLabel}. {formatStamp(run.generatedAt)}. {run.completed} of{' '}
+                {run.scenarios} scenarios completed. {run.hits} predictions met, {run.misses} missed
+                {run.notEvaluated > 0 ? `, ${run.notEvaluated} not evaluated` : ''}.
+              </p>
+              {run.note ? <p className="small">{run.note}</p> : null}
+              <div
+                className="table-wrap"
+                tabIndex={0}
+                role="region"
+                aria-label={`${run.label}, predictions`}
+              >
+                <table className="data" style={{ marginTop: '0.8rem' }}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Id</th>
+                      <th scope="col">Measure</th>
+                      <th scope="col">Predicted</th>
+                      <th scope="col">Observed</th>
+                      <th scope="col">95% interval</th>
+                      <th scope="col">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {run.predictions.map((p) => (
+                      <tr key={p.id}>
+                        <td>{p.id}</td>
+                        <td>{p.claim}</td>
+                        <td>{p.predicted}</td>
+                        <td>{p.observed}</td>
+                        <td>{p.interval}</td>
+                        <td>
+                          <span className={`pill ${p.verdict === 'HIT' ? 'ok' : 'bad'}`}>
+                            {p.verdict === 'HIT'
+                              ? 'Met'
+                              : p.verdict === 'MISS'
+                                ? 'Missed'
+                                : 'Not evaluated'}
+                          </span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

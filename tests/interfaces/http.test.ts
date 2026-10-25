@@ -60,6 +60,30 @@ describe('http interface', () => {
     expect(await answered.json()).toMatchObject({ ok: true, host: 'overpass.test', hoursRead: 8 });
   });
 
+  it('serves the recorded smoke test and both live evaluation runs, built from the results files', async () => {
+    const server = await startServer();
+    closer = server.close;
+    const body = await (await server.request('/api/evaluation')).json();
+    expect(body.smoke.length).toBeGreaterThan(0);
+    expect(body.liveRuns.map((run: { label: string }) => run.label)).toEqual([
+      'First run, the registered result',
+      'Second run, after two product fixes',
+    ]);
+    for (const run of body.liveRuns) {
+      expect(run.predictions).toHaveLength(12);
+      expect(run.hits + run.misses + run.notEvaluated).toBe(12);
+      expect(run.predictions.map((p: { id: string }) => p.id)[0]).toBe('P1');
+    }
+    expect(JSON.stringify(body)).not.toMatch(/api[_-]?key/iu);
+  });
+
+  it('shows no live runs when the results folder holds none', async () => {
+    const server = await startServer({ resultsRoot: 'results/none-here' });
+    closer = server.close;
+    const body = await (await server.request('/api/evaluation')).json();
+    expect(body.liveRuns).toEqual([]);
+  });
+
   it('requires a session header for case routes', async () => {
     const server = await startServer();
     closer = server.close;

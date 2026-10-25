@@ -42,6 +42,7 @@ export async function startServer(
     serveWeb: false,
     webRoot: 'web/dist',
     evaluationRoot: 'data/evaluation',
+    resultsRoot: 'results',
     publicDemo: false,
     ...overrides,
   });

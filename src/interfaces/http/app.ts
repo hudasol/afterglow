@@ -14,6 +14,11 @@ import type { RecoveryService } from '../../application/recovery-service.js';
 import { sessionKeyFromToken } from '../../application/session.js';
 import { caseModeSchema } from '../../domain/case.js';
 import { disruptionSchema } from '../../domain/plan.js';
+import {
+  liveRunView,
+  type LiveResultsFile,
+  type LiveRunView,
+} from '../../evaluation/live-report.js';
 import { buildShowcase, type Showcase } from '../../evaluation/showcase.js';
 import { scenarios } from '../../simulation/scenarios.js';
 import { rateLimit } from './rate-limit.js';
@@ -66,6 +71,8 @@ export interface AppOptions {
   serveWeb: boolean;
   webRoot: string;
   evaluationRoot: string;
+  /** Where the recorded results of the live evaluation are. Left out, none are shown. */
+  resultsRoot?: string;
   publicDemo: boolean;
 }
 
@@ -300,7 +307,22 @@ export function createApp(options: AppOptions): express.Express {
       }
       return found;
     };
-    res.json({ reports: readAll('report-'), smoke: readAll('smoke-') });
+    const liveRuns: LiveRunView[] = [];
+    for (const [file, label] of [
+      ['live-qloo.json', 'First run, the registered result'],
+      ['live-qloo-second-run.json', 'Second run, after two product fixes'],
+    ] as const) {
+      if (!options.resultsRoot) break;
+      try {
+        const recorded = JSON.parse(
+          readFileSync(join(options.resultsRoot, file), 'utf8'),
+        ) as LiveResultsFile;
+        liveRuns.push(liveRunView(recorded, label));
+      } catch {
+        // A missing or malformed file is skipped rather than failing the page.
+      }
+    }
+    res.json({ reports: readAll('report-'), smoke: readAll('smoke-'), liveRuns });
   });
 
   let showcase: Promise<Showcase> | null = null;

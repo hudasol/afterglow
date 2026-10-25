@@ -267,6 +267,65 @@ function cell(text: string): string {
   return text.replace(/\|/gu, '/').replace(/\s+/gu, ' ').trim();
 }
 
+/** One row of a run as the Evidence page shows it. The text is the same as in the generated document. */
+export interface LivePredictionView {
+  id: string;
+  experiment: string;
+  claim: string;
+  predicted: string;
+  observed: string;
+  interval: string;
+  scenarios: string;
+  verdict: Verdict;
+}
+
+export interface LiveRunView {
+  label: string;
+  generatedAt: string;
+  note: string | null;
+  providerLabel: string;
+  scenarios: number;
+  completed: number;
+  hits: number;
+  misses: number;
+  notEvaluated: number;
+  predictions: LivePredictionView[];
+}
+
+/** A compact view of a recorded run, built from the results file and nothing else. */
+export function liveRunView(file: LiveResultsFile, label: string): LiveRunView {
+  const predictions: LivePredictionView[] = [];
+  for (const prediction of PREDICTIONS) {
+    const metric = file.live.metrics.find((m) => m.id === prediction.id);
+    if (!metric) continue;
+    predictions.push({
+      id: prediction.id,
+      experiment: prediction.experiment,
+      claim: prediction.claim,
+      predicted: comparatorText(prediction),
+      observed: show(metric.observed, prediction.unit),
+      interval:
+        metric.low !== null && metric.high !== null
+          ? `${show(metric.low, prediction.unit)} to ${show(metric.high, prediction.unit)}`
+          : 'not applicable',
+      scenarios: `${metric.basis.used} of ${metric.basis.of}`,
+      verdict: metric.verdict,
+    });
+  }
+  return {
+    label,
+    generatedAt: file.generatedAt,
+    note: file.run?.note ?? null,
+    providerLabel: file.provider.label,
+    scenarios: file.scenarioCount,
+    completed: file.results.filter((r) => r.ok).length,
+    hits: file.live.hits,
+    misses: file.live.misses,
+    notEvaluated: file.live.notEvaluated,
+    predictions,
+  };
+}
+
 export function renderLiveReport(file: LiveResultsFile): string {
   const { live } = file;
   const done = file.results.filter((r) => r.ok);
