@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { CaseView } from '../../../src/domain/case-view.js';
-import { entryKind } from '../lib/format.js';
+import { groupChoices } from '../lib/format.js';
 
 type Pending = CaseView['pendingChoices'][number];
 
@@ -20,7 +20,7 @@ function ChoiceItem({
   onChoose: (key: string, chosenId: string | null) => void;
 }) {
   const [picked, setPicked] = useState<string>('');
-  const candidates = pending.candidates ?? [];
+  const candidates = groupChoices(pending.candidates ?? []);
   const name = `choice-${pending.key}`;
   return (
     <fieldset className="panel">
@@ -42,7 +42,7 @@ function ChoiceItem({
             />
             <span>{candidate.name}</span>
             <span className="desc">
-              {[entryKind(candidate.type), candidate.description].filter(Boolean).join('. ') ||
+              {[candidate.kinds.join(' and '), candidate.description].filter(Boolean).join('. ') ||
                 'No further description returned.'}
             </span>
           </label>

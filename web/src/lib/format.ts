@@ -82,3 +82,42 @@ export function entryKind(type: string | undefined): string | undefined {
   const words = last.replace(/_/gu, ' ').trim();
   return words ? words.charAt(0).toUpperCase() + words.slice(1) : undefined;
 }
+
+export interface ChoiceCandidate {
+  id: string;
+  name: string;
+  type?: string | undefined;
+  description?: string | undefined;
+}
+
+export interface GroupedChoice {
+  id: string;
+  name: string;
+  kinds: string[];
+  description: string | undefined;
+}
+
+/**
+ * Qloo can list one entity under two types with the same identifier, as it does for a band that is
+ * also listed as a person. Choosing either is the same choice, so they are shown as one entry that
+ * names both types. Entries with different identifiers stay separate.
+ */
+export function groupChoices(candidates: readonly ChoiceCandidate[]): GroupedChoice[] {
+  const groups = new Map<string, GroupedChoice>();
+  for (const candidate of candidates) {
+    const kind = entryKind(candidate.type);
+    const existing = groups.get(candidate.id);
+    if (!existing) {
+      groups.set(candidate.id, {
+        id: candidate.id,
+        name: candidate.name,
+        kinds: kind ? [kind] : [],
+        description: candidate.description,
+      });
+      continue;
+    }
+    if (kind && !existing.kinds.includes(kind)) existing.kinds.push(kind);
+    existing.description ??= candidate.description;
+  }
+  return [...groups.values()];
+}

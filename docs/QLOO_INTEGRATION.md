@@ -49,6 +49,8 @@ Qloo issues hackathon keys through a request form linked from the hackathon page
 
 Policy: if exactly one returned entity has the same normalised name as the input, it resolves. Otherwise the match is ambiguous and up to five candidates are shown to the person, who chooses or skips the signal. A fuzzy match is never passed on silently. For the original venue, candidates that carry the same name are narrowed by the city only when exactly one mentions the city.
 
+Qloo can list one entity under two types with the same identifier, as it does for Fleetwood Mac as an artist and as a person. The choice screen shows these as one entry that names both types, because choosing either is the same choice, and keeps entries with different identifiers (the album of the same name, for example) separate.
+
 The name search is not limited to a city. The first live evaluation showed it returning a restaurant in Arizona for "Zuma", one in Bahrain for "Al Fanar Restaurant" and one in Iran for "Arabian Tea House", all for plans in Dubai. A match with the right name in the wrong country is therefore checked against the places found in the city. An entry more than 150 km from the middle of the places found for the city (taken only when at least five of them have a known position) is not used as a taste signal or as the position of the venue. When the pool contains a place with a matching name (Zuma Dubai, for example), that place is used instead and the Evidence tab says so. Otherwise the distance to the original venue is unknown and the person is told.
 
 ### Matching a vibe, genre or category
