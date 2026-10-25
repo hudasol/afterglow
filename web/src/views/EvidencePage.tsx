@@ -255,8 +255,8 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
             individual.
           </li>
           <li>
-            Only the city, the venue category, the taste names and phrases, and, when a distance
-            limit is set, the original venue name are sent to Qloo.
+            Only the city, the venue category, the taste names and phrases, and the original venue
+            name, when it is used as a taste signal or a distance limit needs it, are sent to Qloo.
           </li>
           <li>Titles, party sizes, notes and times stay on this server.</li>
           <li>The API key never reaches the browser, the repository or the logs.</li>

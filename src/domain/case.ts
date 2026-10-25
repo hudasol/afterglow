@@ -60,6 +60,8 @@ export const searchRunSchema = z.object({
     entityNames: z.array(z.string().max(200)).max(10),
     tagNames: z.array(z.string().max(200)).max(10),
     categoryTag: z.string().max(200).optional(),
+    /** The venue that fell through, when it was used as a taste signal. */
+    lostVenue: z.string().max(200).optional(),
     location: z.string().max(100),
   }),
   traces: z.array(callTraceSchema).max(60),

@@ -55,6 +55,7 @@ interface FormState {
   durationMinutes: number;
   category: VenueCategory;
   originalVenue: string;
+  useOriginalVenueAsSignal: boolean;
   preserve: string[];
   entities: string[];
   tags: string[];
@@ -88,6 +89,7 @@ function blankState(mode: CaseMode, demoCity: string): FormState {
     durationMinutes: 120,
     category: 'restaurant',
     originalVenue: '',
+    useOriginalVenueAsSignal: true,
     preserve: [''],
     entities: [''],
     tags: [''],
@@ -120,6 +122,7 @@ function stateFromPreset(preset: ScenarioPreset): FormState {
     durationMinutes: a.durationMinutes,
     category: a.category,
     originalVenue: a.originalVenue.name,
+    useOriginalVenueAsSignal: a.useOriginalVenueAsSignal,
     preserve: a.preserve.length > 0 ? [...a.preserve] : [''],
     entities: a.tasteEntities.length > 0 ? [...a.tasteEntities] : [''],
     tags: a.tasteTags.length > 0 ? [...a.tasteTags] : [''],
@@ -152,9 +155,9 @@ function buildAnchor(state: FormState): { anchor?: IntentAnchor; problems: strin
   if (preserve.length === 0 || preserve.some((p) => p.length < 2)) {
     problems.push('Add at least one thing that must survive, in a few words.');
   }
-  if (entities.length + tags.length === 0) {
+  if (entities.length + tags.length === 0 && !state.useOriginalVenueAsSignal) {
     problems.push(
-      'Add at least one name or vibe the group likes, so the taste ranking has something to work with.',
+      'Add at least one name or vibe the group likes, or use the original venue as a signal, so the taste ranking has something to work with.',
     );
   }
   if (!Number.isInteger(state.partySize) || state.partySize < 1 || state.partySize > 30) {
@@ -193,6 +196,7 @@ function buildAnchor(state: FormState): { anchor?: IntentAnchor; problems: strin
       durationMinutes: state.durationMinutes,
       category: state.category,
       originalVenue: { name: original },
+      useOriginalVenueAsSignal: state.useOriginalVenueAsSignal,
       preserve,
       tasteEntities: entities,
       tasteTags: tags,
@@ -253,9 +257,24 @@ export function NewRecovery({
         ? `the taste names and phrases (${names.join(', ')})`
         : 'the taste names and phrases you add',
     );
-    if (state.distanceOn) parts.push('the original venue name, only to measure distance');
+    if (state.useOriginalVenueAsSignal) {
+      parts.push(
+        state.distanceOn
+          ? 'the original venue name, as a taste signal and to measure distance'
+          : 'the original venue name, as a taste signal',
+      );
+    } else if (state.distanceOn) {
+      parts.push('the original venue name, only to measure distance');
+    }
     return parts.join(', ');
-  }, [state.city, state.category, state.entities, state.tags, state.distanceOn]);
+  }, [
+    state.city,
+    state.category,
+    state.entities,
+    state.tags,
+    state.distanceOn,
+    state.useOriginalVenueAsSignal,
+  ]);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -473,6 +492,17 @@ export function NewRecovery({
               onChange={(e) => patch({ originalVenue: e.target.value })}
             />
           </div>
+          <label className="check wide">
+            <input
+              type="checkbox"
+              checked={state.useOriginalVenueAsSignal}
+              onChange={(e) => patch({ useOriginalVenueAsSignal: e.target.checked })}
+            />
+            <span>
+              Look for places that share this venue&rsquo;s audience. Its public name is sent to
+              Qloo as a taste signal. Turn this off to send nothing about it.
+            </span>
+          </label>
         </div>
       </section>
 

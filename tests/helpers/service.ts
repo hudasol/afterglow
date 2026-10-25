@@ -49,6 +49,7 @@ export class FlakyProvider implements TasteProvider {
   failPool = false;
   failRank = false;
   calls = { resolve: 0, fetchPool: 0, rank: 0 };
+  lastRank: RankRequest | null = null;
 
   resolve(kind: ResolutionKind, input: string, ctx: ProviderContext) {
     this.calls.resolve += 1;
@@ -63,6 +64,7 @@ export class FlakyProvider implements TasteProvider {
 
   async rank(request: RankRequest, ctx: ProviderContext) {
     this.calls.rank += 1;
+    this.lastRank = request;
     if (this.failRank) throw new ProviderError('QLOO_RATE_LIMIT', 'Rate limited', true);
     return this.inner.rank(request, ctx);
   }

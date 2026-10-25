@@ -67,6 +67,12 @@ export const intentAnchorSchema = z.object({
   durationMinutes: z.number().int().min(15).max(720),
   category: venueCategorySchema,
   originalVenue: z.object({ name: shortText(120) }),
+  /**
+   * When true, the venue that fell through is also used as a taste signal, so the search looks for
+   * places that share its audience. Its public name is then sent to the taste provider. Turn it
+   * off to send nothing about the venue unless a distance limit needs its location.
+   */
+  useOriginalVenueAsSignal: z.boolean().default(true),
   /** What must survive the recovery, in the person's own words. Kept local and never sent to Qloo. */
   preserve: z.array(shortText(140)).min(1).max(5),
   /** Public cultural names the group likes (artists, films, places). Resolved through Qloo. */
@@ -82,11 +88,15 @@ export const intentAnchorInputSchema = intentAnchorSchema.superRefine((anchor, c
   if (new Set(keys).size !== keys.length) {
     ctx.addIssue({ code: 'custom', path: ['hardConstraints'], message: 'Duplicate constraints.' });
   }
-  if (anchor.tasteEntities.length + anchor.tasteTags.length === 0) {
+  if (
+    anchor.tasteEntities.length + anchor.tasteTags.length === 0 &&
+    !anchor.useOriginalVenueAsSignal
+  ) {
     ctx.addIssue({
       code: 'custom',
       path: ['tasteEntities'],
-      message: 'Add at least one taste signal so the taste ranking has something to work with.',
+      message:
+        'Add at least one taste signal, or use the original venue as one, so the taste ranking has something to work with.',
     });
   }
 });

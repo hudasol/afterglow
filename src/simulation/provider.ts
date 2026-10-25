@@ -24,7 +24,8 @@ const ENTITY_WEIGHT = 0.5;
 
 export const SIMULATED_AFFINITY_FORMULA =
   'Simulated affinity = weight of the venue tags that match the chosen signals divided by the total ' +
-  'signal weight. A chosen tag has weight 1. A tag implied by a chosen entity has weight 0.5. ' +
+  'signal weight. A chosen tag has weight 1. A tag implied by a chosen entity, or by the venue that ' +
+  'fell through, has weight 0.5. ' +
   'This is a stand in for the demo and is not how Qloo calculates affinity.';
 
 function ref(
@@ -152,8 +153,11 @@ export class SimulatedTasteProvider implements TasteProvider {
     }
     for (const id of request.entityIds) {
       const entity = simulatedEntities.find((candidate) => candidate.id === id);
-      if (!entity) continue;
-      for (const tag of entity.associatedTags) {
+      // A place id is the venue that fell through. It contributes its own tags as a signal.
+      const lostVenueTags = entity
+        ? entity.associatedTags
+        : (catalogue.find((venue) => venue.candidate.id === id)?.tags ?? []);
+      for (const tag of lostVenueTags) {
         const key = normaliseName(tag);
         weights.set(key, (weights.get(key) ?? 0) + ENTITY_WEIGHT);
       }

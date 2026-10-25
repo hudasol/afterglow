@@ -166,12 +166,27 @@ describe('ambiguous signals', () => {
 
   it('lets the person skip a signal, leaving the search to run without it', async () => {
     const { service } = makeService();
-    const waiting = await open(service, 's00-jazz-needs-a-choice');
+    const spec = scenario('s00-jazz-needs-a-choice');
+    const waiting = await service.openCase(SESSION, {
+      mode: 'demo',
+      anchor: { ...spec.anchor, useOriginalVenueAsSignal: false },
+      disruption: spec.disruption,
+    });
     const key = waiting.pendingChoices[0]?.key ?? '';
     const skipped = await service.chooseResolution(SESSION, 'case-1', { key, skip: true });
     expect(skipped.run?.tasteStatus).toBe('unavailable');
     expect(skipped.run?.tasteNote).toContain('No taste signal');
     expect(skipped.activeArm).toBe('taste_off');
+  });
+
+  it('still ranks by taste after a skip when the lost venue is a signal', async () => {
+    const { service } = makeService();
+    const waiting = await open(service, 's00-jazz-needs-a-choice');
+    const key = waiting.pendingChoices[0]?.key ?? '';
+    const skipped = await service.chooseResolution(SESSION, 'case-1', { key, skip: true });
+    expect(skipped.run?.tasteStatus).toBe('applied');
+    expect(skipped.run?.appliedSignals.lostVenue).toBe('Blue Hour Hall');
+    expect(skipped.activeArm).toBe('taste_on');
   });
 });
 
@@ -385,15 +400,23 @@ describe('session isolation and provenance', () => {
     expect(provenance.note).toContain('not a prediction');
   });
 
-  it('looks up the original venue only when a distance limit needs it', async () => {
+  it('sends nothing about the original venue when it is not a signal and no distance limit applies', async () => {
     const { service } = makeService();
     const spec = scenario('s02-vegan-date-budget');
     await service.openCase(SESSION, {
       mode: 'demo',
-      anchor: spec.anchor,
+      anchor: { ...spec.anchor, useOriginalVenueAsSignal: false },
       disruption: spec.disruption,
     });
     expect(service.getProvenance(SESSION, 'case-1').sentToProvider.originalVenueName).toBeNull();
+  });
+
+  it('sends the original venue name when it is used as a taste signal', async () => {
+    const { service } = makeService();
+    await open(service, 's02-vegan-date-budget');
+    expect(service.getProvenance(SESSION, 'case-1').sentToProvider.originalVenueName).toBe(
+      'Umber & Oak',
+    );
   });
 });
 
@@ -404,5 +427,44 @@ describe('expiry', () => {
     db.sql.prepare("UPDATE cases SET expires_at = '2020-01-01T00:00:00Z'").run();
     expect(service.purgeExpired()).toBe(1);
     expect(service.listCases(SESSION)).toEqual([]);
+  });
+});
+
+describe('the lost venue as a taste signal', () => {
+  it('passes the lost venue to the ranking request next to the named signals', async () => {
+    const provider = new FlakyProvider();
+    const { service } = makeService({ demo: provider });
+    const view = await open(service, 's01-anniversary-venue-closed');
+    expect(view.run?.appliedSignals.lostVenue).toBe('The Lantern Room');
+    expect(provider.lastRank?.entityIds).toEqual(['sim-ent-odessa-vale', 'sim-lantern-room']);
+  });
+
+  it('leaves the lost venue out of the ranking request when the person turned it off', async () => {
+    const provider = new FlakyProvider();
+    const { service } = makeService({ demo: provider });
+    const spec = scenario('s01-anniversary-venue-closed');
+    const view = await service.openCase(SESSION, {
+      mode: 'demo',
+      anchor: { ...spec.anchor, useOriginalVenueAsSignal: false },
+      disruption: spec.disruption,
+    });
+    expect(view.run?.appliedSignals.lostVenue).toBeUndefined();
+    expect(provider.lastRank?.entityIds).toEqual(['sim-ent-odessa-vale']);
+  });
+
+  it('accepts an anchor with only the lost venue as its taste signal', () => {
+    const spec = scenario('s01-anniversary-venue-closed');
+    const anchor = { ...spec.anchor, tasteEntities: [], tasteTags: [] };
+    expect(intentAnchorInputSchema.safeParse(anchor).success).toBe(true);
+    expect(
+      intentAnchorInputSchema.safeParse({ ...anchor, useOriginalVenueAsSignal: false }).success,
+    ).toBe(false);
+  });
+
+  it('never offers the lost venue as an option', async () => {
+    const { service } = makeService();
+    const view = await open(service, 's01-anniversary-venue-closed');
+    const eligible = view.options.filter((o) => o.feasibility !== 'rejected');
+    expect(eligible.some((o) => o.candidate.name === 'The Lantern Room')).toBe(false);
   });
 });

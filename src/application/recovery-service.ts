@@ -538,8 +538,12 @@ export class RecoveryService {
     anchor.tasteEntities.forEach((name) => add('entity', name));
     anchor.tasteTags.forEach((name) => add('tag', name));
     add('category', categoryTagPhrase[anchor.category]);
-    // The original venue is looked up only when a distance limit needs its location.
-    if (anchor.hardConstraints.some((constraint) => constraint.kind === 'max_distance_km')) {
+    // The original venue is looked up when it is a taste signal, or when a distance limit needs its
+    // location. Otherwise nothing about it is sent.
+    if (
+      anchor.useOriginalVenueAsSignal ||
+      anchor.hardConstraints.some((constraint) => constraint.kind === 'max_distance_km')
+    ) {
       add('original_venue', anchor.originalVenue.name);
     }
 
@@ -583,6 +587,8 @@ export class RecoveryService {
     const entities = selected('entity');
     const tags = selected('tag');
     const category = selected('category')[0];
+    // The venue that fell through is a signal of its own: places that share its audience.
+    const lostVenue = anchor.useOriginalVenueAsSignal ? selected('original_venue')[0] : undefined;
 
     let pool: Candidate[];
     try {
@@ -605,7 +611,7 @@ export class RecoveryService {
 
     if (pool.length === 0) {
       tasteNote = 'The provider returned no places for this city and category.';
-    } else if (entities.length + tags.length === 0) {
+    } else if (entities.length + tags.length + (lostVenue ? 1 : 0) === 0) {
       tasteNote = 'No taste signal could be resolved, so only the practical baseline is shown.';
     } else {
       try {
@@ -613,7 +619,7 @@ export class RecoveryService {
           {
             city: anchor.city,
             candidateIds: pool.map((candidate) => candidate.id),
-            entityIds: entities.map((entity) => entity.id),
+            entityIds: [...entities, ...(lostVenue ? [lostVenue] : [])].map((entity) => entity.id),
             tagIds: tags.map((tag) => tag.id),
           },
           ctx,
@@ -644,6 +650,7 @@ export class RecoveryService {
         entityNames: entities.map((entity) => entity.name),
         tagNames: tags.map((tag) => tag.name),
         ...(category ? { categoryTag: category.name } : {}),
+        ...(lostVenue ? { lostVenue: lostVenue.name } : {}),
         location: anchor.city,
       },
       traces: traces.slice(0, MAX_TRACES),

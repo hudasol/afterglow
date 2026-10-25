@@ -24,6 +24,7 @@ export interface ScenarioSpec {
 const base = {
   city: SIMULATED_CITY,
   durationMinutes: 120,
+  useOriginalVenueAsSignal: true,
   tasteEntities: [] as string[],
   tasteTags: [] as string[],
   hardConstraints: [] as IntentAnchor['hardConstraints'],
