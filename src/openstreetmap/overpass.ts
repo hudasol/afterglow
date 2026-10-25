@@ -9,14 +9,24 @@ import { distanceKm, type GeoPoint } from '../domain/geo.js';
  */
 
 export type OverpassErrorCode =
-  'OSM_NETWORK' | 'OSM_TIMEOUT' | 'OSM_RATE_LIMIT' | 'OSM_UPSTREAM' | 'OSM_BAD_RESPONSE';
+  | 'OSM_NETWORK'
+  | 'OSM_TIMEOUT'
+  | 'OSM_RATE_LIMIT'
+  | 'OSM_UPSTREAM'
+  | 'OSM_REJECTED'
+  | 'OSM_BAD_RESPONSE';
 
 export class OverpassError extends Error {
   readonly code: OverpassErrorCode;
-  constructor(code: OverpassErrorCode, message: string) {
+  readonly status: number | undefined;
+  /** True when another endpoint may well answer. A rejected query will not fare better elsewhere. */
+  readonly retryable: boolean;
+  constructor(code: OverpassErrorCode, message: string, status?: number) {
     super(message);
     this.name = 'OverpassError';
     this.code = code;
+    this.status = status;
+    this.retryable = code !== 'OSM_REJECTED';
   }
 }
 
@@ -40,7 +50,9 @@ export interface OsmElement {
 }
 
 export interface OverpassOptions {
-  url: string;
+  /** One endpoint, or several tried in order when the earlier ones fail. */
+  url: string | readonly string[];
+  /** How long to wait for each endpoint. */
   timeoutMs: number;
   userAgent: string;
   fetchImpl?: typeof fetch;
@@ -73,7 +85,15 @@ interface CacheEntry {
   elements: OsmElement[];
 }
 
+interface Answer {
+  elements: OsmElement[];
+  status: number;
+}
+
+const ENDPOINT = 'overpass /api/interpreter';
+
 export class OverpassClient {
+  readonly #urls: readonly string[];
   readonly #options: OverpassOptions;
   readonly #fetch: typeof fetch;
   readonly #now: () => number;
@@ -83,6 +103,8 @@ export class OverpassClient {
 
   constructor(options: OverpassOptions) {
     this.#options = options;
+    this.#urls = typeof options.url === 'string' ? [options.url] : [...options.url];
+    if (this.#urls.length === 0) throw new Error('At least one Overpass endpoint is needed.');
     this.#fetch = options.fetchImpl ?? fetch;
     this.#now = options.now ?? Date.now;
     this.#ttl = options.cacheTtlMs ?? 6 * 3_600_000;
@@ -106,7 +128,7 @@ export class OverpassClient {
     const params = { points: String(points.length), radius_m: String(radiusM) };
     if (missing.length === 0) {
       traces.push({
-        endpoint: 'overpass /api/interpreter',
+        endpoint: ENDPOINT,
         params,
         attempts: 0,
         durationMs: 0,
@@ -117,73 +139,43 @@ export class OverpassClient {
     }
 
     const started = this.#now();
-    const fail = (code: OverpassErrorCode, message: string, status?: number): never => {
-      traces.push({
-        endpoint: 'overpass /api/interpreter',
-        params: { ...params, uncached: String(missing.length) },
-        ...(status !== undefined ? { status } : {}),
-        attempts: 1,
-        durationMs: this.#now() - started,
-        cache: 'miss',
-        error: `${code}: ${message}`.slice(0, 300),
-      });
-      throw new OverpassError(code, message);
+    const query = buildQuery(missing, radiusM);
+    let attempts = 0;
+    let failure: OverpassError | null = null;
+    let served: { host: string; result: Answer } | null = null;
+    for (const url of this.#urls) {
+      attempts += 1;
+      try {
+        served = { host: new URL(url).host, result: await this.#ask(url, query) };
+        break;
+      } catch (error) {
+        if (!(error instanceof OverpassError)) throw error;
+        failure = error;
+        if (!error.retryable) break;
+      }
+    }
+    const attemptParams = {
+      ...params,
+      uncached: String(missing.length),
+      host: served?.host ?? hostOf(this.#urls[Math.min(attempts, this.#urls.length) - 1]),
     };
 
-    let response: Response;
-    try {
-      response = await this.#fetch(this.#options.url, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          accept: 'application/json',
-          'user-agent': this.#options.userAgent,
-        },
-        body: new URLSearchParams({ data: buildQuery(missing, radiusM) }),
-        signal: AbortSignal.timeout(this.#options.timeoutMs),
+    if (!served) {
+      const error =
+        failure ?? new OverpassError('OSM_NETWORK', 'The OpenStreetMap request failed.');
+      traces.push({
+        endpoint: ENDPOINT,
+        params: attemptParams,
+        ...(error.status !== undefined ? { status: error.status } : {}),
+        attempts,
+        durationMs: this.#now() - started,
+        cache: 'miss',
+        error: `${error.code}: ${error.message}`.slice(0, 300),
       });
-    } catch (error) {
-      const timedOut = error instanceof Error && error.name === 'TimeoutError';
-      return fail(
-        timedOut ? 'OSM_TIMEOUT' : 'OSM_NETWORK',
-        timedOut ? 'The OpenStreetMap request timed out.' : 'The OpenStreetMap request failed.',
-      );
-    }
-    if (response.status === 429)
-      return fail('OSM_RATE_LIMIT', 'OpenStreetMap asked us to slow down.', 429);
-    if (!response.ok) {
-      return fail(
-        'OSM_UPSTREAM',
-        `OpenStreetMap answered with status ${response.status}.`,
-        response.status,
-      );
+      throw error;
     }
 
-    let body: z.infer<typeof responseSchema>;
-    try {
-      body = responseSchema.parse(await response.json());
-    } catch {
-      return fail(
-        'OSM_BAD_RESPONSE',
-        'The OpenStreetMap answer was not in the expected form.',
-        response.status,
-      );
-    }
-    // Overpass reports some failures as a normal answer with a remark and a partial list.
-    if (body.remark && /runtime error|out of memory|timed out/iu.test(body.remark)) {
-      return fail('OSM_UPSTREAM', 'OpenStreetMap could not finish the query.', response.status);
-    }
-
-    const elements: OsmElement[] = body.elements.flatMap((element) => {
-      const position =
-        element.center ??
-        (element.lat !== undefined && element.lon !== undefined
-          ? { lat: element.lat, lon: element.lon }
-          : null);
-      return position && element.tags
-        ? [{ ref: `${element.type}/${element.id}`, position, tags: element.tags }]
-        : [];
-    });
+    const { elements, status } = served.result;
     const radiusKm = radiusM / 1000;
     for (const point of missing) {
       const near = elements.filter((element) => distanceKm(point, element.position) <= radiusKm);
@@ -198,14 +190,87 @@ export class OverpassClient {
     }
 
     traces.push({
-      endpoint: 'overpass /api/interpreter',
-      params: { ...params, uncached: String(missing.length) },
-      status: response.status,
-      attempts: 1,
+      endpoint: ENDPOINT,
+      params: attemptParams,
+      status,
+      attempts,
       durationMs: this.#now() - started,
       cache: 'miss',
       resultCount: elements.length,
     });
     return answer;
+  }
+
+  async #ask(url: string, query: string): Promise<Answer> {
+    let response: Response;
+    try {
+      response = await this.#fetch(url, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          accept: 'application/json',
+          'user-agent': this.#options.userAgent,
+        },
+        body: new URLSearchParams({ data: query }),
+        signal: AbortSignal.timeout(this.#options.timeoutMs),
+      });
+    } catch (error) {
+      const timedOut = error instanceof Error && error.name === 'TimeoutError';
+      throw timedOut
+        ? new OverpassError('OSM_TIMEOUT', 'The OpenStreetMap request timed out.')
+        : new OverpassError('OSM_NETWORK', 'The OpenStreetMap request failed.');
+    }
+    const status = response.status;
+    if (status === 429) {
+      throw new OverpassError('OSM_RATE_LIMIT', 'OpenStreetMap asked us to slow down.', status);
+    }
+    if (status >= 500) {
+      throw new OverpassError(
+        'OSM_UPSTREAM',
+        `OpenStreetMap answered with status ${status}.`,
+        status,
+      );
+    }
+    if (!response.ok) {
+      throw new OverpassError(
+        'OSM_REJECTED',
+        `OpenStreetMap refused the query (status ${status}).`,
+        status,
+      );
+    }
+
+    let body: z.infer<typeof responseSchema>;
+    try {
+      body = responseSchema.parse(await response.json());
+    } catch {
+      throw new OverpassError(
+        'OSM_BAD_RESPONSE',
+        'The OpenStreetMap answer was not in the expected form.',
+        status,
+      );
+    }
+    // Overpass reports some failures as a normal answer with a remark and a partial list.
+    if (body.remark && /runtime error|out of memory|timed out/iu.test(body.remark)) {
+      throw new OverpassError('OSM_UPSTREAM', 'OpenStreetMap could not finish the query.', status);
+    }
+    const elements: OsmElement[] = body.elements.flatMap((element) => {
+      const position =
+        element.center ??
+        (element.lat !== undefined && element.lon !== undefined
+          ? { lat: element.lat, lon: element.lon }
+          : null);
+      return position && element.tags
+        ? [{ ref: `${element.type}/${element.id}`, position, tags: element.tags }]
+        : [];
+    });
+    return { elements, status };
+  }
+}
+
+function hostOf(url: string | undefined): string {
+  try {
+    return url ? new URL(url).host : 'unknown';
+  } catch {
+    return 'unknown';
   }
 }

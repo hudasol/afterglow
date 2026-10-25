@@ -30,8 +30,38 @@ const ConfigSchema = z.object({
    * because Qloo does not supply them. Only public venue coordinates are sent.
    */
   AFTERGLOW_OSM_FACTS: flag('true'),
-  OVERPASS_URL: z.string().url().default('https://overpass-api.de/api/interpreter'),
-  OVERPASS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60_000).default(20_000),
+  /** One Overpass endpoint, or several separated by commas that are tried in order. */
+  OVERPASS_URL: z
+    .string()
+    .default(
+      'https://overpass-api.de/api/interpreter,https://overpass.kumi.systems/api/interpreter',
+    )
+    .transform((value) =>
+      value
+        .split(',')
+        .map((part) => part.trim())
+        .filter((part) => part !== ''),
+    )
+    .pipe(
+      z
+        .array(
+          z.string().refine((text) => {
+            try {
+              const url = new URL(text);
+              return (
+                url.protocol === 'https:' ||
+                (url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname))
+              );
+            } catch {
+              return false;
+            }
+          }, 'Each Overpass endpoint must be an https address.'),
+        )
+        .min(1)
+        .max(4),
+    ),
+  /** How long to wait for each Overpass endpoint. */
+  OVERPASS_TIMEOUT_MS: z.coerce.number().int().min(1000).max(60_000).default(12_000),
 
   /** Allows a non loopback HOST without a token, for the hosted judging demo. */
   AFTERGLOW_PUBLIC_DEMO: flag('false'),

@@ -114,6 +114,57 @@ describe('OverpassClient', () => {
     expect(JSON.stringify(traces)).not.toContain('10.0.0.1');
   });
 
+  describe('with more than one endpoint', () => {
+    const urls = ['https://first.test/api/interpreter', 'https://second.test/api/interpreter'];
+    const build = (respond: (url: string) => Response) => {
+      const asked: string[] = [];
+      const instance = new OverpassClient({
+        url: urls,
+        timeoutMs: 1000,
+        userAgent: 'afterglow-test',
+        fetchImpl: (async (url: string) => {
+          asked.push(url);
+          return respond(url);
+        }) as typeof fetch,
+      });
+      return { instance, asked };
+    };
+
+    it('moves to the next endpoint when the first is overloaded, and records which one answered', async () => {
+      const { instance, asked } = build((url) =>
+        url.startsWith('https://first') ? json('bad gateway', 502) : json(body([])),
+      );
+      const traces: CallTrace[] = [];
+      await instance.nearby([point], 150, traces);
+      expect(asked).toEqual(urls);
+      expect(traces[0]).toMatchObject({
+        attempts: 2,
+        status: 200,
+        params: { host: 'second.test' },
+      });
+    });
+
+    it('does not move on when the query itself is refused', async () => {
+      const { instance, asked } = build(() => json('bad query', 400));
+      await expect(instance.nearby([point], 150, [])).rejects.toMatchObject({
+        code: 'OSM_REJECTED',
+      });
+      expect(asked).toEqual([urls[0]]);
+    });
+
+    it('reports the last failure when every endpoint fails', async () => {
+      const { instance, asked } = build((url) =>
+        url.startsWith('https://first') ? json('x', 429) : json('x', 503),
+      );
+      const traces: CallTrace[] = [];
+      await expect(instance.nearby([point], 150, traces)).rejects.toMatchObject({
+        code: 'OSM_UPSTREAM',
+      });
+      expect(asked).toEqual(urls);
+      expect(traces[0]).toMatchObject({ attempts: 2, params: { host: 'second.test' } });
+    });
+  });
+
   it('does not cache a failed lookup', async () => {
     let fail = true;
     const { instance, calls } = client(() => (fail ? json('x', 503) : json(body([]))));
