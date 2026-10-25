@@ -2,6 +2,8 @@ import type { ResolvedRef } from '../domain/case.js';
 import { known, unknown, type Fact } from '../domain/evidence.js';
 import { isValidPoint, type GeoPoint } from '../domain/geo.js';
 import type { Candidate, TasteScore } from '../domain/venue.js';
+import type { FactContext } from '../domain/fact-context.js';
+import { readDietary, readOpenWindow, readStepFree, type ReadFact } from './facts.js';
 
 type JsonRecord = Record<string, unknown>;
 
@@ -130,11 +132,16 @@ function tagNamesOf(record: JsonRecord): string[] {
 
 /**
  * Builds a candidate from a Qloo place entity. A fact is recorded only when the response states
- * it in a shape this reader recognises. Opening hours, dietary options, accessibility, capacity
- * and covered seating are not read from the response: they stay unknown until the person checks
- * them, because their shape has not been verified against live responses.
+ * it in a shape the readers in facts.ts recognise. Opening hours, wheelchair access and dietary
+ * options are read when the plan context is given, because they have to be judged for the day and
+ * the requirements of the plan. Group capacity and covered seating are not stated by Qloo, so they
+ * stay unknown until the person checks them or another source supplies them.
  */
-export function toCandidate(value: unknown, retrievedAt: string): Candidate | undefined {
+export function toCandidate(
+  value: unknown,
+  retrievedAt: string,
+  context?: FactContext,
+): Candidate | undefined {
   const record = asRecord(value);
   const ref = toEntityRef(value);
   if (!record || !ref) return undefined;
@@ -148,8 +155,11 @@ export function toCandidate(value: unknown, retrievedAt: string): Candidate | un
   const imageUrl = str(properties?.['image']) ?? str(imageProps?.['url']);
   const tagNames = tagNamesOf(record);
 
-  const missing = (what: string): Fact<never> =>
-    unknown(`${what} is not read from Qloo responses in this version`);
+  const missing = (what: string): Fact<never> => unknown(`Qloo does not state ${what}`);
+  const fromRead = <T>(read: ReadFact<T> | null, label: string, absent: string): Fact<T> =>
+    read
+      ? known(read.value, { ...provenance(label), detail: read.evidence.slice(0, 500) })
+      : unknown(absent);
 
   return {
     id: ref.id,
@@ -168,11 +178,23 @@ export function toCandidate(value: unknown, retrievedAt: string): Candidate | un
         price !== undefined
           ? known(price, provenance('Qloo price level'))
           : unknown('Qloo returned no price level'),
-      dietary: missing('Dietary information'),
-      stepFree: missing('Accessibility information'),
-      openWindow: missing('Opening hours'),
-      groupCapacity: missing('Group capacity'),
-      covered: missing('Covered seating information'),
+      dietary: fromRead(
+        context ? readDietary(record['tags'], context.dietaryNeeded) : null,
+        'Qloo dietary option tags',
+        'Qloo does not list every dietary option the plan needs for this place',
+      ),
+      stepFree: fromRead(
+        readStepFree(record['tags']),
+        'Qloo accessibility tag',
+        'Qloo does not state step free access for this place',
+      ),
+      openWindow: fromRead(
+        context ? readOpenWindow(properties?.['hours'], context) : null,
+        'Qloo opening hours',
+        'Qloo gave no readable opening hours for this place',
+      ),
+      groupCapacity: missing('the group capacity of a place'),
+      covered: missing('whether the seating is covered'),
     },
     taste: {
       ...(popularity !== undefined ? { popularity } : {}),

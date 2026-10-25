@@ -26,6 +26,7 @@ function qlooPlace(id: string, name: string, lat: number): Candidate {
 
 class StubLive implements TasteProvider {
   readonly descriptor = { mode: 'live' as const, label: 'Stub live provider', configured: true };
+  lastRequest: PoolRequest | undefined;
   constructor(readonly pool: Candidate[]) {}
   async resolve(kind: ResolutionKind, input: string): Promise<TasteResolution> {
     return {
@@ -36,7 +37,8 @@ class StubLive implements TasteProvider {
       method: 'exact',
     };
   }
-  async fetchPool(_request: PoolRequest, _ctx: ProviderContext): Promise<Candidate[]> {
+  async fetchPool(request: PoolRequest, _ctx: ProviderContext): Promise<Candidate[]> {
+    this.lastRequest = request;
     return this.pool;
   }
   async rank(): Promise<RankResponse> {
@@ -78,6 +80,27 @@ const openAtPlanTime = () =>
     useOriginalVenueAsSignal: false,
   });
 const disruption = { kind: 'venue_unavailable' } as const;
+
+describe('the plan context given to the taste provider', () => {
+  it('carries the local day and time of the plan and its dietary requirements', async () => {
+    const live = new StubLive(pool);
+    const { service } = makeService({ live });
+    await service.openCase(SESSION, {
+      mode: 'live',
+      anchor: makeAnchor({
+        hardConstraints: [{ kind: 'dietary', requirement: 'vegetarian' }],
+        useOriginalVenueAsSignal: false,
+      }),
+      disruption,
+    });
+    // 7 November 2026 is a Saturday, and the plan starts at 19:30 local time.
+    expect(live.lastRequest?.facts).toEqual({
+      weekday: 6,
+      startMinute: 19 * 60 + 30,
+      dietaryNeeded: ['vegetarian'],
+    });
+  });
+});
 
 describe('live search with a second source of place facts', () => {
   it('lets OpenStreetMap hours decide the gate, and says where they came from', async () => {

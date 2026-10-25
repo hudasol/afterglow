@@ -21,6 +21,7 @@ import {
   intentAnchorInputSchema,
   type IntentAnchor,
 } from '../domain/intent.js';
+import { factContextOf } from '../domain/fact-context.js';
 import { deriveEffectivePlan, disruptionSchema } from '../domain/plan.js';
 import { buildTrace, type AgentTrace } from '../domain/trace.js';
 import { normaliseName, type Candidate } from '../domain/venue.js';
@@ -669,6 +670,7 @@ export class RecoveryService {
           city: anchor.city,
           take: this.#poolSize,
           ...(category ? { categoryTagId: category.id } : {}),
+          facts: factContextOf(deriveEffectivePlan(anchor, state.disruptions, state.relaxedKeys)),
         },
         ctx,
       );

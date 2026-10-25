@@ -163,3 +163,71 @@ export const recordedMusicianSearch = {
     { entity_id: 'recorded-person', name: 'Miles Davis', type: 'urn:entity:person' },
   ],
 };
+
+const closedDay = { closed: true, opens: null, closes: null };
+const openDay = (opens: string, closes: string) => ({ closed: false, opens, closes });
+
+/**
+ * RECORDED SHAPE, INVENTED VALUES. Every key, nesting level and value type below was seen on a
+ * place entity in a live Qloo response on 25 October 2026: weekly hours keyed by lower case day
+ * name with a list of slots, clock times written as "T10:00:00", and tags that carry an id, a name
+ * and a type. The venue, its address and its hours are invented for tests.
+ */
+export function recordedPlaceEntity(
+  overrides: { hours?: unknown; tags?: Array<{ id: string; name: string }> } = {},
+) {
+  return {
+    entity_id: 'recorded-place-1',
+    name: 'Recorded Shape Bistro',
+    type: 'urn:entity:place',
+    subtype: 'urn:entity:place',
+    popularity: 0.93,
+    disambiguation: '1 Fixture Lane, Testville',
+    location: { geohash: 'xx0xx0x0x0xx', lat: 40.7, lon: -73.9 },
+    query: { distance: 120, measurements: { audience_growth: 0.1 } },
+    properties: {
+      address: '1 Fixture Lane, Testville',
+      business_rating: 4.4,
+      is_closed: false,
+      price_level: 2,
+      hours:
+        'hours' in overrides
+          ? overrides.hours
+          : {
+              monday: [closedDay],
+              tuesday: [closedDay],
+              wednesday: [openDay('T11:00:00', 'T22:00:00')],
+              thursday: [openDay('T11:00:00', 'T22:00:00')],
+              friday: [openDay('T10:00:00', 'T23:00:00')],
+              saturday: [openDay('T18:00:00', 'T02:00:00')],
+              sunday: [closedDay],
+            },
+    },
+    tags: overrides.tags ?? [
+      {
+        id: 'urn:tag:genre:place:restaurant',
+        name: 'Restaurant',
+        type: 'urn:tag:genre:place',
+        weight: null,
+      },
+      {
+        id: 'urn:tag:accessibility:place:wheelchair_accessible_entrance',
+        name: 'Wheelchair accessible entrance',
+        type: 'urn:tag:accessibility:place',
+        weight: null,
+      },
+      {
+        id: 'urn:tag:dietary_option:qloo:vegetarian',
+        name: 'Vegetarian',
+        type: 'urn:tag:dietary_option:qloo',
+        weight: null,
+      },
+      {
+        id: 'urn:tag:dietary_option:qloo:gluten_free',
+        name: 'Gluten free',
+        type: 'urn:tag:dietary_option:qloo',
+        weight: null,
+      },
+    ],
+  };
+}

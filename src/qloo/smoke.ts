@@ -4,6 +4,7 @@
  * only counts, key names and rankings of public cultural entities used as probes.
  */
 import type { CallTrace, ResolutionKind, TasteResolution } from '../domain/case.js';
+import type { FactContext } from '../domain/fact-context.js';
 import { kendallTau, overlapAtK } from '../domain/metrics.js';
 import type { QlooClient } from './client.js';
 import { QlooError } from './errors.js';
@@ -73,6 +74,8 @@ export interface SmokeReport {
     /** The value type of each property key on the first place, for example price_level: number. No values. */
     propertyShape: Record<string, string>;
     hoursLikeKeys: string[];
+    /** Practical facts the product reads from the pool, for a plan on a Friday at 19:30 that needs vegetarian food. */
+    factsRead: { openWindow: number; stepFree: number; dietary: number; closedAllDay: number };
     withHours: number;
     withGoodFor: number;
     /** Places in the pool that carry the category tag, when one was used. */
@@ -244,6 +247,7 @@ export async function runSmoke(
     propertyShape: {},
     hoursLikeKeys: [],
     tagLookups: [],
+    factsRead: { openWindow: 0, stepFree: 0, dietary: 0, closedAllDay: 0 },
     withHours: 0,
     withGoodFor: 0,
     withCategoryTag: null,
@@ -501,6 +505,29 @@ export async function runSmoke(
       `${observed.withCategoryTag} of ${records.length} places carry the tag ${category.selected.id}.`,
     );
   }
+  // The readers are written against recorded shapes. This counts what they read from the live pool.
+  const probePlan: FactContext = {
+    weekday: 5,
+    startMinute: 19 * 60 + 30,
+    dietaryNeeded: ['vegetarian'],
+  };
+  const withFacts = rawPlaces
+    .map((place) => toCandidate(place, now.toISOString(), probePlan))
+    .filter((candidate): candidate is NonNullable<typeof candidate> => candidate !== undefined);
+  observed.factsRead = {
+    openWindow: withFacts.filter((c) => c.facts.openWindow.status === 'known').length,
+    stepFree: withFacts.filter((c) => c.facts.stepFree.status === 'known').length,
+    dietary: withFacts.filter((c) => c.facts.dietary.status === 'known').length,
+    closedAllDay: withFacts.filter(
+      (c) =>
+        c.facts.openWindow.status === 'known' && c.facts.openWindow.value.closedAllDay === true,
+    ).length,
+  };
+  check(
+    'practical facts read from the pool',
+    observed.factsRead.openWindow > 0 || observed.factsRead.stepFree > 0,
+    `Opening hours for ${observed.factsRead.openWindow} of ${candidates.length} places, step free access for ${observed.factsRead.stepFree}, vegetarian food for ${observed.factsRead.dietary}.`,
+  );
   check(
     'place pool for the city',
     candidates.length >= 10,

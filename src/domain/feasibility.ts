@@ -91,7 +91,8 @@ function fromFact<T>(
     outcome: result.ok ? 'pass' : 'fail',
     reason: result.reason,
     basis: fact.provenance.source,
-    ...(fact.provenance.source === 'openstreetmap' && fact.provenance.detail
+    ...((fact.provenance.source === 'openstreetmap' || fact.provenance.source === 'qloo') &&
+    fact.provenance.detail
       ? { evidence: fact.provenance.detail }
       : {}),
   };

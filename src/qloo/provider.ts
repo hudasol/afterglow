@@ -74,7 +74,7 @@ export class QlooTasteProvider implements TasteProvider {
       const seen = new Set<string>();
       const pool: Candidate[] = [];
       for (const value of resultArray(response, 'entities')) {
-        const candidate = toCandidate(value, retrievedAt);
+        const candidate = toCandidate(value, retrievedAt, request.facts);
         if (candidate && !seen.has(candidate.id)) {
           seen.add(candidate.id);
           pool.push(candidate);

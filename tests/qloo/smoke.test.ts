@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { QlooClient } from '../../src/qloo/client.js';
 import { maskString, runSmoke, skeletonOf } from '../../src/qloo/smoke.js';
-import { jsonResponse } from '../helpers/qloo-fixtures.js';
+import { jsonResponse, recordedPlaceEntity } from '../helpers/qloo-fixtures.js';
 
 /** A synthetic Qloo stand in. It exercises the experiment's logic only and proves nothing about the real API. */
 function fakeQloo(options: {
@@ -13,8 +13,15 @@ function fakeQloo(options: {
     entity_id: `p${i}`,
     name: `Fixture Place ${i}`,
     location: { lat: 10 + i / 100, lon: 10 },
-    properties: { price_level: (i % 4) + 1, address: `${i} Test Road` },
-    tags: [{ id: 'urn:tag:restaurant', name: 'restaurant' }],
+    properties: {
+      price_level: (i % 4) + 1,
+      address: `${i} Test Road`,
+      hours: recordedPlaceEntity().properties.hours,
+    },
+    tags: [
+      { id: 'urn:tag:restaurant', name: 'restaurant' },
+      ...recordedPlaceEntity().tags.filter((tag) => tag.id.includes('accessibility')),
+    ],
   }));
   return (async (input: Request | URL | string) => {
     const url = new URL(String(input));
@@ -100,7 +107,13 @@ describe('qloo smoke experiment', () => {
       new Date('2026-10-24T00:00:00Z'),
     );
     expect(report.checks.find((c) => c.name === 'a place as a taste signal')?.ok).toBe(true);
-    expect(report.observed.propertyShape).toEqual({ address: 'string', price_level: 'number' });
+    expect(report.observed.propertyShape).toEqual({
+      address: 'string',
+      hours: 'object',
+      price_level: 'number',
+    });
+    expect(report.observed.factsRead.openWindow).toBe(20);
+    expect(report.observed.factsRead.stepFree).toBe(20);
     expect(JSON.stringify(report.observed.propertyShape)).not.toContain('Test Road');
   });
 

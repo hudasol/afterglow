@@ -1,4 +1,5 @@
 import type { CallTrace, CaseMode, ResolutionKind, TasteResolution } from '../domain/case.js';
+import type { FactContext } from '../domain/fact-context.js';
 import type { EffectivePlan } from '../domain/plan.js';
 import type { Candidate, TasteScore } from '../domain/venue.js';
 
@@ -26,6 +27,8 @@ export interface PoolRequest {
   city: string;
   categoryTagId?: string;
   take: number;
+  /** The day, time and requirements of the plan, so facts such as opening hours can be judged. */
+  facts?: FactContext;
 }
 
 export interface RankRequest {
