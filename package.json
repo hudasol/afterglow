@@ -1,0 +1,66 @@
+{
+  "name": "afterglow",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AFTERGLOW is a culturally intelligent experience recovery agent. When a plan falls apart it preserves what the person wanted, uses Qloo taste data to find alternatives, rejects options that fail hard constraints, and replans.",
+  "license": "MIT",
+  "author": "Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed)",
+  "keywords": [
+    "qloo",
+    "agent",
+    "recovery",
+    "taste",
+    "typescript",
+    "react",
+    "sqlite"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "tsx watch --env-file-if-exists=.env src/main.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build": "npm run build:web",
+    "build:web": "vite build --config web/vite.config.ts",
+    "start": "node --env-file-if-exists=.env --import tsx src/main.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p web/tsconfig.json --noEmit && tsc -p e2e/tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "qloo:smoke": "node --env-file-if-exists=.env --import tsx src/cli/qloo-smoke.ts",
+    "eval": "node --env-file-if-exists=.env --import tsx src/cli/run-evaluation.ts",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^10.0.1",
+    "@fontsource-variable/fraunces": "^5.2.0",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@playwright/test": "^1.64.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.13.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

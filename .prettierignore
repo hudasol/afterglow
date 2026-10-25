@@ -1,0 +1,9 @@
+node_modules
+dist
+web/dist
+var
+package-lock.json
+test-results
+playwright-report
+data/evaluation
+docs/EVALUATION_RESULTS.md
