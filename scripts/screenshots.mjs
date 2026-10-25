@@ -40,6 +40,10 @@ await page.getByRole('link', { name: 'Taste on and off' }).click();
 await page.waitForSelector('.slope');
 await page.screenshot({ path: `${out}05-comparison.png` });
 
+await page.getByRole('link', { name: 'Agent trace' }).click();
+await page.waitForSelector('.trace-cycle');
+await page.screenshot({ path: `${out}07-agent-trace.png`, fullPage: true });
+
 await page.goto(`${base}/#/evidence`);
 await page.waitForSelector('text=Qloo connection');
 await page.screenshot({ path: `${out}06-evidence.png` });
