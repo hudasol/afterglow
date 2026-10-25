@@ -1,6 +1,6 @@
 {
   "kind": "offline_simulated",
-  "generatedAt": "2026-10-24T20:48:22.945Z",
+  "generatedAt": "2026-10-25T11:06:32.993Z",
   "provider": {
     "mode": "demo",
     "label": "Simulated demo catalogue (not Qloo data, not real venues)"
@@ -40,12 +40,20 @@
         "The Verdant Table",
         "Saffron Courtyard"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Harbour Lamp Kitchen",
+        "Paper Crane Noodle Bar"
+      ],
       "overlapAt3": 0.6666666666666666,
       "kendallTau": 0.3333333333333333,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.7083333333333334,
-        "tasteOff": 0.5416666666666666
+        "tasteOn": 0.6666666666666666,
+        "tasteOff": 0.5,
+        "popular": 0.11109999999999999
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -67,8 +75,8 @@
       "ungatedTop": {
         "names": [
           "Cinder & Reed",
-          "Cartographers Club",
-          "Harbour Annex Stage"
+          "Lamplighter Stage",
+          "Cartographers Club"
         ],
         "violationCount": 0,
         "violators": []
@@ -88,12 +96,20 @@
         "Lamplighter Stage",
         "Cartographers Club"
       ],
+      "popularTop": [
+        "Harbour Annex Stage",
+        "Cartographers Club",
+        "Lamplighter Stage"
+      ],
       "overlapAt3": 1,
       "kendallTau": 0.3333333333333333,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.3333333333333333,
-        "tasteOff": 0.3333333333333333
+        "tasteOn": 0.3889,
+        "tasteOff": 0.3889,
+        "popular": 0.2222333333333333
       },
       "preservedTagShare": {
         "tasteOn": 0.3333333333333333,
@@ -139,12 +155,20 @@
         "Saffron Courtyard",
         "Paper Crane Noodle Bar"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Paper Crane Noodle Bar",
+        "Saffron Courtyard"
+      ],
       "overlapAt3": 0.6666666666666666,
       "kendallTau": 0.3333333333333333,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.4285666666666666,
-        "tasteOff": 0.2857
+        "tasteOn": 0.3666666666666667,
+        "tasteOff": 0.26666666666666666,
+        "popular": 0.13333333333333333
       },
       "preservedTagShare": {
         "tasteOn": 0.6666666666666666,
@@ -189,12 +213,20 @@
         "The Velvet Ledger",
         "The Reading Lounge"
       ],
+      "popularTop": [
+        "Salt & Static",
+        "Low Tide Wine Room",
+        "The Velvet Ledger"
+      ],
       "overlapAt3": 1,
       "kendallTau": 0.3333333333333333,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
-        "tasteOn": 0.4285666666666666,
-        "tasteOff": 0.4285666666666666
+        "tasteOn": 0.4000000000000001,
+        "tasteOff": 0.4000000000000001,
+        "popular": 0.4000000000000001
       },
       "preservedTagShare": {
         "tasteOn": 0.6666666666666666,
@@ -216,12 +248,12 @@
       "ungatedTop": {
         "names": [
           "Cinder & Reed",
-          "Cartographers Club",
-          "Harbour Annex Stage"
+          "Lamplighter Stage",
+          "Cartographers Club"
         ],
         "violationCount": 1,
         "violators": [
-          "Harbour Annex Stage"
+          "Lamplighter Stage"
         ]
       },
       "gatedViolations": {
@@ -237,12 +269,19 @@
         "Cinder & Reed",
         "Cartographers Club"
       ],
+      "popularTop": [
+        "Cartographers Club",
+        "Cinder & Reed"
+      ],
       "overlapAt3": 1,
       "kendallTau": -1,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.6000000000000001,
-        "tasteOff": 0.6000000000000001
+        "tasteOn": 0.5,
+        "tasteOff": 0.5,
+        "popular": 0.5
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -285,12 +324,19 @@
         "Tidewrack Social",
         "Paper Crane Noodle Bar"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Paper Crane Noodle Bar"
+      ],
       "overlapAt3": 1,
       "kendallTau": 1,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
         "tasteOn": 0.5,
-        "tasteOff": 0.5
+        "tasteOff": 0.5,
+        "popular": 0.5
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -332,12 +378,18 @@
       "tasteOnTop": [
         "Foxglove Cafe"
       ],
+      "popularTop": [
+        "Foxglove Cafe"
+      ],
       "overlapAt3": 1,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
-        "tasteOn": 1,
-        "tasteOff": 1
+        "tasteOn": 0.8571,
+        "tasteOff": 0.8571,
+        "popular": 0.8571
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -377,12 +429,18 @@
       "tasteOnTop": [
         "Midnight Scoop"
       ],
+      "popularTop": [
+        "Midnight Scoop"
+      ],
       "overlapAt3": 1,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
         "tasteOn": 0,
-        "tasteOff": 0
+        "tasteOff": 0,
+        "popular": 0
       },
       "preservedTagShare": {
         "tasteOn": 0,
@@ -422,12 +480,18 @@
       "tasteOnTop": [
         "Old Signal Museum"
       ],
+      "popularTop": [
+        "Old Signal Museum"
+      ],
       "overlapAt3": 1,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
-        "tasteOn": 0.5,
-        "tasteOff": 0.5
+        "tasteOn": 0.4286,
+        "tasteOff": 0.4286,
+        "popular": 0.4286
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -472,12 +536,20 @@
         "Copper Kettle Grill",
         "Paper Crane Noodle Bar"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Copper Kettle Grill",
+        "Paper Crane Noodle Bar"
+      ],
       "overlapAt3": 0.6666666666666666,
       "kendallTau": 0,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
         "tasteOn": 0.6666666666666666,
-        "tasteOff": 0.5
+        "tasteOff": 0.5,
+        "popular": 0.6666666666666666
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -498,15 +570,15 @@
       "needsVerification": 0,
       "ungatedTop": {
         "names": [
-          "Harbour Lamp Kitchen",
           "Quillfeather Supper Room",
-          "Umber & Oak"
+          "The Verdant Table",
+          "Harbour Lamp Kitchen"
         ],
         "violationCount": 3,
         "violators": [
-          "Harbour Lamp Kitchen",
           "Quillfeather Supper Room",
-          "Umber & Oak"
+          "The Verdant Table",
+          "Harbour Lamp Kitchen"
         ]
       },
       "gatedViolations": {
@@ -516,12 +588,16 @@
       "sameEligibleSet": true,
       "tasteOffTop": [],
       "tasteOnTop": [],
+      "popularTop": [],
       "overlapAt3": null,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": null,
+      "topChoiceChangedVsPopular": null,
       "meanAffinityTop3": {
         "tasteOn": null,
-        "tasteOff": null
+        "tasteOff": null,
+        "popular": null
       },
       "preservedTagShare": {
         "tasteOn": null,
@@ -566,12 +642,20 @@
         "Blue Hour Hall",
         "Lamplighter Stage"
       ],
+      "popularTop": [
+        "Blue Hour Hall",
+        "Lamplighter Stage",
+        "Cinder & Reed"
+      ],
       "overlapAt3": 1,
       "kendallTau": 0.3333333333333333,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.5714333333333332,
-        "tasteOff": 0.5714333333333332
+        "tasteOn": 0.5333333333333333,
+        "tasteOff": 0.5333333333333333,
+        "popular": 0.5333333333333333
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -614,12 +698,20 @@
         "The Lantern Room",
         "Quillfeather Supper Room"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Copper Kettle Grill",
+        "Harbour Lamp Kitchen"
+      ],
       "overlapAt3": 0.6666666666666666,
-      "kendallTau": 0.6111111111111112,
+      "kendallTau": 0.5555555555555556,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
         "tasteOn": 0.3333333333333333,
-        "tasteOff": 0.28573333333333334
+        "tasteOff": 0.3,
+        "popular": 0.06666666666666667
       },
       "preservedTagShare": {
         "tasteOn": 0.3333333333333333,
@@ -642,13 +734,12 @@
         "names": [
           "The Velvet Ledger",
           "Low Tide Wine Room",
-          "The Reading Lounge"
+          "Meridian Roof"
         ],
-        "violationCount": 3,
+        "violationCount": 2,
         "violators": [
           "The Velvet Ledger",
-          "Low Tide Wine Room",
-          "The Reading Lounge"
+          "Low Tide Wine Room"
         ]
       },
       "gatedViolations": {
@@ -662,12 +753,18 @@
       "tasteOnTop": [
         "Meridian Roof"
       ],
+      "popularTop": [
+        "Meridian Roof"
+      ],
       "overlapAt3": 1,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
-        "tasteOn": 0,
-        "tasteOff": 0
+        "tasteOn": 0.1818,
+        "tasteOff": 0.1818,
+        "popular": 0.1818
       },
       "preservedTagShare": {
         "tasteOn": 0,
@@ -710,12 +807,20 @@
         "Tidewrack Social",
         "The Verdant Table"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Copper Kettle Grill",
+        "Nine Fathoms Oyster House"
+      ],
       "overlapAt3": 1,
       "kendallTau": 0.7222222222222222,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.6666666666666666,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
-        "tasteOn": 0.5,
-        "tasteOff": 0.5
+        "tasteOn": 0.42860000000000004,
+        "tasteOff": 0.42860000000000004,
+        "popular": 0.28573333333333334
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -757,12 +862,18 @@
       "tasteOnTop": [
         "The Slow Pour"
       ],
+      "popularTop": [
+        "The Slow Pour"
+      ],
       "overlapAt3": 1,
       "kendallTau": null,
       "topChoiceChanged": false,
+      "overlapAt3VsPopular": 1,
+      "topChoiceChangedVsPopular": false,
       "meanAffinityTop3": {
-        "tasteOn": 0.5,
-        "tasteOff": 0.5
+        "tasteOn": 0.5714,
+        "tasteOff": 0.5714,
+        "popular": 0.5714
       },
       "preservedTagShare": {
         "tasteOn": 1,
@@ -805,12 +916,20 @@
         "Paper Crane Noodle Bar",
         "Saffron Courtyard"
       ],
+      "popularTop": [
+        "Tidewrack Social",
+        "Copper Kettle Grill",
+        "Harbour Lamp Kitchen"
+      ],
       "overlapAt3": 1,
       "kendallTau": 0.9555555555555556,
       "topChoiceChanged": true,
+      "overlapAt3VsPopular": 0.3333333333333333,
+      "topChoiceChangedVsPopular": true,
       "meanAffinityTop3": {
         "tasteOn": 0.3333333333333333,
-        "tasteOff": 0.3333333333333333
+        "tasteOff": 0.3333333333333333,
+        "popular": 0.3333333333333333
       },
       "preservedTagShare": {
         "tasteOn": 0.3333333333333333,
@@ -826,7 +945,7 @@
     "completed": 17,
     "ungatedScenariosWithViolation": 12,
     "ungatedTopSlotsViolating": {
-      "violating": 19,
+      "violating": 18,
       "total": 49
     },
     "gatedViolations": {
@@ -839,12 +958,18 @@
       "changed": 9,
       "compared": 17
     },
+    "topChoiceChangedVsPopular": {
+      "changed": 8,
+      "compared": 16
+    },
     "meanOverlapAt3": 0.9166666666666665,
-    "meanKendallTau": 0.35959595959595964,
+    "meanOverlapAt3VsPopular": 0.75,
+    "meanKendallTau": 0.35454545454545455,
     "meanAffinityTop3": {
-      "tasteOn": 0.46272291666666665,
-      "tasteOff": 0.4299854166666666,
-      "difference": 0.03273750000000003
+      "tasteOn": 0.447275,
+      "tasteOff": 0.41810833333333325,
+      "popular": 0.3619562499999999,
+      "difference": 0.02916666666666673
     },
     "noFeasibleHandled": {
       "scenarios": 1,
@@ -855,6 +980,7 @@
     "Each scenario opens a case, records one disruption and runs one search.",
     "Both arms use the identical candidate pool, the identical feasibility gate and the identical exclusions. Only the ordering rule differs.",
     "Taste Off orders by distance to the original venue, then price level, then name. It uses no taste data.",
+    "Popular orders by the provider general popularity, most popular first, with distance and price as tie breakers. It uses none of the group signals.",
     "Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.",
     "The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.",
     "Violations are judged by an independent implementation of the constraint rules that reads raw venue facts."
