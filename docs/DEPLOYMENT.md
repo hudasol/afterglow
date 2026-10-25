@@ -46,6 +46,10 @@ Note that the built interface does not send the access token. A token protects t
 3. With a key set, press Check the connection on the Evidence page.
 4. Run the smoke test from a trusted machine with the same key and record the result in `docs/QLOO_INTEGRATION.md`.
 
+## Keeping the free instance awake
+
+A free Render instance sleeps after fifteen minutes without traffic and takes about a minute to wake. `.github/workflows/keepalive.yml` pings `/api/health` every ten minutes, but only between 30 October 2026 12:00 UTC and 6 November 2026 00:00 UTC, which covers the submission deadline and the judging period. Outside that window the job exits at once. This limits the use of the free instance hours of the Render workspace, which are shared by every free service in it.
+
 ## Data and persistence
 
 Cases live in the SQLite file. On an ephemeral disk they are lost on restart. That is acceptable for a demo and is stated in [LIMITATIONS.md](LIMITATIONS.md). For durable cases, mount a persistent disk and point `DATABASE_PATH` at it. Run a single instance per database file.
