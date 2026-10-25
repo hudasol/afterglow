@@ -310,6 +310,12 @@ export function NewRecovery({
         Describe the plan once, as it was meant to be. AFTERGLOW records it as a fixed intent anchor
         and works from it for the rest of the case.
       </p>
+      {status?.publicDemo ? (
+        <p className="small muted-text" role="note" style={{ marginTop: '0.6rem' }}>
+          This is a public demo. Cases are temporary and the server may erase them when it restarts.
+          Please do not enter personal details.
+        </p>
+      ) : null}
 
       {problems.length > 0 ? (
         <div className="error" role="alert" style={{ marginTop: '1rem' }}>
