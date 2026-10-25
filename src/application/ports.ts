@@ -42,6 +42,8 @@ export interface RankResponse {
   scores: TasteScore[];
   /** Set when the provider had to drop part of the request. Shown to the person. */
   degradedNote?: string;
+  /** The tag signals that were actually sent, which can be fewer than were asked for. */
+  appliedTagIds?: string[];
 }
 
 export interface ProviderDescriptor {

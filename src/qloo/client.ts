@@ -144,7 +144,7 @@ export class QlooClient {
     endpoint: string,
     query: QueryParams,
     traces?: CallTrace[],
-    options: { bypassCache?: boolean } = {},
+    options: { bypassCache?: boolean; timeoutMs?: number; maxAttempts?: number } = {},
   ): Promise<unknown> {
     const pairs = serialiseQuery(query);
     const params = redactParams(pairs);
@@ -170,12 +170,16 @@ export class QlooClient {
     let attempts = 0;
     let lastError: QlooError | undefined;
     let lastStatus: number | undefined;
+    const maxAttempts = options.maxAttempts ?? this.#maxAttempts;
 
-    while (attempts < this.#maxAttempts) {
+    while (attempts < maxAttempts) {
       attempts += 1;
       this.#spend();
       try {
-        const { status, body, retryAfterMs } = await this.#once(url);
+        const { status, body, retryAfterMs } = await this.#once(
+          url,
+          options.timeoutMs ?? this.#timeoutMs,
+        );
         lastStatus = status;
         if (status >= 200 && status < 300) {
           const value = parseJson(body);
@@ -192,12 +196,12 @@ export class QlooClient {
           return value;
         }
         const error = errorForStatus(status, body);
-        if (!error.retryable || attempts >= this.#maxAttempts) throw error;
+        if (!error.retryable || attempts >= maxAttempts) throw error;
         lastError = error;
         await this.#sleep(this.#backoff(attempts, retryAfterMs));
       } catch (caught) {
         const error = caught instanceof QlooError ? caught : toQlooError(caught);
-        if (!error.retryable || attempts >= this.#maxAttempts) {
+        if (!error.retryable || attempts >= maxAttempts) {
           traces?.push({
             endpoint,
             params,
@@ -233,9 +237,12 @@ export class QlooClient {
     }
   }
 
-  async #once(url: URL): Promise<{ status: number; body: string; retryAfterMs?: number }> {
+  async #once(
+    url: URL,
+    timeoutMs: number,
+  ): Promise<{ status: number; body: string; retryAfterMs?: number }> {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), this.#timeoutMs);
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await this.#fetch(url, {
         method: 'GET',

@@ -14,6 +14,14 @@ import { QlooError } from './errors.js';
 import { resultArray, toCandidate, toTasteScores } from './normalize.js';
 import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
 
+/**
+ * Measured on 25 October 2026: with up to four tag signals Qloo answered a ranking request in
+ * between 0.2 and 13 seconds, and with five or more it took thirty to sixty seconds.
+ */
+export const MAX_TAG_SIGNALS = 4;
+const RANK_TIMEOUT_MS = 25_000;
+const LIGHT_TIMEOUT_MS = 15_000;
+
 function translate(error: unknown): ProviderError {
   if (error instanceof ProviderError) return error;
   if (error instanceof QlooError)
@@ -101,40 +109,76 @@ export class QlooTasteProvider implements TasteProvider {
       'filter.type': PLACE_TYPE,
       'filter.results.entities': ids,
       take: ids.length,
-    };
-    interface Variant {
-      query: QueryParams;
-      note?: string;
-    }
-    const full: QueryParams = {
-      ...base,
       ...(request.entityIds.length > 0 ? { 'signal.interests.entities': request.entityIds } : {}),
-      ...(request.tagIds.length > 0 ? { 'signal.interests.tags': request.tagIds } : {}),
-      'feature.explainability': true,
     };
-    const variants: Variant[] = [{ query: full }];
-    if (request.entityIds.length > 0 && request.tagIds.length > 0) {
-      variants.push({
-        query: { ...full, 'signal.interests.tags': undefined },
-        note: 'Qloo did not accept tag signals together with entity signals, so only the entity signals were applied.',
-      });
+
+    // Qloo answers quickly with a few tag signals and slowly with many, so the request starts
+    // with at most MAX_TAG_SIGNALS of them and, if Qloo cannot answer, tries lighter requests
+    // that keep the names the person likes. Each step down is reported to the person.
+    const tags = [...new Set(request.tagIds)].slice(0, MAX_TAG_SIGNALS);
+    interface Rung {
+      tags: string[];
+      timeoutMs: number;
+      attempts: number;
     }
-    variants.push({
-      query: { ...full, 'feature.explainability': undefined },
-      note: 'Qloo did not accept the explainability option, so no explanation text is available for this ranking.',
-    });
+    const rungs: Rung[] = [{ tags, timeoutMs: RANK_TIMEOUT_MS, attempts: 1 }];
+    if (tags.length > 2) {
+      rungs.push({ tags: tags.slice(0, 2), timeoutMs: RANK_TIMEOUT_MS, attempts: 2 });
+    }
+    if (tags.length > 0 && request.entityIds.length > 0) {
+      rungs.push({ tags: [], timeoutMs: LIGHT_TIMEOUT_MS, attempts: 3 });
+    }
 
     let lastError: unknown;
-    for (const variant of variants) {
-      try {
-        const response = await client.get('/v2/insights', variant.query, ctx.traces);
-        const scores = toTasteScores(response, new Set(ids));
-        return { scores, ...(variant.note ? { degradedNote: variant.note } : {}) };
-      } catch (error) {
-        lastError = error;
-        if (!(error instanceof QlooError) || error.code !== 'QLOO_BAD_REQUEST') break;
+    for (const [index, rung] of rungs.entries()) {
+      for (const explain of [true, false]) {
+        const query: QueryParams = {
+          ...base,
+          ...(rung.tags.length > 0 ? { 'signal.interests.tags': rung.tags } : {}),
+          ...(explain ? { 'feature.explainability': true } : {}),
+        };
+        try {
+          const response = await client.get('/v2/insights', query, ctx.traces, {
+            timeoutMs: rung.timeoutMs,
+            maxAttempts: rung.attempts,
+          });
+          const notes: string[] = [];
+          if (index > 0) notes.push(this.#stepDownNote(lastError, tags.length, rung.tags.length));
+          if (!explain) {
+            notes.push(
+              'Qloo did not accept the explainability option, so no explanation text is available for this ranking.',
+            );
+          }
+          return {
+            scores: toTasteScores(response, new Set(ids)),
+            appliedTagIds: rung.tags,
+            ...(notes.length > 0 ? { degradedNote: notes.join(' ') } : {}),
+          };
+        } catch (error) {
+          lastError = error;
+          if (error instanceof QlooError && error.code === 'QLOO_BAD_REQUEST' && explain) continue;
+          // A problem with the key or the allowance is the same for every lighter request.
+          if (
+            !(error instanceof QlooError) ||
+            error.code === 'QLOO_AUTH' ||
+            error.code === 'QLOO_BUDGET_EXHAUSTED' ||
+            error.code === 'QLOO_NOT_CONFIGURED'
+          ) {
+            throw translate(error);
+          }
+          break;
+        }
       }
     }
     throw translate(lastError);
+  }
+
+  #stepDownNote(cause: unknown, asked: number, sent: number): string {
+    if (sent === 0) {
+      return cause instanceof QlooError && cause.code === 'QLOO_BAD_REQUEST'
+        ? 'Qloo did not accept tag signals together with entity signals, so only the entity signals were applied.'
+        : 'Qloo could not answer with the vibe signals, so only the names you like and the venue that fell through were applied.';
+    }
+    return `Qloo could not answer with ${asked} vibe signals, so only the first ${sent} were applied.`;
   }
 }

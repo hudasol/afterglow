@@ -114,7 +114,7 @@ describe('QlooTasteProvider', () => {
     expect(result.method).toBe('same_name_group');
     expect(result.selected?.id).toBe('urn:tag:a:jazz');
     expect(result.alsoUsed?.map((c) => c.id)).toEqual(['urn:tag:b:jazz']);
-    expect(result.warnings?.join(' ')).toContain('All of them are used together');
+    expect(result.warnings?.join(' ')).toContain('used together where Qloo can answer quickly');
   });
 
   it('leaves out tags that apply to artists only when a place tag has the same name', async () => {
@@ -234,6 +234,73 @@ describe('QlooTasteProvider', () => {
     );
     expect(response.scores).toHaveLength(1);
     expect(response.degradedNote).toContain('only the entity signals');
+  });
+
+  describe('ranking with many tag signals', () => {
+    const tagIds = ['t:1', 't:2', 't:3', 't:4', 't:5', 't:6'];
+    const asked = (url: URL) => url.searchParams.get('signal.interests.tags')?.split(',') ?? [];
+    const timeout = () => {
+      const error = new Error('aborted');
+      error.name = 'AbortError';
+      throw error;
+    };
+
+    it('sends at most four tag signals, because Qloo is slow with more', async () => {
+      const { provider, seen } = providerWith(() => jsonResponse(syntheticPlaceResponse));
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: ['e-1'], tagIds },
+        { traces: [] },
+      );
+      expect(asked(seen[0] as URL)).toEqual(['t:1', 't:2', 't:3', 't:4']);
+      expect(response.appliedTagIds).toEqual(['t:1', 't:2', 't:3', 't:4']);
+      expect(response.degradedNote).toBeUndefined();
+    });
+
+    it('tries two tag signals when Qloo cannot answer with four, and says so', async () => {
+      const { provider, seen } = providerWith((url) =>
+        asked(url).length > 2 ? timeout() : jsonResponse(syntheticPlaceResponse),
+      );
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: ['e-1'], tagIds },
+        { traces: [] },
+      );
+      expect(response.appliedTagIds).toEqual(['t:1', 't:2']);
+      expect(response.degradedNote).toContain('only the first 2 were applied');
+      expect(seen.map((url) => asked(url).length)).toEqual([4, 2]);
+    });
+
+    it('keeps the names the person likes when no tag signal can be answered', async () => {
+      const { provider } = providerWith((url) =>
+        url.searchParams.has('signal.interests.tags')
+          ? timeout()
+          : jsonResponse(syntheticPlaceResponse),
+      );
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: ['e-1'], tagIds },
+        { traces: [] },
+      );
+      expect(response.scores.length).toBeGreaterThan(0);
+      expect(response.appliedTagIds).toEqual([]);
+      expect(response.degradedNote).toContain('only the names you like');
+    });
+
+    it('fails with the timeout when there is nothing lighter to try', async () => {
+      const { provider } = providerWith(() => timeout());
+      await expect(
+        provider.rank({ city: 'T', candidateIds: ['p-1'], entityIds: [], tagIds }, { traces: [] }),
+      ).rejects.toMatchObject({ code: 'QLOO_TIMEOUT' });
+    });
+
+    it('does not try lighter requests when the key is refused', async () => {
+      const { provider, seen } = providerWith(() => new Response('{}', { status: 401 }));
+      await expect(
+        provider.rank(
+          { city: 'T', candidateIds: ['p-1'], entityIds: ['e-1'], tagIds },
+          { traces: [] },
+        ),
+      ).rejects.toMatchObject({ code: 'QLOO_AUTH' });
+      expect(seen).toHaveLength(1);
+    });
   });
 
   it('refuses to rank without any resolved signal', async () => {

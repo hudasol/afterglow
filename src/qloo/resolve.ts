@@ -161,7 +161,7 @@ export async function resolveTag(
       method: 'same_name_group',
       warnings: [
         ...warnings,
-        `${exact.length} Qloo tags are called "${exact[0].name}" in different taxonomies. All of them are used together.`,
+        `${exact.length} Qloo tags are called "${exact[0].name}" in different taxonomies. They name the same idea, so they are used together where Qloo can answer quickly. The Evidence tab lists the ones that were sent.`,
       ],
     });
   }
