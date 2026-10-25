@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CaseView } from '../../../src/domain/case-view.js';
+import { entryKind } from '../lib/format.js';
 
 type Pending = CaseView['pendingChoices'][number];
 
@@ -41,7 +42,7 @@ function ChoiceItem({
             />
             <span>{candidate.name}</span>
             <span className="desc">
-              {[candidate.type, candidate.description].filter(Boolean).join('. ') ||
+              {[entryKind(candidate.type), candidate.description].filter(Boolean).join('. ') ||
                 'No further description returned.'}
             </span>
           </label>

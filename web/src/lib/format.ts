@@ -57,3 +57,28 @@ export function toOffsetIso(localValue: string): string {
 export function toLocalInput(iso: string): string {
   return iso.slice(0, 16);
 }
+
+const ENTRY_KINDS: Record<string, string> = {
+  'urn:entity:artist': 'Artist',
+  'urn:entity:person': 'Person',
+  'urn:entity:album': 'Album',
+  'urn:entity:author': 'Author',
+  'urn:entity:book': 'Book',
+  'urn:entity:movie': 'Film',
+  'urn:entity:tv_show': 'Television show',
+  'urn:entity:podcast': 'Podcast',
+  'urn:entity:videogame': 'Video game',
+  'urn:entity:brand': 'Brand',
+  'urn:entity:destination': 'Destination',
+  'urn:entity:place': 'Place',
+};
+
+/** Turns a Qloo type such as urn:entity:artist into words a person can read. */
+export function entryKind(type: string | undefined): string | undefined {
+  if (!type) return undefined;
+  const known = ENTRY_KINDS[type];
+  if (known) return known;
+  const last = type.split(':').pop() ?? '';
+  const words = last.replace(/_/gu, ' ').trim();
+  return words ? words.charAt(0).toUpperCase() + words.slice(1) : undefined;
+}
