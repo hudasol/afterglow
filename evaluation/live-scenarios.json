@@ -57,7 +57,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Peter Luger Steak House"
+        "name": "Keens Steakhouse"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -181,7 +181,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Sketch"
+        "name": "Gymkhana"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["A table where we can talk", "Something that feels special"],
@@ -564,7 +564,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Narisawa"
+        "name": "Tempura Kondo"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Good vegetarian choices for everyone", "Relaxed and social"],
@@ -606,7 +606,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Kanda Yabusoba"
+        "name": "Kanda Yabu Soba"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Affordable", "Easy to get to"],
