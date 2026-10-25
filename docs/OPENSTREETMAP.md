@@ -53,21 +53,21 @@ OpenStreetMap data is available under the Open Database Licence and must be cred
 
 ## Configuration
 
-| Variable              | Default                                   | Purpose                                                             |
-| --------------------- | ----------------------------------------- | ------------------------------------------------------------------- |
-| `AFTERGLOW_OSM_FACTS` | `true`                                    | Turns the lookup off when set to `false`. It also needs a Qloo key. |
-| `OVERPASS_URL`        | `https://overpass-api.de/api/interpreter` | The Overpass endpoint. Point it at your own instance if you wish.   |
-| `OVERPASS_TIMEOUT_MS` | `20000`                                   | How long to wait before giving up.                                  |
+| Variable              | Default                                                                                 | Purpose                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `AFTERGLOW_OSM_FACTS` | `true`                                                                                  | Turns the lookup off when set to `false`. It also needs a Qloo key.                       |
+| `OVERPASS_URL`        | `https://overpass-api.de/api/interpreter,https://overpass.kumi.systems/api/interpreter` | One endpoint, or several separated by commas that are tried in order. Each must be https. |
+| `OVERPASS_TIMEOUT_MS` | `12000`                                                                                 | How long to wait for each endpoint.                                                       |
 
-The public Overpass service is shared and has fair use limits. A busy public demo should run its own instance or turn the lookup off.
+The public Overpass services are shared and have fair use limits. The first real data run from this project met a timeout and then a 502 from the main public server, so the client moves to the next endpoint when one is overloaded, times out or limits the rate, and records which host answered. It does not move on when a query is refused, because another server would refuse it too. A busy public demo should run its own instance or turn the lookup off. The lookup runs at the same time as the Qloo ranking, so it adds waiting time only when it is the slower of the two.
 
 ## Running the check
 
 ```sh
-npm run osm:smoke -- --lat 40.7580 --lon -73.9855 --radius 400
+npm run osm:smoke -- --lat 40.7580 --lon -73.9855 --radius 400 --points 1
 ```
 
-The check asks for the named venues around one public point and reports how many carry the tags above and how many `opening_hours` values the reader understands. The report records counts and tag values only, never venue names. It is written to `data/evaluation/osm-smoke-<date>.json`. The same check can be started from the **OpenStreetMap smoke test** workflow in the Actions tab. Its verdict is **go** when hours are present and at least half are understood, **conditional** when venues come back but few hours can be used, and **no go** when nothing comes back.
+The check asks for the named venues around one public point, or around a grid of up to 40 points with `--points`, which is how a search asks and shows how long it takes. It reports how many venues carry the tags above and how many `opening_hours` values the reader understands. The report records counts and tag values only, never venue names. It is written to `data/evaluation/osm-smoke-<date>.json`. The same check can be started from the **OpenStreetMap smoke test** workflow in the Actions tab. Its verdict is **go** when hours are present, at least half are understood and the answer took ten seconds or less, **conditional** when venues come back but few hours can be used or the answer was slow, and **no go** when nothing comes back.
 
 ## Limits
 
