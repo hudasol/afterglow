@@ -49,6 +49,7 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export interface ServerStatus {
   version: string;
+  commit?: string;
   publicDemo: boolean;
   modes: {
     live: {

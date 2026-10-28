@@ -26,6 +26,23 @@ describe('http interface', () => {
     expect(JSON.stringify(status)).not.toMatch(/key/iu);
   });
 
+  it('names the commit when the host states it and says nothing otherwise', async () => {
+    const without = await startServer();
+    expect(await (await without.request('/api/health')).json()).toEqual({
+      status: 'ok',
+      version: 'test',
+    });
+    await without.close();
+    const server = await startServer({ commit: '0309861' });
+    closer = server.close;
+    expect(await (await server.request('/api/health')).json()).toEqual({
+      status: 'ok',
+      version: 'test',
+      commit: '0309861',
+    });
+    expect((await (await server.request('/api/status')).json()).commit).toBe('0309861');
+  });
+
   it('reports whether live cases may read place facts from OpenStreetMap', async () => {
     const server = await startServer({}, { placeFactsEnabled: true });
     closer = server.close;

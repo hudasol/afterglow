@@ -26,6 +26,7 @@ A blueprint is included in `render.yaml`.
 | ----------------------- | ---------------------- | ------------------------------------------------------------------------------------ |
 | `HOST`                  | `0.0.0.0`              | Listen for external traffic                                                          |
 | `AFTERGLOW_PUBLIC_DEMO` | `true`                 | Permit a non loopback bind without a token                                           |
+| `AFTERGLOW_TRUST_PROXY` | `true`                 | Rate limits see client addresses behind the host's proxy. Render also implies it     |
 | `DATABASE_PATH`         | `/tmp/afterglow.db`    | A writable path. The free tier disk is ephemeral                                     |
 | `QLOO_DAILY_CALL_CAP`   | `1500`                 | Keep visitors from exhausting the quota                                              |
 | `QLOO_API_KEY`          | the personal key       | Enables live mode. Server side only                                                  |
@@ -44,7 +45,7 @@ Note that the built interface does not send the access token. A token protects t
 
 ## After deploying
 
-1. Open `/api/health`. It should return `{"status":"ok"}` with the version.
+1. Open `/api/health`. It should return `{"status":"ok"}` with the version and, on Render, the first seven characters of the commit that was built (from `RENDER_GIT_COMMIT`, or `AFTERGLOW_COMMIT` on another host). Compare it with the latest commit on `main`. The site footer shows the same pair.
 2. Open the site and the Evidence page. It states whether a Qloo key is configured, and has a button that asks OpenStreetMap a small real question from the server.
 3. With a key set, press Check the connection on the Evidence page.
 4. Run the smoke test from a trusted machine with the same key and record the result in `docs/QLOO_INTEGRATION.md`.
@@ -55,7 +56,7 @@ The Render service was created from the repository with automatic deploys switch
 
 ## Keeping the free instance awake
 
-A free Render instance sleeps after fifteen minutes without traffic and takes about a minute to wake. `.github/workflows/keepalive.yml` pings `/api/health` every ten minutes, but only between 30 October 2026 12:00 UTC and 6 November 2026 00:00 UTC, which covers the submission deadline and the judging period. Outside that window the job exits at once. This limits the use of the free instance hours of the Render workspace, which are shared by every free service in it.
+A free Render instance sleeps after fifteen minutes without traffic and takes about a minute to wake. `.github/workflows/keepalive.yml` pings `/api/health` every ten minutes, but only between 29 October 2026 12:00 UTC and 6 November 2026 00:00 UTC, which covers the submission deadline and the judging period. Outside that window the job exits at once. This limits the use of the free instance hours of the Render workspace, which are shared by every free service in it.
 
 ## Data and persistence
 

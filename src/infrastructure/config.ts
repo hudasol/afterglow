@@ -79,6 +79,20 @@ const ConfigSchema = z.object({
     .max(24 * 30)
     .default(48),
   SERVE_WEB: flag('true'),
+  /**
+   * The commit this build was made from, shown beside the version so a reader can tell which code
+   * is running. AFTERGLOW_COMMIT is for any host. Render sets RENDER_GIT_COMMIT itself.
+   */
+  AFTERGLOW_COMMIT: z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{7,64}$/u, 'Expected a hexadecimal commit identifier.')
+    .optional(),
+  RENDER_GIT_COMMIT: z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{7,64}$/u)
+    .optional(),
 });
 
 export type Config = z.infer<typeof ConfigSchema>;

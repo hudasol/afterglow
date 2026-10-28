@@ -9,6 +9,7 @@ const app = createApp({
   service,
   integration: container.integration,
   version: container.version,
+  commit: (config.AFTERGLOW_COMMIT ?? config.RENDER_GIT_COMMIT)?.slice(0, 7),
   host: config.HOST,
   port: config.PORT,
   accessToken: config.AFTERGLOW_ACCESS_TOKEN,

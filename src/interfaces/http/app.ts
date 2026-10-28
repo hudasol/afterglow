@@ -72,6 +72,8 @@ export interface AppOptions {
   service: RecoveryService;
   integration: IntegrationStatus;
   version: string;
+  /** Short identifier of the commit this build was made from, when the host states it. */
+  commit?: string | undefined;
   host: string;
   port: number;
   accessToken?: string | undefined;
@@ -255,13 +257,18 @@ export function createApp(options: AppOptions): express.Express {
   };
 
   api.get('/health', (_req, res) => {
-    res.json({ status: 'ok', version: options.version });
+    res.json({
+      status: 'ok',
+      version: options.version,
+      ...(options.commit ? { commit: options.commit } : {}),
+    });
   });
 
   api.get('/status', (_req, res) => {
     const providers = service.describeProviders();
     res.json({
       version: options.version,
+      ...(options.commit ? { commit: options.commit } : {}),
       publicDemo: options.publicDemo,
       modes: {
         live: {

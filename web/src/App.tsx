@@ -141,7 +141,12 @@ export function App() {
                 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>
               </li>
             ) : null}
-            {status ? <li>Version {status.version}</li> : null}
+            {status ? (
+              <li>
+                Version {status.version}
+                {status.commit ? `, commit ${status.commit}` : ''}
+              </li>
+            ) : null}
           </ul>
         </div>
       </footer>

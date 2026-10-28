@@ -61,4 +61,13 @@ describe('loadConfig', () => {
     expect(() => loadConfig({ OVERPASS_URL: 'http://a.example/api' })).toThrow(/https/);
     expect(() => loadConfig({ OVERPASS_URL: 'http://127.0.0.1:9999/api' })).not.toThrow();
   });
+
+  it('accepts a commit identifier from the host and rejects anything else', () => {
+    expect(loadConfig({ RENDER_GIT_COMMIT: '0309861abcdef' }).RENDER_GIT_COMMIT).toBe(
+      '0309861abcdef',
+    );
+    expect(loadConfig({ AFTERGLOW_COMMIT: '0309861' }).AFTERGLOW_COMMIT).toBe('0309861');
+    expect(() => loadConfig({ AFTERGLOW_COMMIT: 'not a commit' })).toThrow(/AFTERGLOW_COMMIT/);
+    expect(loadConfig({}).AFTERGLOW_COMMIT).toBeUndefined();
+  });
 });
