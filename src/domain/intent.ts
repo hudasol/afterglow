@@ -38,13 +38,19 @@ export const venueCategorySchema = z.enum([
 ]);
 export type VenueCategory = z.infer<typeof venueCategorySchema>;
 
-/** The phrase used to look up the category tag. It is a product concept, never personal data. */
+/**
+ * The phrase used to look up the category tag. It is a product concept, never personal data.
+ * Measured on Qloo on 28 October 2026: the phrases "live music" and "dessert" each match several
+ * tags of the same name in different taxonomies, and most of those return no places in a city.
+ * "live music venue" and "dessert shop" each match one place genre tag that returns places in
+ * every city that was checked.
+ */
 export const categoryTagPhrase: Record<VenueCategory, string> = {
   restaurant: 'restaurant',
   bar: 'bar',
   cafe: 'cafe',
-  live_music: 'live music',
-  dessert: 'dessert',
+  live_music: 'live music venue',
+  dessert: 'dessert shop',
   museum_or_gallery: 'art gallery',
 };
 

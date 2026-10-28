@@ -707,7 +707,7 @@ export const categoryTagIds: Record<VenueCategory, { id: string; name: string }>
   restaurant: { id: 'sim-cat-restaurant', name: 'restaurant' },
   bar: { id: 'sim-cat-bar', name: 'bar' },
   cafe: { id: 'sim-cat-cafe', name: 'cafe' },
-  live_music: { id: 'sim-cat-live-music', name: 'live music' },
-  dessert: { id: 'sim-cat-dessert', name: 'dessert' },
+  live_music: { id: 'sim-cat-live-music', name: 'live music venue' },
+  dessert: { id: 'sim-cat-dessert', name: 'dessert shop' },
   museum_or_gallery: { id: 'sim-cat-art-gallery', name: 'art gallery' },
 };
