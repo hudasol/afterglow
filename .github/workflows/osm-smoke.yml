@@ -40,7 +40,7 @@ jobs:
       OVERPASS_URL: ${{ inputs.overpass_url }}
       OVERPASS_TIMEOUT_MS: ${{ inputs.timeout_ms }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
