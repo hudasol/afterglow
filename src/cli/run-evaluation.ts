@@ -69,7 +69,10 @@ async function preflight(file: string): Promise<void> {
         (resolution.status === 'ambiguous' && picked !== undefined);
       if (!settled) unresolved += 1;
       const shown = (resolution.candidates ?? [])
-        .map((c) => `${c.name} [${c.type ?? 'no type'}]`)
+        .map(
+          (c) =>
+            `${c.name} [${c.type ?? 'no type'}] ${c.id}${c.description ? ` (${c.description.slice(0, 60)})` : ''}`,
+        )
         .join('; ');
       console.log(
         `${settled ? 'OK  ' : 'FAIL'} ${scenario.id} ${kind} "${input}" (${anchor.city}): ${resolution.status}${picked ? ` settled by choice ${chosen}` : ''}${shown ? ` -> ${shown}` : ''}`,

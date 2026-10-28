@@ -55,7 +55,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Sawada Coffee"
+        "name": "Gaslight Coffee Roasters"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -144,7 +144,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "Andy's Jazz Club"
+        "name": "Jazz Showcase"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],
@@ -571,7 +571,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Paramount Coffee Project"
+        "name": "Reuben Hills"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -660,7 +660,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "Venue 505"
+        "name": "Oxford Art Factory"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],
@@ -700,7 +700,7 @@
       "durationMinutes": 150,
       "category": "bar",
       "originalVenue": {
-        "name": "Bar Isabel"
+        "name": "Bellwoods Brewery"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Lively enough for a birthday", "Good cocktails"],
