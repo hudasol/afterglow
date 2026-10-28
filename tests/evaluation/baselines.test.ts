@@ -62,6 +62,20 @@ describe('baseline lists', () => {
     }
   });
 
+  it('leave places without a known distance out of the nearest first list', async () => {
+    const opened = await openCaseView(provider, spec('s02-vegan-date-budget'));
+    try {
+      const unlocated = {
+        ...opened.view,
+        options: opened.view.options.map((option) => ({ ...option, distanceKm: null })),
+      };
+      expect(gatedLists(unlocated, BASELINE_SEED, 's02').nearest).toEqual([]);
+      expect(gatedLists(opened.view, BASELINE_SEED, 's02').nearest.length).toBeGreaterThan(0);
+    } finally {
+      opened.close();
+    }
+  });
+
   it('draw the same random list for the same seed and a different one for another seed', async () => {
     const opened = await openCaseView(provider, spec('s05-family-lunch-halal'));
     try {

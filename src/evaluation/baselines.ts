@@ -192,9 +192,11 @@ export function gatedLists(
     random: grouped(
       (a, b) => (shuffleOrder.get(a.candidate.id) ?? 0) - (shuffleOrder.get(b.candidate.id) ?? 0),
     ),
-    nearest: [...eligible].sort(
-      (a, b) => (a.tasteOffPosition ?? Infinity) - (b.tasteOffPosition ?? Infinity),
-    ),
+    // Without a known distance there is no nearest, so such places are left out rather than
+    // listed in an arbitrary order.
+    nearest: [...eligible]
+      .filter((o) => o.distanceKm !== null)
+      .sort((a, b) => (a.tasteOffPosition ?? Infinity) - (b.tasteOffPosition ?? Infinity)),
     popular: [...eligible]
       .filter((o) => o.popularPosition !== null)
       .sort((a, b) => (a.popularPosition ?? Infinity) - (b.popularPosition ?? Infinity)),
