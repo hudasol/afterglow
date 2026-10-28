@@ -5,12 +5,12 @@
 Team Kanban: Huda Mueen Qureshi, Awaiz Ahmed.
 Source code: https://github.com/hudasol/afterglow (MIT License, shown in the repository About panel).
 
-| Item                                   | Status                                                                                                                                                                |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Public repository with visible license | Published, MIT                                                                                                                                                        |
-| Hosted demo                            | https://afterglow-gsc4.onrender.com, with demo mode and live Qloo. The free plan sleeps when idle, so the first request can take about half a minute                  |
-| Demo video                             | Not made. Screenshots are provided instead                                                                                                                            |
-| Live Qloo verification                 | A smoke test (verdict go), a preregistered pipeline evaluation run twice, and a preregistered baseline comparison on 20 held out scenarios, on 25 and 28 October 2026 |
+| Item                                   | Status                                                                                                                                                                 |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Public repository with visible license | Published, MIT                                                                                                                                                         |
+| Hosted demo                            | https://afterglow-gsc4.onrender.com, with demo mode and live Qloo. The free plan sleeps when idle, so the first request can take about half a minute                   |
+| Demo video                             | A captioned screen recording of the hosted demo, 2 minutes 36 seconds, no sound: [media/afterglow-demo.mp4](media/afterglow-demo.mp4). It runs one live case in London |
+| Live Qloo verification                 | A smoke test (verdict go), a preregistered pipeline evaluation run twice, and a preregistered baseline comparison on 20 held out scenarios, on 25 and 28 October 2026  |
 
 ## 1. Product problem statement
 

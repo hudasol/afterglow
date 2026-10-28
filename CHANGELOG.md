@@ -14,6 +14,9 @@ All notable changes are listed here, newest first. The project follows [Semantic
 - A one minute cache for the connection probe, so repeated requests share one call to Qloo.
 - `npm run qloo:categories`, a read only check of how a venue category resolves on Qloo.
 - Contribution guide, security policy, decision records, issue and pull request templates, and Dependabot configuration.
+- The front page opens with the held out results, including the weak part, and a recorded comparison of the nearest first order with the Qloo blend. The Evidence page opens with a summary of what the recorded results support and what they do not.
+- A captioned walkthrough video of the hosted demo, [docs/media/afterglow-demo.mp4](docs/media/afterglow-demo.mp4).
+- The hosted site shows the version and commit it is running, in the footer and in `/api/health`.
 
 ### Changed
 
@@ -22,6 +25,8 @@ All notable changes are listed here, newest first. The project follows [Semantic
 - The category phrases for live music and dessert resolve to a single place genre on Qloo.
 - The gated nearest first list leaves out places without a known distance.
 - The keepalive window starts on 29 October 2026.
+- The inspector draws its check, cross and unknown marks instead of using text symbols, and the order comparison chart becomes a table on small screens.
+- CI runs the unit checks on Node 22 and 24.
 
 ### Removed
 

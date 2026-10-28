@@ -7,6 +7,7 @@
 When a booking falls through, a venue closes or the weather turns, AFTERGLOW keeps what the plan was for, uses [Qloo](https://qloo.com) taste data to find alternatives, rules out any place that breaks a hard requirement, and shows the evidence behind every suggestion. It never books anything. A recovery is confirmed only when the person says so.
 
 Hosted demo: https://afterglow-gsc4.onrender.com (free plan; the first request after a pause can take about half a minute).
+Walkthrough video, captioned and without sound: [docs/media/afterglow-demo.mp4](docs/media/afterglow-demo.mp4).
 Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hackathon.
 
 ![The landing page with a recorded example and the held out results from live Qloo data](docs/screenshots/01-landing.png)
