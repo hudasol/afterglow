@@ -17,6 +17,20 @@ test.describe('landing page', () => {
     await expectNoSeriousAccessibilityIssues(page);
   });
 
+  test('puts the held out results, including the weak part, on the first page', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const results = page.getByRole('region', { name: 'What the comparison on new cities showed' });
+    await expect(results).toContainText('AFTERGLOW, with the gate');
+    await expect(results).toContainText('0 of 19');
+    await expect(results).toContainText('comes from the gate and not from the taste ranking');
+    await expect(results).toContainText('1 was missed');
+    const order = page.getByRole('region', { name: 'What the Qloo signal changes' });
+    await expect(order).toContainText('does not show that people would prefer it');
+    await expect(order.getByRole('listitem')).toHaveCount(6);
+  });
+
   test('opens a simulated example in one press and lands on a shortlist', async ({ page }) => {
     await page.goto('/');
     const run = page.getByRole('button', { name: 'Run a simulated example' });

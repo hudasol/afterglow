@@ -3,9 +3,12 @@ import { caseHref, go } from '../lib/router';
 import {
   api,
   ApiError,
-  type EvaluationReportFile,
+  type BaselineRunView,
   type LivePreset,
+  type LiveRunView,
+  type OrderedPlace,
   type RecordedExample,
+  type RecordedOrder,
   type ScenarioPreset,
   type Showcase,
   type ShowcaseEntry,
@@ -156,12 +159,137 @@ function RecordedVignette({ example }: { example: RecordedExample }) {
         ))}
         <figcaption className="vignette-note">
           Recorded on {when} from live Qloo data, {setName}. This is the first scenario in the file
-          where the plain list holds a place that breaks a requirement, so it was not picked by
-          hand. That happened in {example.plainBreaking.count} of {example.plainBreaking.total}{' '}
-          scenarios. A place is marked only where a fact is known to be against it.
+          where the plain list holds a place that breaks a requirement and AFTERGLOW still has
+          places to offer, so it was not picked by hand. The plain list held such a place in{' '}
+          {example.plainBreaking.count} of {example.plainBreaking.total} scenarios. A place is
+          marked only where a fact is known to be against it.
         </figcaption>
       </div>
     </figure>
+  );
+}
+
+/** The overlap of the top three when another group's signals were used, from the latest live run. */
+function swapOverlap(runs: LiveRunView[]): number | null {
+  const latest = runs[runs.length - 1];
+  const observed = latest?.predictions.find((p) => p.id === 'P4')?.observed;
+  const value = observed === undefined ? NaN : Number.parseFloat(observed);
+  return Number.isFinite(value) ? value : null;
+}
+
+const twoPlaces = (value: number | null): string =>
+  value === null ? 'not available' : value.toFixed(2);
+
+function HeldOutSummary({
+  run,
+  swapUnchanged,
+}: {
+  run: BaselineRunView;
+  swapUnchanged: number | null;
+}) {
+  const { plainBreaking, gatedBreaking, vibe } = run.headline;
+  return (
+    <section className="panel" aria-labelledby="home-heldout">
+      <h2 id="home-heldout">What the comparison on new cities showed</h2>
+      <p className="muted-text" style={{ marginTop: '0.4rem' }}>
+        {run.completed} plans in five cities the product was not developed on, ranked from the same
+        Qloo places in one run on {new Date(run.generatedAt).toISOString().slice(0, 10)}, after the
+        predictions were written down.
+      </p>
+      <div
+        className="table-wrap"
+        tabIndex={0}
+        role="region"
+        aria-label="Plans whose top three breaks a requirement"
+      >
+        <table className="data compact" style={{ marginTop: '0.8rem' }}>
+          <thead>
+            <tr>
+              <th scope="col">Approach</th>
+              <th scope="col">Plans where the top three holds a place that breaks a requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            {plainBreaking.map((row) => (
+              <tr key={row.approach}>
+                <th scope="row">{row.approach}, without the gate</th>
+                <td>
+                  {row.count} of {row.total}
+                </td>
+              </tr>
+            ))}
+            {gatedBreaking ? (
+              <tr>
+                <th scope="row">AFTERGLOW, with the gate</th>
+                <td>
+                  {gatedBreaking.count} of {gatedBreaking.total}
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+      <p style={{ marginTop: '0.9rem' }}>
+        That result comes from the gate and not from the taste ranking. A place is ruled out only
+        when a known fact is against it, and on Qloo data that means its hours, price or distance.
+      </p>
+      <p style={{ marginTop: '0.6rem' }}>
+        The Qloo order is the weaker part. The requested vibe was in the top three about as often as
+        in a nearest first list ({twoPlaces(vibe.afterglow)} against {twoPlaces(vibe.nearest)}).
+        {swapUnchanged !== null
+          ? ` In the earlier evaluation, ranking with another group's signals left ${Math.round(swapUnchanged * 100)} percent of the top three unchanged.`
+          : ''}{' '}
+        {run.hits} of {run.hits + run.misses + run.notEvaluated} predictions were met and{' '}
+        {run.misses} was missed.
+      </p>
+      <p style={{ marginTop: '0.8rem' }}>
+        <a href="#/evidence">Read the method, the misses and the limits</a>
+      </p>
+    </section>
+  );
+}
+
+function OrderList({ places }: { places: OrderedPlace[] }) {
+  return (
+    <ol className="order-list">
+      {places.map((place) => (
+        <li key={place.name}>
+          <span className="name">{place.name}</span>
+          <span className="small muted-text">
+            {place.km === null ? 'distance unknown' : `${place.km.toFixed(1)} km`}
+            {place.affinity === null ? '' : `, Qloo affinity ${place.affinity.toFixed(2)}`}
+          </span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function RecordedOrderPanel({ order }: { order: RecordedOrder }) {
+  const when = new Date(order.generatedAt).toISOString().slice(0, 10);
+  return (
+    <section className="panel" aria-labelledby="home-order">
+      <h2 id="home-order">What the Qloo signal changes</h2>
+      <p className="muted-text" style={{ marginTop: '0.4rem' }}>
+        {order.title}. Both lists are drawn from the same places, all of which passed the gate.
+      </p>
+      <div className="order-compare">
+        <div>
+          <h3>Nearest first, no taste data</h3>
+          <OrderList places={order.nearest} />
+        </div>
+        <div>
+          <h3>AFTERGLOW, Qloo taste blended with closeness</h3>
+          <OrderList places={order.afterglow} />
+        </div>
+      </div>
+      <p className="small muted-text" style={{ marginTop: '0.8rem' }}>
+        Recorded on {when} from live Qloo data. This is the first scenario in the file where the two
+        first choices differ, so it was not picked by hand. They differ in{' '}
+        {order.firstChoicesDiffer.count} of {order.firstChoicesDiffer.total} scenarios. That shows
+        that the Qloo signal changes the order. It does not show that people would prefer it.
+      </p>
+    </section>
   );
 }
 
@@ -169,8 +297,10 @@ export function Home() {
   const [showcase, setShowcase] = useState<Showcase | null>(null);
   const [showcaseFailed, setShowcaseFailed] = useState(false);
   const [presets, setPresets] = useState<ScenarioPreset[]>([]);
-  const [report, setReport] = useState<EvaluationReportFile | null>(null);
+  const [heldOut, setHeldOut] = useState<BaselineRunView | null>(null);
+  const [swapUnchanged, setSwapUnchanged] = useState<number | null>(null);
   const [recorded, setRecorded] = useState<RecordedExample | null>(null);
+  const [order, setOrder] = useState<RecordedOrder | null>(null);
   const [launching, setLaunching] = useState(false);
   const [launchError, setLaunchError] = useState<string | null>(null);
   const [livePresets, setLivePresets] = useState<LivePreset[]>([]);
@@ -239,8 +369,10 @@ export function Home() {
       .evaluation()
       .then((result) => {
         if (cancelled) return;
-        setReport(result.reports.find((r) => r.kind === 'offline_simulated') ?? null);
+        setHeldOut(result.baselineRuns.find((run) => run.set === 'test') ?? null);
+        setSwapUnchanged(swapOverlap(result.liveRuns));
         setRecorded(result.recordedExample);
+        setOrder(result.recordedOrder);
       })
       .catch(() => undefined);
     return () => {
@@ -255,11 +387,57 @@ export function Home() {
           <h1 id="home-title">Save the experience, not just the plan.</h1>
           <p className="lede">
             When a booking falls through, AFTERGLOW keeps what you wanted from the evening, finds
-            alternatives using Qloo taste data, rules out any place that breaks a hard requirement,
-            and shows its evidence.
+            alternatives using Qloo taste data, rules out a place when a known fact is against it,
+            and asks you to check the rest.
           </p>
+          {livePresets.length > 0 && chosenLive ? (
+            <div className="hero-live" role="group" aria-labelledby="home-live">
+              <h2 id="home-live">Run it on real Qloo data</h2>
+              <p className="small muted-text">
+                {chosenLive.summary} Opening this case asks Qloo for places and a taste ranking. It
+                can take up to half a minute, and each address can open a limited number of live
+                cases an hour.
+              </p>
+              <div className="live-controls">
+                <div className="field">
+                  <label htmlFor="live-city">City</label>
+                  <select
+                    id="live-city"
+                    value={chosenLive.id}
+                    onChange={(event) => setLiveId(event.target.value)}
+                    disabled={liveOpening}
+                  >
+                    {livePresets.map((preset) => (
+                      <option key={preset.id} value={preset.id}>
+                        {preset.city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  className="btn primary"
+                  disabled={liveOpening}
+                  onClick={() => void runLive()}
+                >
+                  {liveOpening ? 'Asking Qloo' : `Run in ${chosenLive.city}`}
+                </button>
+              </div>
+              {liveOpening ? (
+                <p className="muted-text" role="status" style={{ marginTop: '0.6rem' }}>
+                  Asking Qloo. This can take up to half a minute on the first request after the
+                  server has been idle.
+                </p>
+              ) : null}
+              {liveError ? (
+                <p className="error" role="alert" style={{ marginTop: '0.6rem' }}>
+                  {liveError}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <div className="button-row">
-            <a className="btn primary" href="#/new">
+            <a className={livePresets.length > 0 ? 'btn' : 'btn primary'} href="#/new">
               Start a recovery
             </a>
             <button
@@ -293,52 +471,9 @@ export function Home() {
         )}
       </section>
 
-      {livePresets.length > 0 && chosenLive ? (
-        <section className="panel live-example" aria-labelledby="home-live">
-          <h2 id="home-live">Run it on real Qloo data</h2>
-          <p style={{ marginTop: '0.5rem' }}>
-            {chosenLive.summary} Opening this case asks Qloo for places, their tags and a taste
-            ranking. It can take up to half a minute, and the server limits how many live cases one
-            address can open in an hour.
-          </p>
-          <div className="live-controls">
-            <div className="field">
-              <label htmlFor="live-city">City</label>
-              <select
-                id="live-city"
-                value={chosenLive.id}
-                onChange={(event) => setLiveId(event.target.value)}
-                disabled={liveOpening}
-              >
-                {livePresets.map((preset) => (
-                  <option key={preset.id} value={preset.id}>
-                    {preset.city}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="button"
-              className="btn primary"
-              disabled={liveOpening}
-              onClick={() => void runLive()}
-            >
-              {liveOpening ? 'Asking Qloo' : `Run in ${chosenLive.city}`}
-            </button>
-          </div>
-          {liveOpening ? (
-            <p className="muted-text" role="status" style={{ marginTop: '0.6rem' }}>
-              Asking Qloo. This can take up to half a minute on the first request after the server
-              has been idle.
-            </p>
-          ) : null}
-          {liveError ? (
-            <p className="error" role="alert" style={{ marginTop: '0.6rem' }}>
-              {liveError}
-            </p>
-          ) : null}
-        </section>
-      ) : null}
+      {heldOut ? <HeldOutSummary run={heldOut} swapUnchanged={swapUnchanged} /> : null}
+
+      {order ? <RecordedOrderPanel order={order} /> : null}
 
       <section className="principles" aria-label="How AFTERGLOW works">
         <div>
@@ -363,23 +498,6 @@ export function Home() {
           </p>
         </div>
       </section>
-
-      {report ? (
-        <section className="panel" aria-labelledby="home-eval">
-          <h2 id="home-eval">What the offline test showed</h2>
-          <p style={{ marginTop: '0.5rem' }}>
-            Across {report.summary.scenarios} hand authored scenarios in the simulated catalogue, a
-            plain top three broke at least one requirement in{' '}
-            {report.summary.ungatedScenariosWithViolation}. After the gate, a separate check found{' '}
-            {report.summary.gatedViolations.tasteOn + report.summary.gatedViolations.tasteOff}{' '}
-            violations in the shortlists. These scenarios were written for this project, so the
-            numbers show how the pipeline behaves and are not a rate in the real world.
-          </p>
-          <p style={{ marginTop: '0.8rem' }}>
-            <a href="#/evidence">Read the method and its limits</a>
-          </p>
-        </section>
-      ) : null}
 
       {presets.length > 0 ? (
         <section className="presets" aria-labelledby="home-presets">
