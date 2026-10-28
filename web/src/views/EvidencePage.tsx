@@ -111,8 +111,12 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
   const [osm, setOsm] = useState<OsmProbeResult | { error: string } | null>(null);
   const [askingOsm, setAskingOsm] = useState(false);
 
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
   useEffect(() => {
     let cancelled = false;
+    setLoadFailed(false);
     api
       .evaluation()
       .then((result) => {
@@ -122,11 +126,15 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         setLiveRuns(result.liveRuns);
         setBaselineRuns(result.baselineRuns ?? []);
       })
-      .catch(() => !cancelled && setReports([]));
+      .catch(() => {
+        if (cancelled) return;
+        setReports([]);
+        setLoadFailed(true);
+      });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [attempt]);
 
   const live = status?.modes.live;
   const runProbe = async () => {
@@ -502,6 +510,24 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         <h2 id="ev-eval">Evaluation</h2>
         {reports === null ? (
           <p className="muted-text">Loading the evaluation.</p>
+        ) : loadFailed ? (
+          <div className="callout warn" role="alert">
+            <p>
+              The recorded evaluation could not be loaded from the server. This is a connection
+              problem and does not mean that nothing was recorded.
+            </p>
+            <button
+              type="button"
+              className="btn"
+              style={{ marginTop: '0.5rem' }}
+              onClick={() => {
+                setReports(null);
+                setAttempt((n) => n + 1);
+              }}
+            >
+              Try again
+            </button>
+          </div>
         ) : reports.length === 0 ? (
           <p className="callout warn">No evaluation report is recorded with this build.</p>
         ) : (

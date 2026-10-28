@@ -195,6 +195,26 @@ test.describe('integration status honesty', () => {
   });
 });
 
+test.describe('evidence when the server cannot be reached', () => {
+  test('says the load failed, not that nothing is recorded, and recovers on retry', async ({
+    page,
+  }) => {
+    let fail = true;
+    await page.route('**/api/evaluation', async (route) => {
+      if (fail) await route.fulfill({ status: 503, body: 'unavailable' });
+      else await route.continue();
+    });
+    await page.goto('/#/evidence');
+    const alert = page.getByRole('alert').filter({ hasText: 'could not be loaded' });
+    await expect(alert).toBeVisible();
+    await expect(page.getByText('No evaluation report is recorded')).toHaveCount(0);
+    fail = false;
+    await alert.getByRole('button', { name: 'Try again' }).click();
+    await expect(page.getByText('Offline evaluation on the simulated catalogue')).toBeVisible();
+    await expect(alert).toHaveCount(0);
+  });
+});
+
 test.describe('small screens', () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
