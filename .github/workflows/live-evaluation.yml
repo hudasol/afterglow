@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation. second-run repeats it after fixes and writes separate files.
+        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation. second-run repeats it after fixes and writes separate files. explore ranks the same pool with other forms of each plan's signals, prints the comparison and writes nothing.
         type: choice
         options:
           - preflight
@@ -14,6 +14,7 @@ on:
           - timing
           - run
           - second-run
+          - explore
         default: preflight
 
 permissions:
@@ -23,7 +24,7 @@ jobs:
   evaluate:
     name: Live evaluation on Qloo
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       QLOO_API_KEY: ${{ secrets.QLOO_API_KEY }}
       MODE: ${{ inputs.mode }}
@@ -52,6 +53,9 @@ jobs:
           npm run qloo:timing -- ny-b-saturday-vegetarian --cumulative
           npm run qloo:timing -- ny-d-wednesday-group --cumulative
           npm run qloo:timing -- ny-a-friday-anniversary --cumulative
+      - name: Compare other forms of the signals
+        if: ${{ inputs.mode == 'explore' }}
+        run: npm run qloo:explore -- evaluation/live-scenarios.json
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live
