@@ -1,0 +1,29 @@
+# Checks that the free GitHub Models service can be called from a workflow with the built in token.
+# It sends one short prompt and prints the model list. It writes nothing and uses no secret.
+name: LLM probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  models: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: List models
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sS --max-time 60 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            https://models.github.ai/catalog/models | python3 -c "import sys,json; d=json.load(sys.stdin); [print(m['id'], '|', m.get('rate_limit_tier')) for m in d]" | head -60
+      - name: One short completion
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sS --max-time 90 https://models.github.ai/inference/chat/completions \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
+            -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Name two restaurants in Dubai. Reply with the names only."}],"temperature":0}'
