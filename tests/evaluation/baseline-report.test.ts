@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   BASELINE_PREDICTIONS,
   baselineRunView,
+  coverageNotes,
   recordedExample,
   renderBaselineReport,
   summariseBaselines,
@@ -256,5 +257,30 @@ describe('baseline run view', () => {
       expect(text).toContain(row.km);
     }
     expect(view.hits + view.misses + view.notEvaluated).toBe(BASELINE_PREDICTIONS.length);
+  });
+});
+
+describe('coverage notes', () => {
+  it('say nothing when every approach covers every completed scenario', () => {
+    expect(coverageNotes(summariseBaselines([result('one'), result('two')]))).toEqual([]);
+  });
+
+  it('say that the gate left no place when a scenario has no gated list', () => {
+    const empty = result('empty', {
+      gated: { random: null, nearest: null, popular: null, taste_only: null, afterglow: null },
+    });
+    const notes = coverageNotes(summariseBaselines([result('one'), empty])).join(' ');
+    expect(notes).toContain('In 1 scenario the gate left no place at all');
+    expect(notes).toContain('cover 1 of 2 scenarios');
+  });
+
+  it('say why nearest first covers fewer scenarios when it has no distance', () => {
+    const unlocated = result('unlocated', {
+      gated: { ...result('x').gated, nearest: null },
+      ungated: { ...result('x').ungated, nearest: null },
+    });
+    const notes = coverageNotes(summariseBaselines([result('one'), unlocated])).join(' ');
+    expect(notes).toContain('Nearest first covers 1 of 2 scenarios,');
+    expect(notes).toContain('could not be located');
   });
 });

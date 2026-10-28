@@ -25,7 +25,9 @@ Every approach ranks the same pool of places for the same plan. With the gate, p
 
 Affinity lift is the mean Qloo affinity of the top three minus the mean of the places that passed the gate, divided by the standard deviation of the same places. Zero means no better than the pool on average. Qloo affinity is the quantity AFTERGLOW and the taste only list both rank by, so the lift shows that the Qloo signal is being used. It is not a measure of what a person would prefer.
 
-The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three. Nearest first has no distance to rank by when the venue that fell through could not be located, so it covers fewer scenarios than the others.
+The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three.
+
+Nearest first covers 18 of 20 scenarios, because it has no distance to rank by when the venue that fell through could not be located.
 
 ## AFTERGLOW against each gated baseline, scenario by scenario
 

@@ -460,6 +460,47 @@ const proportion = (i: ProportionInterval | null): string =>
     ? 'n/a'
     : `${i.count} of ${i.total}, ${two(i.share)} (${two(i.low)} to ${two(i.high)})`;
 
+/** Sentences that say why a row covers fewer scenarios than the number that completed. */
+export function coverageNotes(summary: BaselineSummary): string[] {
+  const rows = (gated: boolean) => summary.arms.filter((row) => row.gated === gated);
+  const most = (gated: boolean) => Math.max(0, ...rows(gated).map((row) => row.scenarios));
+  const plural = (n: number) => (n === 1 ? 'scenario' : 'scenarios');
+  const notes: string[] = [];
+  const gatedMost = most(true);
+  if (gatedMost < summary.completed) {
+    const empty = summary.completed - gatedMost;
+    notes.push(
+      '',
+      `In ${empty} ${plural(empty)} the gate left no place at all, so the rows with the gate cover ${gatedMost} of ${summary.completed} scenarios and the list for that plan is empty for every approach.`,
+    );
+  }
+  const short = [true, false].flatMap((gated) => {
+    const nearest = rows(gated).find((row) => row.arm === 'nearest');
+    return nearest && nearest.scenarios < most(gated)
+      ? [{ gated, covered: nearest.scenarios, of: most(gated) }]
+      : [];
+  });
+  const reason =
+    'because it has no distance to rank by when the venue that fell through could not be located';
+  const first = short[0];
+  if (
+    first &&
+    short.length === 2 &&
+    short[1]?.covered === first.covered &&
+    short[1].of === first.of
+  ) {
+    notes.push('', `Nearest first covers ${first.covered} of ${first.of} scenarios, ${reason}.`);
+  } else {
+    for (const item of short) {
+      notes.push(
+        '',
+        `Nearest first covers ${item.covered} of ${item.of} scenarios ${item.gated ? 'with' : 'without'} the gate, ${reason}.`,
+      );
+    }
+  }
+  return notes;
+}
+
 /** The oracle's short codes in words a reader of the report can follow. */
 export function reasonText(code: string): string {
   if (code === 'price') return 'over the price limit';
@@ -554,7 +595,8 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   lines.push(
     'Affinity lift is the mean Qloo affinity of the top three minus the mean of the places that passed the gate, divided by the standard deviation of the same places. Zero means no better than the pool on average. Qloo affinity is the quantity AFTERGLOW and the taste only list both rank by, so the lift shows that the Qloo signal is being used. It is not a measure of what a person would prefer.',
     '',
-    'The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three. Nearest first has no distance to rank by when the venue that fell through could not be located, so it covers fewer scenarios than the others.',
+    'The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three.',
+    ...coverageNotes(s),
   );
   lines.push('');
 
