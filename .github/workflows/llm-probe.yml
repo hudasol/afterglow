@@ -25,3 +25,13 @@ jobs:
           curl -sS -i --max-time 90 https://models.github.ai/inference/chat/completions \
             -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
             -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Name two restaurants in Dubai. Reply with the names only."}],"temperature":0}' | head -c 2500
+      - name: Older Azure hosted endpoint
+        run: |
+          curl -sS -i --max-time 90 https://models.inference.ai.azure.com/chat/completions \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
+            -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"Name two restaurants in Dubai. Reply with the names only."}],"temperature":0}' | head -c 1500
+      - name: Plain reachability
+        run: |
+          for u in https://api.github.com/zen https://huggingface.co https://router.huggingface.co/v1/models https://openrouter.ai/api/v1/models; do
+            printf '%s ' "$u"; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 20 "$u" || true
+          done
