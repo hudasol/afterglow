@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation. second-run repeats it after fixes and writes separate files. explore ranks the same pool with other forms of each plan's signals, prints the comparison and writes nothing.
+        description: preflight only resolves the scenario inputs and ranks nothing. diagnose prints why scenarios came out as they did and writes nothing. timing sends one ranking request in several forms and prints how long each takes. run is the preregistered evaluation. second-run repeats it after fixes and writes separate files. explore ranks the same pool with other forms of each plan's signals, prints the comparison and writes nothing. preflight-test resolves the inputs of the test scenarios and ranks nothing. baselines-dev and baselines-test rank a scenario set against the baselines and print the results file.
         type: choice
         options:
           - preflight
@@ -15,6 +15,9 @@ on:
           - run
           - second-run
           - explore
+          - preflight-test
+          - baselines-dev
+          - baselines-test
         default: preflight
 
 permissions:
@@ -56,6 +59,15 @@ jobs:
       - name: Compare other forms of the signals
         if: ${{ inputs.mode == 'explore' }}
         run: npm run qloo:explore -- evaluation/live-scenarios.json
+      - name: Resolve the inputs of the test scenarios
+        if: ${{ inputs.mode == 'preflight-test' }}
+        run: npm run eval -- --preflight evaluation/test-scenarios.json
+      - name: Rank the development scenarios against the baselines
+        if: ${{ inputs.mode == 'baselines-dev' }}
+        run: npm run eval:baselines -- --run dev
+      - name: Rank the test scenarios against the baselines
+        if: ${{ inputs.mode == 'baselines-test' }}
+        run: npm run eval:baselines -- --run test
       - name: Run the preregistered evaluation
         if: ${{ inputs.mode == 'run' }}
         run: npm run eval:live
@@ -79,4 +91,10 @@ jobs:
         with:
           name: live-evaluation-results
           path: results/live-qloo.json
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: ${{ startsWith(inputs.mode, 'baselines') && always() }}
+        with:
+          name: baseline-results
+          path: results/baselines-*.json
           if-no-files-found: ignore

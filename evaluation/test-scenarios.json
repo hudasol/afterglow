@@ -1,0 +1,862 @@
+[
+  {
+    "id": "chi-rain-birthday-bar",
+    "title": "Chicago: birthday drinks, rain moves the group indoors",
+    "summary": "Six friends planned drinks at an open air bar. Rain arrives, so the new bar must be covered and seat six.",
+    "anchor": {
+      "title": "Birthday drinks",
+      "occasion": "celebration",
+      "partySize": 6,
+      "city": "Chicago",
+      "planStart": "2026-11-07T20:30:00-06:00",
+      "durationMinutes": 150,
+      "category": "bar",
+      "originalVenue": {
+        "name": "Cindy's Rooftop"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Lively enough for a birthday", "Good cocktails"],
+      "tasteEntities": ["Chance the Rapper"],
+      "tasteTags": ["craft cocktails", "lively vibe"],
+      "hardConstraints": [
+        {
+          "kind": "covered_space"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 5
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "weather",
+      "condition": "rain"
+    },
+    "choices": {
+      "Chance the Rapper": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "chi-quiet-cafe-late",
+    "title": "Chicago: a quiet cafe meeting, running late",
+    "summary": "Two colleagues planned a quiet afternoon coffee. One is running forty minutes late and one needs step free access.",
+    "anchor": {
+      "title": "Afternoon coffee and a catch up",
+      "occasion": "work",
+      "partySize": 2,
+      "city": "Chicago",
+      "planStart": "2026-11-03T15:00:00-06:00",
+      "durationMinutes": 90,
+      "category": "cafe",
+      "originalVenue": {
+        "name": "Intelligentsia Coffee"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
+      "tasteEntities": ["Bon Iver"],
+      "tasteTags": ["quiet", "cozy"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 3
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "running_late",
+      "minutes": 40
+    },
+    "choices": {
+      "Bon Iver": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "chi-family-halal-budget",
+    "title": "Chicago: family dinner, halal, budget cut",
+    "summary": "Five people planned a family dinner that has to be halal. The budget drops to price level two.",
+    "anchor": {
+      "title": "Family dinner",
+      "occasion": "family",
+      "partySize": 5,
+      "city": "Chicago",
+      "planStart": "2026-11-05T18:30:00-06:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Lou Malnati's Pizzeria"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Food everyone can eat", "Space for children"],
+      "tasteEntities": ["Coco"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "halal"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "budget_reduced",
+      "maxPriceLevel": 2
+    },
+    "choices": {
+      "Coco": "urn:entity:movie"
+    }
+  },
+  {
+    "id": "chi-jazz-party-grows",
+    "title": "Chicago: a jazz night, the party grows to seven",
+    "summary": "Four friends planned an evening of live jazz. Three more want to join, so the new place must seat seven.",
+    "anchor": {
+      "title": "Jazz night",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Chicago",
+      "planStart": "2026-11-06T21:00:00-06:00",
+      "durationMinutes": 150,
+      "category": "live_music",
+      "originalVenue": {
+        "name": "Green Mill Cocktail Lounge"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Live music we can listen to", "A table for the whole group"],
+      "tasteEntities": ["John Coltrane"],
+      "tasteTags": ["jazz"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "party_changed",
+      "partySize": 7
+    },
+    "choices": {
+      "John Coltrane": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "la-rain-birthday-bar",
+    "title": "Los Angeles: birthday drinks, rain moves the group indoors",
+    "summary": "Six friends planned drinks at an open air bar. Rain arrives, so the new bar must be covered and seat six.",
+    "anchor": {
+      "title": "Birthday drinks",
+      "occasion": "celebration",
+      "partySize": 6,
+      "city": "Los Angeles",
+      "planStart": "2026-11-07T20:30:00-08:00",
+      "durationMinutes": 150,
+      "category": "bar",
+      "originalVenue": {
+        "name": "The Edison"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Lively enough for a birthday", "Good cocktails"],
+      "tasteEntities": ["Tame Impala"],
+      "tasteTags": ["craft cocktails", "lively vibe"],
+      "hardConstraints": [
+        {
+          "kind": "covered_space"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 5
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "weather",
+      "condition": "rain"
+    },
+    "choices": {
+      "Tame Impala": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "la-quiet-cafe-late",
+    "title": "Los Angeles: a quiet cafe meeting, running late",
+    "summary": "Two colleagues planned a quiet afternoon coffee. One is running forty minutes late and one needs step free access.",
+    "anchor": {
+      "title": "Afternoon coffee and a catch up",
+      "occasion": "work",
+      "partySize": 2,
+      "city": "Los Angeles",
+      "planStart": "2026-11-03T15:00:00-08:00",
+      "durationMinutes": 90,
+      "category": "cafe",
+      "originalVenue": {
+        "name": "Alfred Coffee"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
+      "tasteEntities": ["Nick Drake"],
+      "tasteTags": ["quiet", "cozy"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 3
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "running_late",
+      "minutes": 40
+    },
+    "choices": {
+      "Nick Drake": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "la-family-halal-budget",
+    "title": "Los Angeles: family dinner, halal, budget cut",
+    "summary": "Five people planned a family dinner that has to be halal. The budget drops to price level two.",
+    "anchor": {
+      "title": "Family dinner",
+      "occasion": "family",
+      "partySize": 5,
+      "city": "Los Angeles",
+      "planStart": "2026-11-05T18:30:00-08:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Philippe the Original"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Food everyone can eat", "Space for children"],
+      "tasteEntities": ["Moana"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "halal"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "budget_reduced",
+      "maxPriceLevel": 2
+    },
+    "choices": {
+      "Moana": "urn:entity:movie"
+    }
+  },
+  {
+    "id": "la-jazz-party-grows",
+    "title": "Los Angeles: a jazz night, the party grows to seven",
+    "summary": "Four friends planned an evening of live jazz. Three more want to join, so the new place must seat seven.",
+    "anchor": {
+      "title": "Jazz night",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Los Angeles",
+      "planStart": "2026-11-06T21:00:00-08:00",
+      "durationMinutes": 150,
+      "category": "live_music",
+      "originalVenue": {
+        "name": "The Baked Potato"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Live music we can listen to", "A table for the whole group"],
+      "tasteEntities": ["Herbie Hancock"],
+      "tasteTags": ["jazz"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "party_changed",
+      "partySize": 7
+    },
+    "choices": {
+      "Herbie Hancock": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "ber-rain-birthday-bar",
+    "title": "Berlin: birthday drinks, rain moves the group indoors",
+    "summary": "Six friends planned drinks at an open air bar. Rain arrives, so the new bar must be covered and seat six.",
+    "anchor": {
+      "title": "Birthday drinks",
+      "occasion": "celebration",
+      "partySize": 6,
+      "city": "Berlin",
+      "planStart": "2026-11-07T20:30:00+01:00",
+      "durationMinutes": 150,
+      "category": "bar",
+      "originalVenue": {
+        "name": "Klunkerkranich"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Lively enough for a birthday", "Good cocktails"],
+      "tasteEntities": ["Kraftwerk"],
+      "tasteTags": ["craft cocktails", "lively vibe"],
+      "hardConstraints": [
+        {
+          "kind": "covered_space"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 5
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "weather",
+      "condition": "rain"
+    },
+    "choices": {
+      "Kraftwerk": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "ber-quiet-cafe-late",
+    "title": "Berlin: a quiet cafe meeting, running late",
+    "summary": "Two colleagues planned a quiet afternoon coffee. One is running forty minutes late and one needs step free access.",
+    "anchor": {
+      "title": "Afternoon coffee and a catch up",
+      "occasion": "work",
+      "partySize": 2,
+      "city": "Berlin",
+      "planStart": "2026-11-03T15:00:00+01:00",
+      "durationMinutes": 90,
+      "category": "cafe",
+      "originalVenue": {
+        "name": "Bonanza Coffee Roasters"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
+      "tasteEntities": ["Brian Eno"],
+      "tasteTags": ["quiet", "cozy"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 3
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "running_late",
+      "minutes": 40
+    },
+    "choices": {
+      "Brian Eno": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "ber-family-halal-budget",
+    "title": "Berlin: family dinner, halal, budget cut",
+    "summary": "Five people planned a family dinner that has to be halal. The budget drops to price level two.",
+    "anchor": {
+      "title": "Family dinner",
+      "occasion": "family",
+      "partySize": 5,
+      "city": "Berlin",
+      "planStart": "2026-11-05T18:30:00+01:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Zur letzten Instanz"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Food everyone can eat", "Space for children"],
+      "tasteEntities": ["Spirited Away"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "halal"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "budget_reduced",
+      "maxPriceLevel": 2
+    },
+    "choices": {
+      "Spirited Away": "urn:entity:movie"
+    }
+  },
+  {
+    "id": "ber-jazz-party-grows",
+    "title": "Berlin: a jazz night, the party grows to seven",
+    "summary": "Four friends planned an evening of live jazz. Three more want to join, so the new place must seat seven.",
+    "anchor": {
+      "title": "Jazz night",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Berlin",
+      "planStart": "2026-11-06T21:00:00+01:00",
+      "durationMinutes": 150,
+      "category": "live_music",
+      "originalVenue": {
+        "name": "A-Trane"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Live music we can listen to", "A table for the whole group"],
+      "tasteEntities": ["Nina Simone"],
+      "tasteTags": ["jazz"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "party_changed",
+      "partySize": 7
+    },
+    "choices": {
+      "Nina Simone": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "syd-rain-birthday-bar",
+    "title": "Sydney: birthday drinks, rain moves the group indoors",
+    "summary": "Six friends planned drinks at an open air bar. Rain arrives, so the new bar must be covered and seat six.",
+    "anchor": {
+      "title": "Birthday drinks",
+      "occasion": "celebration",
+      "partySize": 6,
+      "city": "Sydney",
+      "planStart": "2026-11-07T20:30:00+11:00",
+      "durationMinutes": 150,
+      "category": "bar",
+      "originalVenue": {
+        "name": "Opera Bar"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Lively enough for a birthday", "Good cocktails"],
+      "tasteEntities": ["Flume"],
+      "tasteTags": ["craft cocktails", "lively vibe"],
+      "hardConstraints": [
+        {
+          "kind": "covered_space"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 5
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "weather",
+      "condition": "rain"
+    },
+    "choices": {
+      "Flume": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "syd-quiet-cafe-late",
+    "title": "Sydney: a quiet cafe meeting, running late",
+    "summary": "Two colleagues planned a quiet afternoon coffee. One is running forty minutes late and one needs step free access.",
+    "anchor": {
+      "title": "Afternoon coffee and a catch up",
+      "occasion": "work",
+      "partySize": 2,
+      "city": "Sydney",
+      "planStart": "2026-11-03T15:00:00+11:00",
+      "durationMinutes": 90,
+      "category": "cafe",
+      "originalVenue": {
+        "name": "Single Origin Roasters"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
+      "tasteEntities": ["Ludovico Einaudi"],
+      "tasteTags": ["quiet", "cozy"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 3
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "running_late",
+      "minutes": 40
+    },
+    "choices": {
+      "Ludovico Einaudi": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "syd-family-halal-budget",
+    "title": "Sydney: family dinner, halal, budget cut",
+    "summary": "Five people planned a family dinner that has to be halal. The budget drops to price level two.",
+    "anchor": {
+      "title": "Family dinner",
+      "occasion": "family",
+      "partySize": 5,
+      "city": "Sydney",
+      "planStart": "2026-11-05T18:30:00+11:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Mamak"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Food everyone can eat", "Space for children"],
+      "tasteEntities": ["Finding Nemo"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "halal"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "budget_reduced",
+      "maxPriceLevel": 2
+    },
+    "choices": {
+      "Finding Nemo": "urn:entity:movie"
+    }
+  },
+  {
+    "id": "syd-jazz-party-grows",
+    "title": "Sydney: a jazz night, the party grows to seven",
+    "summary": "Four friends planned an evening of live jazz. Three more want to join, so the new place must seat seven.",
+    "anchor": {
+      "title": "Jazz night",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Sydney",
+      "planStart": "2026-11-06T21:00:00+11:00",
+      "durationMinutes": 150,
+      "category": "live_music",
+      "originalVenue": {
+        "name": "The Basement"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Live music we can listen to", "A table for the whole group"],
+      "tasteEntities": ["Miles Davis"],
+      "tasteTags": ["jazz"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "party_changed",
+      "partySize": 7
+    },
+    "choices": {
+      "Miles Davis": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "tor-rain-birthday-bar",
+    "title": "Toronto: birthday drinks, rain moves the group indoors",
+    "summary": "Six friends planned drinks at an open air bar. Rain arrives, so the new bar must be covered and seat six.",
+    "anchor": {
+      "title": "Birthday drinks",
+      "occasion": "celebration",
+      "partySize": 6,
+      "city": "Toronto",
+      "planStart": "2026-11-07T20:30:00-05:00",
+      "durationMinutes": 150,
+      "category": "bar",
+      "originalVenue": {
+        "name": "Bar Raval"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Lively enough for a birthday", "Good cocktails"],
+      "tasteEntities": ["Drake"],
+      "tasteTags": ["craft cocktails", "lively vibe"],
+      "hardConstraints": [
+        {
+          "kind": "covered_space"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 5
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "weather",
+      "condition": "rain"
+    },
+    "choices": {
+      "Drake": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "tor-quiet-cafe-late",
+    "title": "Toronto: a quiet cafe meeting, running late",
+    "summary": "Two colleagues planned a quiet afternoon coffee. One is running forty minutes late and one needs step free access.",
+    "anchor": {
+      "title": "Afternoon coffee and a catch up",
+      "occasion": "work",
+      "partySize": 2,
+      "city": "Toronto",
+      "planStart": "2026-11-03T15:00:00-05:00",
+      "durationMinutes": 90,
+      "category": "cafe",
+      "originalVenue": {
+        "name": "Jimmy's Coffee"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
+      "tasteEntities": ["Joni Mitchell"],
+      "tasteTags": ["quiet", "cozy"],
+      "hardConstraints": [
+        {
+          "kind": "step_free_access"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 2
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 3
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "running_late",
+      "minutes": 40
+    },
+    "choices": {
+      "Joni Mitchell": "urn:entity:artist"
+    }
+  },
+  {
+    "id": "tor-family-halal-budget",
+    "title": "Toronto: family dinner, halal, budget cut",
+    "summary": "Five people planned a family dinner that has to be halal. The budget drops to price level two.",
+    "anchor": {
+      "title": "Family dinner",
+      "occasion": "family",
+      "partySize": 5,
+      "city": "Toronto",
+      "planStart": "2026-11-05T18:30:00-05:00",
+      "durationMinutes": 120,
+      "category": "restaurant",
+      "originalVenue": {
+        "name": "Pai Northern Thai Kitchen"
+      },
+      "useOriginalVenueAsSignal": false,
+      "preserve": ["Food everyone can eat", "Space for children"],
+      "tasteEntities": ["Ratatouille"],
+      "tasteTags": [],
+      "hardConstraints": [
+        {
+          "kind": "dietary",
+          "requirement": "halal"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_price_level",
+          "level": 3
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "budget_reduced",
+      "maxPriceLevel": 2
+    },
+    "choices": {
+      "Ratatouille": "urn:entity:movie"
+    }
+  },
+  {
+    "id": "tor-jazz-party-grows",
+    "title": "Toronto: a jazz night, the party grows to seven",
+    "summary": "Four friends planned an evening of live jazz. Three more want to join, so the new place must seat seven.",
+    "anchor": {
+      "title": "Jazz night",
+      "occasion": "friends",
+      "partySize": 4,
+      "city": "Toronto",
+      "planStart": "2026-11-06T21:00:00-05:00",
+      "durationMinutes": 150,
+      "category": "live_music",
+      "originalVenue": {
+        "name": "The Rex Hotel Jazz & Blues Bar"
+      },
+      "useOriginalVenueAsSignal": true,
+      "preserve": ["Live music we can listen to", "A table for the whole group"],
+      "tasteEntities": ["Oscar Peterson"],
+      "tasteTags": ["jazz"],
+      "hardConstraints": [
+        {
+          "kind": "fits_party_size"
+        },
+        {
+          "kind": "open_at_plan_time"
+        },
+        {
+          "kind": "max_distance_km",
+          "km": 8
+        }
+      ]
+    },
+    "disruption": {
+      "kind": "party_changed",
+      "partySize": 7
+    },
+    "choices": {
+      "Oscar Peterson": "urn:entity:artist"
+    }
+  }
+]
