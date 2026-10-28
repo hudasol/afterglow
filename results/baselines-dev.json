@@ -1,7 +1,7 @@
 {
   "kind": "baseline_comparison",
   "set": "dev",
-  "generatedAt": "2026-10-28T14:24:15.246Z",
+  "generatedAt": "2026-10-28T14:30:46.918Z",
   "provider": {
     "label": "Qloo hackathon API",
     "mode": "live"
@@ -7695,44 +7695,7 @@
           "affinityLift": 0.2843915311605659,
           "vibeShare": 0
         },
-        "nearest": {
-          "names": [
-            "Ikea Cafe",
-            "Barasti Beach",
-            "Lounge at Address Downtown"
-          ],
-          "places": [
-            {
-              "name": "Ikea Cafe",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.6307334705200548
-            },
-            {
-              "name": "Barasti Beach",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.6933921518205708
-            },
-            {
-              "name": "Lounge at Address Downtown",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.6708509243427568
-            }
-          ],
-          "violations": 0,
-          "ruledOut": 0,
-          "needsCheck": 3,
-          "verified": 0,
-          "meanKm": null,
-          "meanAffinity": 0.6649921822277941,
-          "affinityLift": 0.45436863289841173,
-          "vibeShare": 0
-        },
+        "nearest": null,
         "popular": {
           "names": [
             "Barasti Beach",
@@ -7979,7 +7942,7 @@
         }
       },
       "topChoiceDiffers": {
-        "nearest": true,
+        "nearest": null,
         "popular": true,
         "tasteOnly": false
       },
@@ -8027,7 +7990,7 @@
           "affinityLift": 1.3590596999795366,
           "vibeShare": 0
         },
-        "topChoiceDiffersNearest": true
+        "topChoiceDiffersNearest": null
       },
       "providerCalls": 4
     },
@@ -8083,44 +8046,7 @@
           "affinityLift": 0.5638170515694172,
           "vibeShare": 0.3333333333333333
         },
-        "nearest": {
-          "names": [
-            "Ikea Cafe",
-            "Barasti Beach",
-            "Lounge at Address Downtown"
-          ],
-          "places": [
-            {
-              "name": "Ikea Cafe",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.7033610245870843
-            },
-            {
-              "name": "Barasti Beach",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.8058439143680874
-            },
-            {
-              "name": "Lounge at Address Downtown",
-              "against": [],
-              "feasibility": "needs_verification",
-              "distanceKm": null,
-              "affinity": 0.7617735101467725
-            }
-          ],
-          "violations": 0,
-          "ruledOut": 0,
-          "needsCheck": 3,
-          "verified": 0,
-          "meanKm": null,
-          "meanAffinity": 0.7569928163673149,
-          "affinityLift": 0.4608054361367049,
-          "vibeShare": 0.3333333333333333
-        },
+        "nearest": null,
         "popular": {
           "names": [
             "Barasti Beach",
@@ -8356,7 +8282,7 @@
         }
       },
       "topChoiceDiffers": {
-        "nearest": true,
+        "nearest": null,
         "popular": false,
         "tasteOnly": false
       },
@@ -8404,7 +8330,7 @@
           "affinityLift": null,
           "vibeShare": 0.3333333333333333
         },
-        "topChoiceDiffersNearest": false
+        "topChoiceDiffersNearest": null
       },
       "providerCalls": 2
     }
@@ -8453,13 +8379,13 @@
       {
         "arm": "nearest",
         "gated": true,
-        "scenarios": 20,
+        "scenarios": 18,
         "violating": {
           "count": 0,
-          "total": 20,
+          "total": 18,
           "share": 0,
           "low": 0,
-          "high": 0.16112516018512965
+          "high": 0.17587922593328437
         },
         "meanViolations": 0,
         "km": {
@@ -8469,22 +8395,22 @@
           "high": 2.2449603879002433
         },
         "lift": {
-          "n": 20,
-          "mean": 0.18842801575726628,
-          "low": -0.04340549131835099,
-          "high": 0.4078719438192843
+          "n": 18,
+          "mean": 0.15852145811723387,
+          "low": -0.09688516935474595,
+          "high": 0.40382308405515
         },
         "vibe": {
-          "n": 20,
-          "mean": 0.11666666666666667,
-          "low": 0.03333333333333333,
-          "high": 0.20000000000000004
+          "n": 18,
+          "mean": 0.1111111111111111,
+          "low": 0.037037037037037035,
+          "high": 0.2037037037037037
         },
         "verified": {
-          "n": 20,
-          "mean": 2.05,
-          "low": 1.45,
-          "high": 2.65
+          "n": 18,
+          "mean": 2.2777777777777777,
+          "low": 1.6666666666666667,
+          "high": 2.8333333333333335
         }
       },
       {
@@ -8762,20 +8688,20 @@
         "versus": "nearest",
         "measure": "lift",
         "difference": {
-          "n": 20,
-          "mean": 0.8501158416443815,
-          "low": 0.5771439792883135,
-          "high": 1.1468593948525168
+          "n": 18,
+          "mean": 0.8224854796358607,
+          "low": 0.5302878348395458,
+          "high": 1.1614782846580178
         }
       },
       {
         "versus": "nearest",
         "measure": "vibe",
         "difference": {
-          "n": 20,
-          "mean": 0.016666666666666666,
-          "low": -0.05,
-          "high": 0.08333333333333333
+          "n": 18,
+          "mean": 0.037037037037037035,
+          "low": -0.037037037037037035,
+          "high": 0.1111111111111111
         }
       },
       {
@@ -8899,11 +8825,11 @@
     },
     "topChoiceDiffers": {
       "nearest": {
-        "count": 14,
-        "total": 20,
-        "share": 0.7,
-        "low": 0.4810271799475211,
-        "high": 0.8545227559784271
+        "count": 12,
+        "total": 18,
+        "share": 0.6666666666666666,
+        "low": 0.4374946712512044,
+        "high": 0.8372122534377007
       },
       "popular": {
         "count": 12,
@@ -8960,18 +8886,18 @@
         "high": 0.08760534861041198
       },
       "exemplarDiffersFromNearest": {
-        "count": 14,
-        "total": 20,
-        "share": 0.7,
-        "low": 0.4810271799475211,
-        "high": 0.8545227559784271
+        "count": 12,
+        "total": 18,
+        "share": 0.6666666666666666,
+        "low": 0.4374946712512044,
+        "high": 0.8372122534377007
       },
       "tagDiffersFromNearest": {
-        "count": 12,
-        "total": 20,
-        "share": 0.6,
-        "low": 0.3865814992347542,
-        "high": 0.7811934687282198
+        "count": 11,
+        "total": 18,
+        "share": 0.6111111111111112,
+        "low": 0.38619041442114627,
+        "high": 0.7969475353714572
       }
     },
     "completed": 20,
@@ -9034,11 +8960,11 @@
       },
       {
         "id": "B6",
-        "observed": 0.7,
-        "low": 0.4810271799475211,
-        "high": 0.8545227559784271,
+        "observed": 0.6666666666666666,
+        "low": 0.4374946712512044,
+        "high": 0.8372122534377007,
         "basis": {
-          "used": 20,
+          "used": 18,
           "of": 20
         },
         "verdict": "HIT"
@@ -9056,11 +8982,11 @@
       },
       {
         "id": "B8",
-        "observed": 0.8501158416443815,
-        "low": 0.5771439792883135,
-        "high": 1.1468593948525168,
+        "observed": 0.8224854796358607,
+        "low": 0.5302878348395458,
+        "high": 1.1614782846580178,
         "basis": {
-          "used": 20,
+          "used": 18,
           "of": 20
         },
         "verdict": "HIT"
@@ -9078,11 +9004,11 @@
       },
       {
         "id": "B10",
-        "observed": 0.016666666666666666,
-        "low": -0.05,
-        "high": 0.08333333333333333,
+        "observed": 0.037037037037037035,
+        "low": -0.037037037037037035,
+        "high": 0.1111111111111111,
         "basis": {
-          "used": 20,
+          "used": 18,
           "of": 20
         },
         "verdict": "HIT"
