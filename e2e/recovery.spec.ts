@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { expectNoSeriousAccessibilityIssues, openPreset } from './helpers';
 
 test.describe('landing page', () => {
-  test('states the product, shows a labelled simulated example and passes accessibility checks', async ({
+  test('states the product, shows a recorded example from live Qloo data and passes accessibility checks', async ({
     page,
   }) => {
     await page.goto('/');
@@ -10,10 +10,10 @@ test.describe('landing page', () => {
       'Save the experience, not just the plan.',
     );
     const example = page.getByRole('figure', { name: /example of the gate at work/i });
-    await expect(example).toContainText(
-      'Simulated demo catalogue (not Qloo data, not real venues)',
-    );
-    await expect(example.getByText('Ruled out').first()).toBeVisible();
+    await expect(example).toContainText('Recorded on');
+    await expect(example).toContainText('from live Qloo data');
+    await expect(example).toContainText('not picked by hand');
+    await expect(example.getByText('Breaks a requirement').first()).toBeVisible();
     await expectNoSeriousAccessibilityIssues(page);
   });
 
@@ -179,6 +179,13 @@ test.describe('integration status honesty', () => {
       page.getByRole('heading', { name: 'Second run, after two product fixes' }),
     ).toBeVisible();
     await expect(page.getByText('9 predictions met, 3 missed').first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Against simpler approaches' })).toBeVisible();
+    await expect(page.getByText('13 predictions met, 1 missed')).toBeVisible();
+    await expect(
+      page.getByRole('region', {
+        name: 'Test scenarios, ranked once after the predictions were registered, predictions',
+      }),
+    ).toContainText('Missed');
     await expect(page.getByRole('button', { name: 'Check the connection' })).toBeDisabled();
     await expect(page.getByText('Offline evaluation on the simulated catalogue')).toBeVisible();
     await expectNoSeriousAccessibilityIssues(page);
