@@ -10,7 +10,9 @@ import {
   type BaselineResult,
   type ListedPlace,
   type ListMeasures,
+  type UngatedArm,
 } from './baselines.js';
+import { provenanceLines, type RunProvenance } from './provenance.js';
 import {
   BOOTSTRAP_RESAMPLES,
   bootstrapDifference,
@@ -420,7 +422,11 @@ export function summariseBaselines(results: readonly BaselineResult[]): Baseline
 export interface BaselineResultsFile {
   kind: 'baseline_comparison';
   set: ScenarioSet;
+  /** When the run began. Left out of files made before it was recorded. */
+  startedAt?: string;
   generatedAt: string;
+  /** The commit and workflow run that produced the file. Left out of local runs. */
+  provenance?: RunProvenance;
   provider: { label: string; mode: string };
   scenarioCount: number;
   results: BaselineResult[];
@@ -501,6 +507,37 @@ export function coverageNotes(summary: BaselineSummary): string[] {
   return notes;
 }
 
+/** What the plain lists broke, counted by kind of requirement. */
+export interface ViolationKinds {
+  arm: UngatedArm;
+  /** Places breaking each kind of requirement, summed over the top threes. */
+  places: Record<string, number>;
+  /** Scenarios whose top three holds a place that breaks something other than distance. */
+  scenariosBeyondDistance: { count: number; total: number };
+}
+
+/**
+ * Counts, from the lists themselves, which requirements the plain lists broke. Only the kinds that
+ * were found appear. A kind that never appears was either never broken or never checkable, because
+ * a requirement can be failed only where the provider states the fact it depends on.
+ */
+export function violationKinds(results: readonly BaselineResult[]): ViolationKinds[] {
+  const done = results.filter((r) => r.ok);
+  return UNGATED_ARMS.map((arm) => {
+    const lists = done.map((r) => r.ungated[arm]).filter((l): l is ListMeasures => l !== null);
+    const places: Record<string, number> = {};
+    for (const list of lists) {
+      for (const place of list.places) {
+        for (const code of place.against) places[code] = (places[code] ?? 0) + 1;
+      }
+    }
+    const beyond = lists.filter((l) =>
+      l.places.some((place) => place.against.some((code) => code !== 'distance')),
+    ).length;
+    return { arm, places, scenariosBeyondDistance: { count: beyond, total: lists.length } };
+  });
+}
+
 /** The oracle's short codes in words a reader of the report can follow. */
 export function reasonText(code: string): string {
   if (code === 'price') return 'over the price limit';
@@ -545,6 +582,7 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   );
   lines.push('');
   lines.push(`- Run at: ${file.generatedAt}`);
+  lines.push(...provenanceLines(file));
   lines.push(`- Provider: ${file.provider.label} (${file.provider.mode})`);
   lines.push(`- Scenarios: ${file.scenarioCount}, completed: ${s.completed}`);
   lines.push(
@@ -579,7 +617,7 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   lines.push('## What each approach puts in the top three');
   lines.push('');
   lines.push(
-    'Every approach ranks the same pool of places for the same plan. With the gate, places that fail a requirement on a known fact are removed first. Without it, the venue that fell through is left out and nothing else is checked, which is how a plain recommender behaves. A place counts as breaking a requirement when the independent oracle finds a known fact against it. Unknown facts are never counted against a place.',
+    'Every approach ranks the same pool of places for the same plan. With the gate, places that fail a requirement on a known fact are removed first. Without it, the venue that fell through is left out and nothing else is checked, which is how a plain recommender behaves. A place counts as breaking a requirement when the oracle finds a known fact against it. The oracle is a separately written statement of the rules that shares the distance, time and name helpers with the gate. Unknown facts are never counted against a place.',
   );
   lines.push('');
   lines.push(
@@ -597,6 +635,31 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
     '',
     'The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three.',
     ...coverageNotes(s),
+  );
+  lines.push('');
+
+  const kinds = violationKinds(file.results);
+  const found = [...new Set(kinds.flatMap((row) => Object.keys(row.places)))]
+    .filter((code) => code !== 'is the original venue')
+    .sort(
+      (a, b) =>
+        kinds.reduce((sum, row) => sum + (row.places[b] ?? 0), 0) -
+          kinds.reduce((sum, row) => sum + (row.places[a] ?? 0), 0) || a.localeCompare(b, 'en'),
+    );
+  lines.push('### What the plain lists broke');
+  lines.push('');
+  lines.push(
+    `| Approach without the gate | ${found.map((code) => `Places ${reasonText(code)}`).join(' | ')} | Scenarios with a break other than distance |`,
+  );
+  lines.push(`| --- | ${found.map(() => '---').join(' | ')} | --- |`);
+  for (const row of kinds) {
+    lines.push(
+      `| ${ARM_LABEL[row.arm] ?? row.arm} | ${found.map((code) => String(row.places[code] ?? 0)).join(' | ')} | ${row.scenariosBeyondDistance.count} of ${row.scenariosBeyondDistance.total} |`,
+    );
+  }
+  lines.push('');
+  lines.push(
+    'The pool is every place Qloo returns for the category in the city, so it is not limited to the neighbourhood of the venue. That makes distance a common reason for the lists that ignore it. The last column shows what remains when distance is set aside. A kind of requirement that does not appear was never found broken. That does not show that places keep to it, because a place can be failed on a requirement only where Qloo states the fact it depends on.',
   );
   lines.push('');
 
@@ -679,7 +742,7 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   lines.push('## The lists, place by place');
   lines.push('');
   lines.push(
-    'The AFTERGLOW top three next to the taste only top three without the gate. A reason in brackets is what the independent oracle finds against that place on a known fact.',
+    'The AFTERGLOW top three next to the taste only top three without the gate. A reason in brackets is what the oracle finds against that place on a known fact.',
   );
   lines.push('');
   lines.push('| Scenario | AFTERGLOW top three | Taste only top three without the gate |');

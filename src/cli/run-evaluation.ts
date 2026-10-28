@@ -23,6 +23,7 @@ import { runEvaluation } from '../evaluation/runner.js';
 import type { ResolutionKind } from '../domain/case.js';
 import { categoryTagPhrase } from '../domain/intent.js';
 import { liveClient, loadLiveScenarios, toSpec } from '../evaluation/live-scenarios.js';
+import { runProvenance } from '../evaluation/provenance.js';
 import { QlooTasteProvider } from '../qloo/provider.js';
 import { SimulatedTasteProvider } from '../simulation/provider.js';
 import { scenarios, type ScenarioSpec } from '../simulation/scenarios.js';
@@ -171,6 +172,8 @@ async function main(): Promise<void> {
     process.exitCode = 2;
     return;
   }
+  const startedAt = new Date().toISOString();
+  const provenance = runProvenance();
   const parsed = loadLiveScenarios(file);
   const specs: ScenarioSpec[] = parsed.map(toSpec);
   const byId = new Map(specs.map((spec) => [spec.id, spec]));
@@ -187,6 +190,8 @@ async function main(): Promise<void> {
   const results: LiveResultsFile = {
     ...report,
     live: summariseLive(report.results),
+    startedAt,
+    ...(provenance ? { provenance } : {}),
     ...(secondRun ? { run: SECOND_RUN } : {}),
   };
   mkdirSync(resolve(root, 'results'), { recursive: true });

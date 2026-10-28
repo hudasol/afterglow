@@ -6,6 +6,7 @@ import {
   recordedExample,
   renderBaselineReport,
   summariseBaselines,
+  violationKinds,
   type BaselineResultsFile,
 } from '../../src/evaluation/baseline-report.js';
 import type { BaselineResult, ListMeasures } from '../../src/evaluation/baselines.js';
@@ -282,5 +283,49 @@ describe('coverage notes', () => {
     const notes = coverageNotes(summariseBaselines([result('one'), unlocated])).join(' ');
     expect(notes).toContain('Nearest first covers 1 of 2 scenarios,');
     expect(notes).toContain('could not be located');
+  });
+});
+
+describe('violationKinds', () => {
+  const broken = (against: string[][]): ListMeasures =>
+    list({
+      places: against.map((codes, index) => ({
+        name: `P${index}`,
+        against: codes,
+        feasibility: codes.length > 0 ? 'rejected' : 'needs_verification',
+        distanceKm: 1,
+        affinity: 0.5,
+      })),
+    });
+
+  it('counts places by what they break and scenarios that break more than distance', () => {
+    const one = result('one', {
+      ungated: {
+        random: broken([['distance'], ['hours', 'price'], []]),
+        nearest: broken([[], [], []]),
+        popular: broken([['distance'], ['distance'], []]),
+        taste_only: null,
+      },
+    });
+    const two = result('two', {
+      ungated: {
+        random: broken([['hours']]),
+        nearest: broken([['is the original venue']]),
+        popular: broken([[]]),
+        taste_only: broken([['price']]),
+      },
+    });
+    const kinds = Object.fromEntries(violationKinds([one, two]).map((row) => [row.arm, row]));
+    expect(kinds['random']?.places).toEqual({ distance: 1, hours: 2, price: 1 });
+    expect(kinds['random']?.scenariosBeyondDistance).toEqual({ count: 2, total: 2 });
+    expect(kinds['popular']?.places).toEqual({ distance: 2 });
+    expect(kinds['popular']?.scenariosBeyondDistance).toEqual({ count: 0, total: 2 });
+    expect(kinds['taste_only']?.scenariosBeyondDistance).toEqual({ count: 1, total: 1 });
+  });
+
+  it('ignores scenarios that did not complete', () => {
+    const failed = result('failed', { ok: false });
+    const kinds = violationKinds([failed]);
+    expect(kinds.every((row) => row.scenariosBeyondDistance.total === 0)).toBe(true);
   });
 });

@@ -3,6 +3,7 @@
  * were written down in docs/PREREGISTRATION.md before the first run. Every number in the rendered
  * report is computed from the results file, and a test fails when the two differ.
  */
+import { provenanceLines, type RunProvenance } from './provenance.js';
 import type { EvaluationReport, ScenarioResult } from './runner.js';
 import {
   BOOTSTRAP_RESAMPLES,
@@ -245,6 +246,10 @@ export type LiveResultsFile = EvaluationReport & {
   live: LiveSummary;
   /** Set for a run after the first, to say what is different about it. */
   run?: { label: string; note: string };
+  /** When the run began. Left out of files made before it was recorded. */
+  startedAt?: string;
+  /** The commit and workflow run that produced the file. Left out of local runs. */
+  provenance?: RunProvenance;
 };
 
 function show(value: number | null, unit: Prediction['unit']): string {
@@ -350,6 +355,7 @@ export function renderLiveReport(file: LiveResultsFile): string {
   }
   lines.push('');
   lines.push(`- Run at: ${file.generatedAt}`);
+  lines.push(...provenanceLines(file));
   lines.push(`- Provider: ${file.provider.label} (${file.provider.mode})`);
   lines.push(`- Scenarios: ${file.scenarioCount}, completed: ${done.length}`);
   lines.push(

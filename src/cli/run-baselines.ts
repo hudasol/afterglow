@@ -23,6 +23,7 @@ import {
 } from '../evaluation/baseline-report.js';
 import { evaluateBaselines, type BaselineResult } from '../evaluation/baselines.js';
 import { liveClient, loadLiveScenarios, toSpec } from '../evaluation/live-scenarios.js';
+import { runProvenance } from '../evaluation/provenance.js';
 import { QlooTasteProvider } from '../qloo/provider.js';
 import { SimulatedTasteProvider } from '../simulation/provider.js';
 import { scenarios } from '../simulation/scenarios.js';
@@ -100,6 +101,8 @@ async function main(): Promise<void> {
   const tagProvider = new QlooTasteProvider(client, undefined, { vibeExemplars: false });
   const specs = loadLiveScenarios(SETS[set].scenarios).map(toSpec);
 
+  const startedAt = new Date().toISOString();
+  const provenance = runProvenance();
   const results: BaselineResult[] = [];
   for (const spec of specs) {
     const result = await evaluateBaselines(provider, spec, { ablation: tagProvider });
@@ -112,7 +115,9 @@ async function main(): Promise<void> {
   const file: BaselineResultsFile = {
     kind: 'baseline_comparison',
     set,
+    startedAt,
     generatedAt: new Date().toISOString(),
+    ...(provenance ? { provenance } : {}),
     provider: { label: provider.descriptor.label, mode: provider.descriptor.mode },
     scenarioCount: specs.length,
     results,
