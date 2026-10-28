@@ -52,14 +52,19 @@ Cases opened through the server are kept under their own session, so they are se
 
 Every tool result is compact JSON. It states the source of the data on every result, whether that is the labelled demo catalogue or live Qloo, and ends with the next actions that make sense for the case.
 
-## Rules the server enforces
+## Rules the server enforces, and one it cannot
 
-These rules are enforced by the application, not only requested in the tool descriptions.
+Two rules are enforced by the application whatever the calling model does, and tests cover them.
 
 - A constraint that cannot be checked from data stays unknown. An unknown never passes. The result lists the question for the person.
-- Only the person can settle an unknown fact. `afterglow_attest_fact` records the person's answer and overrides data the app held. The server instructions tell the calling model to use it only with an answer the person gave.
-- A constraint can be given up only when no option is left and that exact change was offered. The calling model is told to ask the person first.
-- The server never books, calls or pays. `afterglow_confirm_attempt` records what the person reports. A case cannot be closed as recovered without one.
+- A constraint can be given up only when no option is left and that exact change was offered. A request to give up anything else is refused.
+
+One rule is requested and not enforced.
+
+- Only the person should settle an unknown fact. `afterglow_attest_fact` records an answer as the person's and overrides data the app held. The server cannot tell who supplied the answer, so the server instructions tell the calling model to use it only with an answer the person gave. A client that ignores that instruction can record a fact the person never stated, and the case history would show it as the person's check. The web interface sends an answer only from a button the person presses.
+
+The server never books, calls or pays. `afterglow_confirm_attempt` records what the person reports. A case cannot be closed as recovered without one.
+
 - Errors come back as a tool result with an error code and a plain message. Internal detail never appears in a result.
 
 ## What this does and does not show

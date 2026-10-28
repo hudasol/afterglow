@@ -88,16 +88,16 @@ The case view lists every option the provider returned, each with its gate resul
 
 ## Errors and limits
 
-| Status | `code`                                                                                                                             | When                                                                      |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 400    | `invalid_request`, `invalid_json`, `session_required`                                                                              | The body, JSON or session header is not valid                             |
-| 401    | `unauthorised`                                                                                                                     | An access token is required and was not sent                              |
-| 403    | `bad_host`, `bad_origin`                                                                                                           | A loopback server received another Host, or a cross origin write          |
-| 404    | `not_found`                                                                                                                        | No such case, option or endpoint, or the case belongs to another session  |
-| 409    | `conflict`, `case_closed`, `choices_pending`, `attempt_open`, `already_confirmed`, `not_pending`, `not_attempted`, `no_disruption` | The action is not allowed in the case's current state                     |
-| 413    | `too_large`                                                                                                                        | The body is over 64 kB                                                    |
-| 429    | `rate_limited`, `live_budget`                                                                                                      | Over the per minute limit, or over the hourly allowance of live actions   |
-| 502    | `provider_error` and the provider's own code                                                                                       | Qloo failed or refused. The case records it rather than inventing results |
-| 503    | `live_unavailable`, `QLOO_NOT_CONFIGURED`, `OSM_NOT_ENABLED`                                                                       | The feature is not available on this server                               |
+| Status | `code`                                                                                                                                            | When                                                                      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 400    | `invalid_request`, `invalid_json`, `session_required`                                                                                             | The body, JSON or session header is not valid                             |
+| 401    | `unauthorised`                                                                                                                                    | An access token is required and was not sent                              |
+| 403    | `bad_host`, `bad_origin`                                                                                                                          | A loopback server received another Host, or a cross origin write          |
+| 404    | `not_found`                                                                                                                                       | No such case, option or endpoint, or the case belongs to another session  |
+| 409    | `conflict`, `case_closed`, `choices_pending`, `attempt_open`, `already_confirmed`, `not_offered`, `not_pending`, `not_attempted`, `no_disruption` | The action is not allowed in the case's current state                     |
+| 413    | `too_large`                                                                                                                                       | The body is over 64 kB                                                    |
+| 429    | `rate_limited`, `live_budget`                                                                                                                     | Over the per minute limit, or over the hourly allowance of live actions   |
+| 502    | `provider_error` and the provider's own code                                                                                                      | Qloo failed or refused. The case records it rather than inventing results |
+| 503    | `live_unavailable`, `QLOO_NOT_CONFIGURED`, `OSM_NOT_ENABLED`                                                                                      | The feature is not available on this server                               |
 
 Limits are set with `AFTERGLOW_RATE_LIMIT_PER_MINUTE` and `AFTERGLOW_LIVE_ACTIONS_PER_HOUR`, and the Qloo calls per day with `QLOO_DAILY_CALL_CAP`. They are held in memory, so they reset when the process restarts and are meant for a single instance. Demo mode is never limited by the live allowance.
