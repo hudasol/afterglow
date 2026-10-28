@@ -92,13 +92,13 @@ jobs:
           echo "-----BEGIN RESULTS-----"
           cat results/live-qloo-second-run.json 2>/dev/null || echo "No results were written."
           echo "-----END RESULTS-----"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ inputs.mode == 'run' && always() }}
         with:
           name: live-evaluation-results
           path: results/live-qloo.json
           if-no-files-found: ignore
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ startsWith(inputs.mode, 'baselines') && always() }}
         with:
           name: baseline-results
