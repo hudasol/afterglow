@@ -44,7 +44,7 @@ For comparison, the Taste On top choice differed from the Popular ordering in 10
 
 ## What the hits do and do not show
 
-P7 was met with no violations in any gated top three. The independent oracle takes the position of the original venue from the pool by exact name. That works when the original venue is itself one of the places returned, which it often is for well known restaurants, and it cannot check the distance requirement when it is not. The count is therefore a lower bound for distance. For opening hours, price and step free access the oracle reads the raw facts directly.
+P7 was met with no violations in any gated top three. The oracle takes the position of the original venue from the pool by exact name. That works when the original venue is itself one of the places returned, which it often is for well known restaurants, and it cannot check the distance requirement when it is not. The count is therefore a lower bound for distance. For opening hours, price and step free access the oracle reads the raw facts directly.
 
 P8 was met at 0.71. The four group dinner scenarios that had a ranked list could not reach it by design, because Qloo does not state group capacity, so a table for eight is always a question for the person.
 

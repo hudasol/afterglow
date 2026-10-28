@@ -8,7 +8,7 @@ The first live evaluation asked whether the parts of the pipeline work on real Q
 
 ## Decision
 
-Compare AFTERGLOW with random, nearest first, popular and taste only lists, each with and without the gate, built from the same pool and judged by the same independent oracle. Use the existing 20 scenarios as the development set and 20 new ones in five other cities as the test set. Register the questions, the statistics and numeric predictions before the test set is ranked, set every threshold by one rule from the development results, freeze the test scenario file by hash, and rank it once. Report misses.
+Compare AFTERGLOW with random, nearest first, popular and taste only lists, each with and without the gate, built from the same pool and judged by the same oracle. Use the existing 20 scenarios as the development set and 20 new ones in five other cities as the test set. Register the questions, the statistics and numeric predictions before the test set is ranked, set every threshold by one rule from the development results, freeze the test scenario file by hash, and rank it once. Report misses.
 
 ## Consequences
 

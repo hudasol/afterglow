@@ -1,7 +1,9 @@
 /**
- * An independent statement of the hard constraint rules, written separately from the feasibility
- * gate and working on raw candidate facts. The evaluation uses it to check the gate from outside:
- * if the two ever disagree, a test fails. Unknown facts are never counted as violations here.
+ * A separately written statement of the hard constraint rules that works on raw candidate facts.
+ * The evaluation uses it to check the gate from outside, and a test compares the two on generated
+ * facts. It is not fully independent: it shares the distance, local time and name helpers with the
+ * gate, and it reads the same facts, so it can find a disagreement in the rules but not a wrong
+ * fact. Unknown facts are never counted as violations here.
  */
 import { distanceKm, type GeoPoint } from '../domain/geo.js';
 import type { EffectivePlan } from '../domain/plan.js';

@@ -18,7 +18,7 @@ All gated arms use the identical pool, gate and exclusions. The report states wh
 ## Measures
 
 - How often the ungated top three contained a place that breaks a hard requirement.
-- Violations in the gated top three, judged by an independent oracle. The oracle is a separate implementation of the constraint rules that reads raw venue facts, so it can disagree with the gate and would reveal a bug.
+- Violations in the gated top three, judged by an oracle. The oracle is a separately written statement of the constraint rules that reads raw venue facts, so it can disagree with the gate and would reveal a bug in the rules. It shares the distance, local time and name helpers with the gate and reads the same facts, so it cannot reveal a wrong helper or a wrong fact. A test compares the two on generated facts.
 - Whether the top choice differs between Taste On and Taste Off, and between Taste On and Popular.
 - Overlap of the top three, and Kendall tau between the full orderings.
 - Mean provider affinity of the top three in each arm, reported separately from the recovery score.
@@ -43,7 +43,7 @@ The preregistered run is `npm run eval:live`, over the frozen scenarios in `eval
 
 ## Baseline comparison
 
-The question that the live evaluation did not ask is whether AFTERGLOW beats simpler ways of choosing a replacement. `npm run eval:baselines` ranks each plan five ways from the same Qloo pool (random, nearest first, popular, Qloo taste alone, and AFTERGLOW), each with and without the gate, and judges every list with the independent oracle. The 20 scenarios of `evaluation/live-scenarios.json` are the development set, and the 20 scenarios of `evaluation/test-scenarios.json`, in five other cities, are the test set. The design, statistics and 14 predictions were registered in [PREREGISTRATION_V2.md](PREREGISTRATION_V2.md) before the test set was ranked, and its thresholds follow one rule from the development results. The results are in [EVALUATION_BASELINES_TEST.md](EVALUATION_BASELINES_TEST.md) and the development results in [EVALUATION_BASELINES_DEV.md](EVALUATION_BASELINES_DEV.md). Thirteen predictions were met and one was missed, as explained in [EVALUATION_BASELINES_NOTES.md](EVALUATION_BASELINES_NOTES.md). A language model without Qloo data is not among the baselines.
+The question that the live evaluation did not ask is whether AFTERGLOW beats simpler ways of choosing a replacement. `npm run eval:baselines` ranks each plan five ways from the same Qloo pool (random, nearest first, popular, Qloo taste alone, and AFTERGLOW), each with and without the gate, and judges every list with the oracle. The 20 scenarios of `evaluation/live-scenarios.json` are the development set, and the 20 scenarios of `evaluation/test-scenarios.json`, in five other cities, are the test set. The design, statistics and 14 predictions were registered in [PREREGISTRATION_V2.md](PREREGISTRATION_V2.md) before the test set was ranked, and its thresholds follow one rule from the development results. The results are in [EVALUATION_BASELINES_TEST.md](EVALUATION_BASELINES_TEST.md) and the development results in [EVALUATION_BASELINES_DEV.md](EVALUATION_BASELINES_DEV.md). Thirteen predictions were met and one was missed, as explained in [EVALUATION_BASELINES_NOTES.md](EVALUATION_BASELINES_NOTES.md). A language model without Qloo data is not among the baselines.
 
 ## Reproducing
 

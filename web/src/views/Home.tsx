@@ -370,8 +370,8 @@ export function Home() {
           <p style={{ marginTop: '0.5rem' }}>
             Across {report.summary.scenarios} hand authored scenarios in the simulated catalogue, a
             plain top three broke at least one requirement in{' '}
-            {report.summary.ungatedScenariosWithViolation}. After the gate, an independent check
-            found {report.summary.gatedViolations.tasteOn + report.summary.gatedViolations.tasteOff}{' '}
+            {report.summary.ungatedScenariosWithViolation}. After the gate, a separate check found{' '}
+            {report.summary.gatedViolations.tasteOn + report.summary.gatedViolations.tasteOff}{' '}
             violations in the shortlists. These scenarios were written for this project, so the
             numbers show how the pipeline behaves and are not a rate in the real world.
           </p>

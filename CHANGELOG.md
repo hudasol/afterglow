@@ -6,7 +6,7 @@ All notable changes are listed here, newest first. The project follows [Semantic
 
 ### Added
 
-- A baseline comparison of AFTERGLOW against random, nearest first, popular and taste only lists, each with and without the gate, judged by the independent oracle (`npm run eval:baselines`).
+- A baseline comparison of AFTERGLOW against random, nearest first, popular and taste only lists, each with and without the gate, judged by the oracle (`npm run eval:baselines`).
 - A second preregistration, [docs/PREREGISTRATION_V2.md](docs/PREREGISTRATION_V2.md), and 20 test scenarios in five cities that the development scenarios do not use, frozen by hash.
 - Recorded baseline runs on the Evidence page, and a recorded example from live Qloo data on the front page in place of the simulated one.
 - Ready made live plans on the front page, one per city, that open a case on real Qloo data in one press.

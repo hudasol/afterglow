@@ -24,7 +24,7 @@ export interface ScenarioResult {
   needsVerification: number;
   /** Top three by provider rank with no feasibility gate, as a plain recommender would return. */
   ungatedTop: { names: string[]; violationCount: number; violators: string[] };
-  /** Violations in the top three of each gated arm, judged by the independent oracle. */
+  /** Violations in the top three of each gated arm, judged by the oracle. */
   gatedViolations: { tasteOn: number; tasteOff: number };
   /** True when both arms offered exactly the same set of eligible options. */
   sameEligibleSet: boolean;
@@ -120,7 +120,7 @@ function preservedShare(view: CaseView, ids: string[]): number | null {
 }
 
 export interface RunnerOptions {
-  /** When false the independent oracle is skipped. */
+  /** When false the oracle is skipped. */
   useOracle: boolean;
   /**
    * Returns a scenario whose taste signals stand in for this one's, or nothing. The case is then
@@ -472,7 +472,7 @@ export async function runEvaluation(
       'Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.',
       'The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.',
       options.useOracle
-        ? 'Violations are judged by an independent implementation of the constraint rules that reads raw venue facts.'
+        ? 'Violations are judged by a separately written statement of the constraint rules that reads raw venue facts. It shares the distance, time and name helpers with the gate.'
         : 'Live venues lack most facts, so violations are those the gate itself can establish from facts the provider returned.',
     ],
     limits: simulated

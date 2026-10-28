@@ -10,7 +10,7 @@ The data is also incomplete. Qloo states opening hours, step free access and die
 
 ## Decision
 
-Every candidate is checked against every hard requirement before any ordering happens. Each check returns pass, fail or unknown. A fail rules the place out. An unknown never passes: the place is shown as needing a check, and only the person's own word settles it. The same gate feeds every ordering, so the orderings differ only in how they rank the same places. An independent oracle, written separately and reading the raw facts, judges the lists in evaluation.
+Every candidate is checked against every hard requirement before any ordering happens. Each check returns pass, fail or unknown. A fail rules the place out. An unknown never passes: the place is shown as needing a check, and only the person's own word settles it. The same gate feeds every ordering, so the orderings differ only in how they rank the same places. A separately written oracle, reading the raw facts and sharing only the distance, time and name helpers, judges the lists in evaluation.
 
 ## Consequences
 

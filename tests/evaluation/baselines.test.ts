@@ -93,10 +93,20 @@ describe('baseline measures', () => {
   it('find no requirement broken by AFTERGLOW on any scenario of the simulated catalogue', async () => {
     for (const s of scenarios) {
       const result = await evaluateBaselines(provider, s);
-      if (!result.ok) continue;
-      expect(result.gated.afterglow?.violations ?? 0, s.id).toBe(0);
-      for (const arm of GATED_ARMS)
-        expect(result.gated[arm]?.violations ?? 0, `${s.id} ${arm}`).toBe(0);
+      expect(result.ok, `${s.id} completed`).toBe(true);
+      if (result.eligible === 0) {
+        // Nothing passed the gate, so there is no list to judge and none is offered.
+        expect(result.gated.afterglow, `${s.id} offers nothing`).toBeNull();
+        continue;
+      }
+      expect(result.gated.afterglow, s.id).not.toBeNull();
+      expect(result.gated.afterglow?.violations, s.id).toBe(0);
+      for (const arm of GATED_ARMS) {
+        const list = result.gated[arm];
+        // Only the nearest first list can be missing, when the original venue has no location.
+        if (list === null) expect(arm, `${s.id} ${arm} is missing`).toBe('nearest');
+        else expect(list.violations, `${s.id} ${arm}`).toBe(0);
+      }
     }
   });
 

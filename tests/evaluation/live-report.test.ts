@@ -249,16 +249,13 @@ describe('evaluateScenario fields used by the live predictions', () => {
       placeboFor: () => second,
     });
     expect(outcome.ok).toBe(true);
-    for (const share of [outcome.factCoverage.openWindow, outcome.factCoverage.stepFree]) {
-      expect(share).toBeGreaterThanOrEqual(0);
-      expect(share).toBeLessThanOrEqual(1);
-    }
-    expect(outcome.providerCalls).toBeGreaterThanOrEqual(0);
+    // Every simulated venue states its hours, access and diet, and the catalogue makes no request.
+    expect(outcome.factCoverage).toEqual({ openWindow: 1, stepFree: 1, dietary: 1 });
+    expect(outcome.providerCalls).toBe(0);
     expect(outcome.placebo?.from).toBe(second.id);
     expect(outcome.placebo?.error).toBeUndefined();
     expect(outcome.placebo?.tasteOnTop.length).toBeGreaterThan(0);
-    const overlap = outcome.placebo?.overlapAt3;
-    expect(overlap === null || (overlap !== undefined && overlap >= 0 && overlap <= 1)).toBe(true);
+    expect(outcome.placebo?.overlapAt3).toBe(1);
   });
 
   it('runs no second ranking when no other plan is named', async () => {

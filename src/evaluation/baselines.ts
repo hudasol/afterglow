@@ -10,7 +10,7 @@
  *
  * Each arm is built twice. The gated lists are what the product could show. The ungated lists
  * are what a plain recommender would show, and stand for the way people choose a replacement
- * today. Both are checked against the plan's hard requirements by the independent oracle.
+ * today. Both are checked against the plan's hard requirements by the oracle.
  */
 import type { TasteProvider } from '../application/ports.js';
 import type { CaseView, OptionView } from '../domain/case-view.js';
@@ -29,7 +29,7 @@ export const UNGATED_ARMS = ['random', 'nearest', 'popular', 'taste_only'] as co
 export type GatedArm = (typeof GATED_ARMS)[number];
 export type UngatedArm = (typeof UNGATED_ARMS)[number];
 
-/** One place on a list, with what the independent oracle and the gate say about it. */
+/** One place on a list, with what the oracle and the gate say about it. */
 export interface ListedPlace {
   name: string;
   /** What the oracle finds against the place on a known fact. Empty when nothing is found. */
@@ -42,7 +42,7 @@ export interface ListedPlace {
 export interface ListMeasures {
   names: string[];
   places: ListedPlace[];
-  /** Places on the list that break a requirement, judged by the independent oracle. */
+  /** Places on the list that break a requirement, judged by the oracle. */
   violations: number;
   /** Places the gate rules out, places it cannot decide, and places that pass on known facts. */
   ruledOut: number;

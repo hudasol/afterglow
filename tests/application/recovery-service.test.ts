@@ -396,7 +396,8 @@ describe('session isolation and provenance', () => {
     const serialised = JSON.stringify(provenance);
     expect(serialised).not.toContain('Anniversary dinner');
     expect(serialised).not.toContain('Candlelit and romantic');
-    expect(provenance.calls.latestSearch.length).toBeGreaterThanOrEqual(0);
+    // The simulated catalogue answers locally, so no request to any provider was recorded.
+    expect(provenance.calls.latestSearch).toEqual([]);
     expect(provenance.note).toContain('not a prediction');
   });
 

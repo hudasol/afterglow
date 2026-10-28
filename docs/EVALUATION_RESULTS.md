@@ -1,6 +1,6 @@
 # Evaluation results: offline, simulated catalogue
 
-Generated: 2026-10-25T15:06:25.153Z
+Generated: 2026-10-28T15:33:23.794Z
 Source: Simulated demo catalogue (not Qloo data, not real venues)
 Scenarios: 17 completed of 17
 
@@ -52,7 +52,7 @@ Scenarios: 17 completed of 17
 - Popular orders by the provider general popularity, most popular first, with distance and price as tie breakers. It uses none of the group signals.
 - Taste On orders by the app recovery score, which combines the provider affinity with closeness. Affinity is reported separately.
 - The ungated list is the top three places by provider rank with no feasibility gate. It stands for a plain recommender.
-- Violations are judged by an independent implementation of the constraint rules that reads raw venue facts.
+- Violations are judged by a separately written statement of the constraint rules that reads raw venue facts. It shares the distance, time and name helpers with the gate.
 
 ## Limits
 
