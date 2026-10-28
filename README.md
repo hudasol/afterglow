@@ -1,79 +1,70 @@
 # AFTERGLOW
 
+[![CI](https://github.com/hudasol/afterglow/actions/workflows/ci.yml/badge.svg)](https://github.com/hudasol/afterglow/actions/workflows/ci.yml)
+
 **Save the experience, not just the plan.**
 
-AFTERGLOW is a culturally intelligent experience recovery agent. When a booking falls through, a venue closes or the weather turns, it keeps what the plan was for, uses Qloo taste data to find alternatives, rules out any place that breaks a hard requirement, and shows the evidence behind every suggestion. It never books anything. A recovery is confirmed only when the person says so.
+When a booking falls through, a venue closes or the weather turns, AFTERGLOW keeps what the plan was for, uses [Qloo](https://qloo.com) taste data to find alternatives, rules out any place that breaks a hard requirement, and shows the evidence behind every suggestion. It never books anything. A recovery is confirmed only when the person says so.
 
+Hosted demo: https://afterglow-gsc4.onrender.com (free plan; the first request after a pause can take about half a minute).
 Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hackathon.
 
-## Verification status
+![The landing page with a recorded example from live Qloo data](docs/screenshots/01-landing.png)
 
-This table states what has and has not been verified. It is updated whenever the facts change.
+## Why it exists
 
-| Item                                            | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unit and integration tests                      | Passing (`npm test`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| Browser tests with accessibility checks         | Passing (`npm run test:e2e`)                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| Type check, lint, formatting                    | Passing (`npm run check`)                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Continuous integration                          | Passing on GitHub Actions for commit fb9341b: checks, build and browser tests (`.github/workflows/ci.yml`)                                                                                                                                                                                                                                                                                                                                                                             |
-| Offline evaluation on the simulated catalogue   | Run, results in [docs/EVALUATION_RESULTS.md](docs/EVALUATION_RESULTS.md)                                                                                                                                                                                                                                                                                                                                                                                                               |
-| Live Qloo smoke test (`npm run qloo:smoke`)     | Run on 25 October 2026 from GitHub Actions with the team's personal key held as a repository secret. 16 requests, verdict **go**. Redacted report: [data/evaluation/smoke-2026-10-25.json](data/evaluation/smoke-2026-10-25.json)                                                                                                                                                                                                                                                      |
-| Live Qloo evaluation                            | Preregistered in [docs/PREREGISTRATION.md](docs/PREREGISTRATION.md) and run on real Qloo data over 20 scenarios in five cities. First run, the registered result: 9 of 12 predictions met and 3 missed, in [docs/EVALUATION_LIVE.md](docs/EVALUATION_LIVE.md). Second run, after two product fixes: the same 9 and 3, in [docs/EVALUATION_LIVE_SECOND_RUN.md](docs/EVALUATION_LIVE_SECOND_RUN.md). Notes on the misses: [docs/EVALUATION_LIVE_NOTES.md](docs/EVALUATION_LIVE_NOTES.md) |
-| OpenStreetMap place facts (`npm run osm:smoke`) | Implemented and tested with invented responses. **Not yet run successfully against real OpenStreetMap data.** The public Overpass servers did not answer from GitHub Actions on 25 October 2026. It needs no key. See [docs/OPENSTREETMAP.md](docs/OPENSTREETMAP.md)                                                                                                                                                                                                                   |
-| Hosted demo                                     | Deployed on Render from commit fb9341b at https://afterglow-gsc4.onrender.com, with live Qloo configured through a server side variable. On 25 October 2026 a live London case opened and ranked in 9 seconds on it, and its connection check was accepted by Qloo. Its OpenStreetMap check timed out. The free plan sleeps when idle, so the first request after a pause can take a minute                                                                                            |
+A plan that falls apart usually ends in a scramble: a list of nearby places ranked by popularity, some of which cannot work at all because they are closed, too far, too expensive or too small for the group. Recommenders rank by taste or popularity and treat practical needs as an afterthought. AFTERGLOW checks the requirements first, ranks what is left with Qloo, and says plainly when a fact is unknown.
 
-The live rows describe runs made by the team that wrote the method, on plans the team chose, and no people took part. They show how the pipeline behaves on real Qloo data and not how often it would help in general. Demo mode uses an invented catalogue and says so on every screen.
+## What the evidence shows
 
-## Screenshots
+The comparison was registered before it was run and judged by an independent oracle. On 20 scenarios in five cities that the product was not developed on (Chicago, Los Angeles, Berlin, Sydney, Toronto), all ranked from the same Qloo pools in one run on 28 October 2026:
 
-The case screenshots come from demo mode. The city, the venues and the taste scores are simulated, and every screen says so. The last one shows the recorded results of the live evaluation, which hold no venue data. None contains a credential or personal data.
+| Question                                                        | Result                                                                                                                                                                                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does a plain list put a place that breaks a requirement on top? | Without the gate, the top three held one in 18 of 20 scenarios for Qloo taste alone, 20 of 20 for popularity, 10 of 20 for nearest first and 18 of 20 for random. AFTERGLOW offered none in the 19 scenarios where it had a place to offer. |
+| Does the Qloo signal change the answer?                         | The top choice differs from nearest first in 14 of 19 scenarios and from popularity in 15 of 19. The Qloo affinity of the top three is 0.74 standard deviations above nearest first (0.51 to 0.97).                                         |
+| Does blending closeness change what Qloo alone would choose?    | In 6 of 19 scenarios the first place differs. **This missed its prediction** of at most 20 percent. The cost in affinity is small and the list is 0.43 km closer on average.                                                                |
+| Were the predictions met?                                       | 13 of 14, one missed, all reported in [docs/EVALUATION_BASELINES_TEST.md](docs/EVALUATION_BASELINES_TEST.md).                                                                                                                               |
 
-| Landing                                                                                               | Recovery                                                                                          |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| ![Landing page with a gate result from the simulated catalogue](docs/screenshots/01-landing.png)      | ![A shortlist of places that passed the gate](docs/screenshots/03-recovery.png)                   |
-| **A place ruled out, with the reason**                                                                | **Taste On against Taste Off**                                                                    |
-| ![A place ruled out with the exact requirement it failed](docs/screenshots/04-ruled-out.png)          | ![Order with and without taste over the same eligible places](docs/screenshots/05-comparison.png) |
-| **What the agent observed, did and decided**                                                          | **What was sent to the taste provider**                                                           |
-| ![The agent trace of a search cycle](docs/screenshots/07-agent-trace.png)                             | ![The evidence page listing the redacted request](docs/screenshots/06-evidence.png)               |
-| **Preregistered live evaluation, with its misses**                                                    |                                                                                                   |
-| ![Predictions and results of the two live runs on Qloo data](docs/screenshots/08-live-evaluation.png) |                                                                                                   |
+What this does not show, and the notes say so at length in [docs/EVALUATION_BASELINES_NOTES.md](docs/EVALUATION_BASELINES_NOTES.md):
 
-## The problem
+- No person judged any list, so nothing here says that a group would enjoy a place more because AFTERGLOW offered it.
+- A language model with no Qloo data is not among the baselines, so it is not known whether AFTERGLOW outperforms one.
+- The same team wrote the method and chose the scenarios.
+- Most offered places still need the person's check. In 11 of the 19 scenarios with a gated list none of the three places was fully verified, because Qloo states opening hours, step free access and dietary options for only part of its places.
+- In one Los Angeles scenario all 40 places failed a requirement, so the gate left nothing to offer.
+- The requested vibe appears in the top three about as often as it does in a nearest first list (0.11 against 0.08).
 
-A plan that falls apart usually ends with a scramble: a list of nearby places ranked by popularity, none of which feel like the evening that was planned, and some of which cannot work at all because they are too far, too expensive, closed, or unable to seat the group. Recommendation lists optimise for taste or popularity and treat practical needs as an afterthought.
+The earlier evaluation of the pipeline on real Qloo data, with its three missed predictions, is in [docs/EVALUATION_LIVE.md](docs/EVALUATION_LIVE.md).
 
-## How AFTERGLOW works
+## How it works
 
-1. **Intent Anchor.** The person describes the plan once: the occasion, the party, the time, what must survive, what the group likes, and the hard requirements. This is recorded as a fixed anchor and is never edited. Later disruptions and decisions are layered on top.
-2. **Qloo Taste Engine.** Names and vibes the group likes are matched to Qloo entities and tags. An exact match resolves. Anything else is shown to the person to choose from, and an uncertain match is never passed on.
-3. **Feasibility Gate.** Every candidate is checked against every hard requirement and receives a verdict for each one: pass, fail or unknown. A failure rules the place out. An unknown never passes. It becomes a question for the person. The gate is identical whether or not taste is used.
-4. **Recovery Orchestrator.** Disruptions, the person's own checks, declined options and relaxations are recorded as events on the case. When no place meets every requirement, AFTERGLOW offers the smallest sets of requirements the person could give up and waits for agreement.
-5. **Agent trace.** Every search cycle is shown as what the agent observed, planned, did and decided, and where it handed the decision back to the person. It is rebuilt from the recorded events. AFTERGLOW follows a fixed procedure and is not a chat model.
-6. **Persistent case history.** Each case is an append only event log in SQLite. The history tab shows every step in plain language.
+1. **Intent anchor.** The person describes the plan once: the occasion, the party, the time, what must survive, what the group likes and the hard requirements. It is recorded and never edited. Disruptions and decisions are layered on top.
+2. **Taste signals.** Names and vibes the group likes are matched to Qloo entities and tags. An exact match resolves. Anything else is shown to the person to choose from, and an uncertain match is never passed on.
+3. **Feasibility gate.** Every candidate is checked against every hard requirement and gets pass, fail or unknown. A fail rules the place out. An unknown never passes: it becomes a question for the person.
+4. **Orderings.** The eligible places are shown in three orders: nearest first, most popular first, and Taste On, which blends Qloo affinity with closeness. The pool and the gate are the same for all three.
+5. **Recovery.** Disruptions, the person's own checks, declined options and relaxations are recorded as events on the case. When no place meets every requirement, AFTERGLOW offers the smallest sets of requirements the person could give up and waits for agreement.
+6. **Agent trace.** Every search cycle is shown as what the agent observed, planned, did and decided, and where it handed the decision back. It is rebuilt from the recorded events. AFTERGLOW follows a fixed procedure and is not a chat model.
 
-Each fact in the interface carries a source tag: Qloo, OpenStreetMap, Simulated, You said, You checked, or Calculated here.
+Each fact in the interface carries a source tag: Qloo, OpenStreetMap, Simulated, You said, You checked or Calculated here. Demo mode uses an invented city and says so on every screen.
+
+| Recovery                                                                        | A place ruled out, with the reason                                                           |
+| ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| ![A shortlist of places that passed the gate](docs/screenshots/03-recovery.png) | ![A place ruled out with the exact requirement it failed](docs/screenshots/04-ruled-out.png) |
 
 ## Where Qloo is used
 
-- `/search` resolves names the group likes, and the venue that fell through, which is used as a taste signal so the search looks for places that share its audience. The person can turn this off.
-- `/v2/tags` with semantic search resolves vibes and genres, and the venue category tag.
-- `/v2/insights` returns the candidate places for a city, and ranks a fixed list of places by affinity to the group's signals and to the lost venue, with explainability when it is available.
+- `/search` resolves names the group likes, and the venue that fell through, which can serve as a taste signal so the search looks for places that share its audience.
+- `/v2/tags` resolves vibes and genres and the venue category tag.
+- `/v2/insights` returns the candidate places for a city, with the facts Qloo states for each, and ranks a fixed list of places by affinity to the group's signals. Each vibe is sent as up to three example places that carry it, because a bare tag gave every place the same score.
 
-Qloo results describe what groups of people tend to like. AFTERGLOW presents them that way and does not treat an affinity as a prediction about any person. The full workflow, parameters and data handling are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
-
-## Where OpenStreetMap is used
-
-Qloo states opening hours, a wheelchair accessible entrance and dietary options for part of the places it returns, and AFTERGLOW reads exactly those. It does not state group capacity or covered seating. For live cases, and only for facts a plan insists on that Qloo left unknown, AFTERGLOW can look at OpenStreetMap by matching each place by name and position. A value is used only when it is clearly stated, it carries the tag it was read from, it never replaces a fact you checked, and a failure leaves the fact unknown. Only the public coordinates of venues are sent. Details, limits and the licence credit are in [docs/OPENSTREETMAP.md](docs/OPENSTREETMAP.md).
+Qloo describes what groups of people tend to like. AFTERGLOW presents affinities that way and never as a prediction about a person. Workflow, parameters and data handling: [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md). OpenStreetMap can fill facts that Qloo leaves unknown for live cases. That lookup is implemented and tested with invented responses and has not yet run successfully against real data: [docs/OPENSTREETMAP.md](docs/OPENSTREETMAP.md).
 
 ## Use it from an MCP client
 
-The same workflow is available as MCP tools over stdio, so a model can open a case, ask the person the questions the gate raises, and record their answers. The rules are enforced by the application: unknown never passes, only the person's own word settles a fact, and nothing is booked. See [docs/MCP.md](docs/MCP.md).
+The same workflow is available as MCP tools over stdio, so a model can open a case, ask the person the questions the gate raises and record their answers. The rules are enforced by the application: unknown never passes, only the person's own word settles a fact, and nothing is booked. See [docs/MCP.md](docs/MCP.md).
 
-## Taste On and Taste Off
-
-For every case the interface can show three orderings of the same eligible places. Nearest first sorts by distance to the original venue, then price. Most popular first sorts by the provider's general popularity and uses none of the group's signals, which is what a plain list of well known places does. Taste On sorts by a recovery score that blends taste with closeness. The pool, the gate and the exclusions are identical in all three, so the only difference is the ordering rule. See [docs/EVALUATION.md](docs/EVALUATION.md) for the method and what it can and cannot show.
-
-## Quick start
+## Run it
 
 Requirements: Node.js 22.13 or newer. No other service is needed.
 
@@ -85,20 +76,11 @@ npm run build
 npm start
 ```
 
-Open http://127.0.0.1:8788. With no Qloo key the application runs in demo mode only, using the labelled simulated catalogue.
+Open http://127.0.0.1:8788. With no Qloo key the application runs in demo mode on the simulated catalogue. For development with reload run `npm run dev` and open http://127.0.0.1:5173.
 
-For development with hot reload run `npm run dev`, then open http://127.0.0.1:5173.
+To use live Qloo, request a hackathon key, copy `.env.example` to `.env` and set `QLOO_API_KEY`. Keys are personal: never commit or share one. The key is read only by the server and is never sent to the browser or written to a log or report. `npm run qloo:smoke` checks that it works.
 
-### Using live Qloo
-
-1. Request a hackathon key through the form on the Qloo hackathon page. Keys are personal. Never commit or share one.
-2. Copy `.env.example` to `.env` and set `QLOO_API_KEY`. The file is ignored by Git.
-3. Run `npm run qloo:smoke`. It checks that the key works, that entity and tag matching behave, and that rankings respond to different signals. It prints a verdict and writes a redacted report to `data/evaluation`.
-4. Restart the server. The Live Qloo option becomes available on the intake screen.
-
-The key is read only by the server. It is never sent to the browser, logged, or written to a report.
-
-## Configuration
+### Configuration
 
 | Variable                          | Default                          | Purpose                                                                                |
 | --------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- |
@@ -118,22 +100,21 @@ The key is read only by the server. It is never sent to the browser, logged, or 
 | `AFTERGLOW_CASE_TTL_HOURS`        | `48`                             | How long idle cases are kept                                                           |
 | `SERVE_WEB`                       | `true`                           | Serve the built interface from the API server                                          |
 
-## Commands
+OpenStreetMap variables are listed in `.env.example`.
 
-| Command              | What it does                                          |
-| -------------------- | ----------------------------------------------------- |
-| `npm run dev`        | API server and web dev server with reload             |
-| `npm run build`      | Build the interface to `web/dist`                     |
-| `npm start`          | Run the server                                        |
-| `npm test`           | Unit and integration tests                            |
-| `npm run test:e2e`   | Browser tests, including accessibility checks         |
-| `npm run check`      | Type check, lint, formatting check and tests          |
-| `npm run mcp`        | MCP server over stdio. See [docs/MCP.md](docs/MCP.md) |
-| `npm run eval`       | Offline evaluation on the simulated catalogue         |
-| `npm run qloo:smoke` | Live Qloo experiment. Needs `QLOO_API_KEY`            |
-| `npm run osm:smoke`  | Real data check for OpenStreetMap place facts. No key |
+### Commands
 
-Browser tests download nothing at run time but need a Playwright Chromium. If your Chromium is installed elsewhere, set `PLAYWRIGHT_CHROMIUM_PATH` to its executable.
+| Command                                | What it does                                                    |
+| -------------------------------------- | --------------------------------------------------------------- |
+| `npm run dev`                          | API server and web dev server with reload                       |
+| `npm run check`                        | Type check, lint, formatting check and tests                    |
+| `npm run test:e2e`                     | Browser tests, including accessibility checks                   |
+| `npm run mcp`                          | MCP server over stdio                                           |
+| `npm run eval`                         | Offline evaluation on the simulated catalogue                   |
+| `npm run eval:baselines -- --run test` | Baseline comparison on the test scenarios. Needs `QLOO_API_KEY` |
+| `npm run qloo:smoke`                   | Live Qloo experiment. Needs `QLOO_API_KEY`                      |
+
+Browser tests need a Playwright Chromium. If yours is installed elsewhere, set `PLAYWRIGHT_CHROMIUM_PATH` to its executable.
 
 ## Project layout
 
@@ -143,33 +124,43 @@ src/application     Use cases and the taste provider port
 src/infrastructure  Configuration, SQLite and repositories
 src/qloo            Qloo client, matching, normalisation and the live provider
 src/simulation      The labelled simulated catalogue, provider and scenarios
-src/evaluation      Independent oracle, evaluation runner and report writer
-src/interfaces/http The Express API and static serving
-src/interfaces/mcp  The MCP server and its compact case summary
+src/evaluation      Independent oracle, evaluation runners, baselines and reports
+src/interfaces      The Express API and the MCP server
 web                 React interface
 e2e                 Browser tests
-docs                Integration, architecture, evaluation, deployment and limits
+evaluation          Frozen scenario files
+results             Recorded results, written by commands and never edited by hand
+docs                Integration, architecture, evaluation, decisions and limits
 ```
 
-The domain layer imports nothing from the outer layers and performs no input or output. A lint rule enforces this.
+The domain layer imports nothing from the outer layers and performs no input or output, and ESLint enforces it. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [decision records](docs/adr/README.md).
+
+## Documentation
+
+| Topic                                             | Where                                                                                                                                                                                            |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Baseline comparison: registration, results, notes | [PREREGISTRATION_V2](docs/PREREGISTRATION_V2.md), [results](docs/EVALUATION_BASELINES_TEST.md), [notes](docs/EVALUATION_BASELINES_NOTES.md), [development set](docs/EVALUATION_BASELINES_DEV.md) |
+| Earlier live evaluation of the pipeline           | [PREREGISTRATION](docs/PREREGISTRATION.md), [first run](docs/EVALUATION_LIVE.md), [second run](docs/EVALUATION_LIVE_SECOND_RUN.md), [notes](docs/EVALUATION_LIVE_NOTES.md)                       |
+| Method of the offline evaluation                  | [docs/EVALUATION.md](docs/EVALUATION.md)                                                                                                                                                         |
+| Limits of what is established                     | [docs/LIMITATIONS.md](docs/LIMITATIONS.md)                                                                                                                                                       |
+| Deployment on Render                              | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                                                                                                                                         |
+| Responsible use and data handling                 | [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md)                                                                                                                                               |
+| Hackathon submission text                         | [docs/SUBMISSION.md](docs/SUBMISSION.md)                                                                                                                                                         |
+| Contributing, changes and security                | [CONTRIBUTING.md](CONTRIBUTING.md), [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](SECURITY.md)                                                                                                     |
 
 ## Known limitations
 
 The full list is in [docs/LIMITATIONS.md](docs/LIMITATIONS.md). The most important points:
 
-- The live Qloo path was exercised on 25 October 2026 by a smoke test and by a preregistered evaluation run twice. Three of the 12 predictions were missed in both runs. In particular, when a plan sends only vibe tags, Qloo gave every place the same taste score in all five such scenarios, and the order then follows distance. The application says so beside the shortlist.
-- Qloo states opening hours for about 70 percent of the places in the evaluation pools, step free access for about 74 percent and a dietary fact for about 63 percent where one was needed. Group capacity and covered seating are never stated. OpenStreetMap can fill some gaps where volunteers have tagged a matching place, and that lookup has not yet been run against real data. Everything else stays unknown until the person checks it. The gate treats unknown as not passing.
-- The offline evaluation uses an invented, hand authored catalogue. It shows how the pipeline behaves. It is not evidence about the quality of Qloo recommendations.
+- Facts that Qloo does not state stay unknown until the person checks them. Group capacity and covered seating are never stated.
+- The candidate pool comes from a search over the whole city, so a tight distance limit can leave few places or none.
+- Nothing measures whether Qloo affinity predicts what a person will enjoy, and no person took part in any evaluation.
+- Cases are tied to a browser by a random identifier. There are no accounts, and the hosted demo keeps cases only temporarily.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
-- Cases are tied to a browser through a random identifier. There are no accounts.
 
 ## Responsible use
 
-See [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md). In short: only the city, the venue category, public taste names and phrases, and the original venue name, when it is used as a taste signal or a distance limit needs it, are sent to Qloo. Titles, party sizes, notes and times stay on the server. Qloo affinities are never presented as predictions about an individual.
-
-## Submission
-
-The hackathon submission text, covering the six requested items, is in [docs/SUBMISSION.md](docs/SUBMISSION.md).
+Only the city, the venue category, public taste names and phrases, and the original venue name, when it is used as a taste signal or a distance limit needs it, are sent to Qloo. Titles, party sizes, notes and times stay on the server. See [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md).
 
 ## License
 

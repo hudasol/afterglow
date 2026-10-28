@@ -1,8 +1,9 @@
 // Captures the documentation screenshots from a running server in demo mode.
 //   npm run build && npm start        (in one terminal)
 //   node scripts/screenshots.mjs      (in another)
-// Every case screenshot shows the simulated demo catalogue. The live evaluation screenshot shows recorded
-// results with no venue data. None contains a credential or personal data.
+// Every case screenshot shows the simulated demo catalogue. The landing page and the evaluation screenshots
+// show recorded results from live Qloo runs, which name public venues and hold no personal data. None
+// contains a credential.
 import { mkdirSync } from 'node:fs';
 import { chromium, expect } from '@playwright/test';
 
@@ -53,6 +54,11 @@ await page.getByRole('heading', { name: 'Live evaluation on Qloo data' }).waitFo
 await page
   .locator('section[aria-labelledby="ev-live"]')
   .screenshot({ path: `${out}08-live-evaluation.png` });
+
+await page
+  .getByRole('region', { name: /approaches compared/ })
+  .first()
+  .screenshot({ path: `${out}09-baselines.png` });
 
 await browser.close();
 console.log(`Screenshots written to ${out}`);
