@@ -13,17 +13,15 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: List models
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -sS --max-time 60 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-            https://models.github.ai/catalog/models | python3 -c "import sys,json; d=json.load(sys.stdin); [print(m['id'], '|', m.get('rate_limit_tier')) for m in d]" | head -60
+          curl -sS -i --max-time 60 -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            https://models.github.ai/catalog/models | head -c 1500
       - name: One short completion
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -sS --max-time 90 https://models.github.ai/inference/chat/completions \
+          curl -sS -i --max-time 90 https://models.github.ai/inference/chat/completions \
             -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
-            -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Name two restaurants in Dubai. Reply with the names only."}],"temperature":0}'
+            -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"Name two restaurants in Dubai. Reply with the names only."}],"temperature":0}' | head -c 2500
