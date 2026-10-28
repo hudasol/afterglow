@@ -393,7 +393,11 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
             gate, which is how a plain recommender behaves. A requirement counts as broken only when
             a fact that is known is against the place. See{' '}
             <a href={`${REPO}/blob/main/docs/PREREGISTRATION_V2.md`}>the preregistration</a>,{' '}
-            <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_TEST.md`}>the test results</a> and{' '}
+            <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_TEST.md`}>the test results</a>,{' '}
+            <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_NOTES.md`}>
+              notes on the missed prediction and the limits
+            </a>{' '}
+            and{' '}
             <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_DEV.md`}>
               the development results
             </a>
