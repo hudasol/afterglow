@@ -17,14 +17,22 @@ A plan that falls apart usually ends in a scramble: a list of nearby places rank
 
 ## What the evidence shows
 
-The comparison was registered before it was run and judged by an independent oracle. On 20 scenarios in five cities that the product was not developed on (Chicago, Los Angeles, Berlin, Sydney, Toronto), all ranked from the same Qloo pools in one run on 28 October 2026:
+AFTERGLOW makes two claims, and the evidence for them has different strength.
 
-| Question                                                        | Result                                                                                                                                                                                                                                      |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Does a plain list put a place that breaks a requirement on top? | Without the gate, the top three held one in 18 of 20 scenarios for Qloo taste alone, 20 of 20 for popularity, 10 of 20 for nearest first and 18 of 20 for random. AFTERGLOW offered none in the 19 scenarios where it had a place to offer. |
-| Does the Qloo signal change the answer?                         | The top choice differs from nearest first in 14 of 19 scenarios and from popularity in 15 of 19. The Qloo affinity of the top three is 0.74 standard deviations above nearest first (0.51 to 0.97).                                         |
-| Does blending closeness change what Qloo alone would choose?    | In 6 of 19 scenarios the first place differs. **This missed its prediction** of at most 20 percent. The cost in affinity is small and the list is 0.43 km closer on average.                                                                |
-| Were the predictions met?                                       | 13 of 14, one missed, all reported in [docs/EVALUATION_BASELINES_TEST.md](docs/EVALUATION_BASELINES_TEST.md).                                                                                                                               |
+**The gate.** It rules out a place when a known fact is against it and asks the person to check the rest. This is the claim that is well supported, and it does not depend on Qloo: any source of prices, opening hours and coordinates would give the same result. On Qloo data the gate can fail a place only on opening hours, price and distance, because Qloo states step free access and diet only as tags that are present and does not state group capacity or covered seating at all. Those requirements become questions for the person.
+
+**The Qloo order.** Qloo supplies the pool of places, the match of names to entities, the facts the gate reads and the order of what the gate leaves. The support for that order is weak, and the table says where.
+
+The comparison was registered before it was run. It was judged by an oracle that is written separately from the gate but shares its distance and time helpers and reads the same facts, so it can find a disagreement in the rules and not a wrong fact. On 20 scenarios in five cities that the product was not developed on (Chicago, Los Angeles, Berlin, Sydney, Toronto), all ranked from the same Qloo pools in one run on 28 October 2026:
+
+| Question                                                        | Result                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Does a plain list put a place that breaks a requirement on top? | Without the gate, the top three held one in 18 of 20 scenarios for Qloo taste alone, 20 of 20 for popularity, 10 of 20 for nearest first and 18 of 20 for random. With distance set aside the figures are 16, 14, 10 and 14 of 20. AFTERGLOW offered none in the 19 scenarios where it had a place to offer. This is the gate, not Qloo.                                        |
+| Does the Qloo signal change the answer?                         | The top choice differs from nearest first in 14 of 19 scenarios and from popularity in 15 of 19. Any two different orders often differ, so this shows only that the order is not the same. The Qloo affinity of the top three is 0.74 standard deviations above nearest first (0.51 to 0.97), which is positive by construction, because the lists are sorted by that affinity. |
+| Does the order surface the requested vibe?                      | No clear gain. The requested vibe is in the top three about as often as in a nearest first list (0.11 against 0.08).                                                                                                                                                                                                                                                            |
+| Does the group's own taste decide the order?                    | Not shown. In the earlier live evaluation, ranking with another group's signals left 0.70 of the top three unchanged, and the predictions about it missed in both runs. The swap has not been repeated since example places were introduced, nor on the held out scenarios.                                                                                                     |
+| Does blending closeness change what Qloo alone would choose?    | In 6 of 19 scenarios the first place differs. **This missed its prediction** of at most 20 percent. The cost in affinity is small and the list is 0.43 km closer on average.                                                                                                                                                                                                    |
+| Were the predictions met?                                       | 13 of 14 thresholds, one missed, all reported in [docs/EVALUATION_BASELINES_TEST.md](docs/EVALUATION_BASELINES_TEST.md). The thresholds came from the development scenarios, so this shows that the result repeated in five other cities. It does not show that the product is good.                                                                                            |
 
 What this does not show, and the notes say so at length in [docs/EVALUATION_BASELINES_NOTES.md](docs/EVALUATION_BASELINES_NOTES.md):
 
@@ -32,10 +40,9 @@ What this does not show, and the notes say so at length in [docs/EVALUATION_BASE
 - A language model with no Qloo data is not among the baselines, so it is not known whether AFTERGLOW outperforms one.
 - The same team wrote the method and chose the scenarios.
 - Most offered places still need the person's check. In 11 of the 19 scenarios with a gated list none of the three places was fully verified, because Qloo states opening hours, step free access and dietary options for only part of its places.
-- In one Los Angeles scenario all 40 places failed a requirement, so the gate left nothing to offer.
-- The requested vibe appears in the top three about as often as it does in a nearest first list (0.11 against 0.08).
+- In one Los Angeles scenario all 40 places failed a requirement, so the gate left nothing to offer. The pool is every place Qloo returns for the category in the city, not the neighbourhood of the venue.
 
-The earlier evaluation of the pipeline on real Qloo data, with its three missed predictions, is in [docs/EVALUATION_LIVE.md](docs/EVALUATION_LIVE.md).
+The earlier evaluation of the pipeline on real Qloo data, in which three of twelve predictions were missed in both runs (that the group's signals decide the first place, that they change the top three, and that Taste On and Taste Off choose different first places), is in [docs/EVALUATION_LIVE.md](docs/EVALUATION_LIVE.md).
 
 ## How it works
 
@@ -62,7 +69,7 @@ Qloo describes what groups of people tend to like. AFTERGLOW presents affinities
 
 ## Use it from an MCP client
 
-The same workflow is available as MCP tools over stdio, so a model can open a case, ask the person the questions the gate raises and record their answers. The rules are enforced by the application: unknown never passes, only the person's own word settles a fact, and nothing is booked. See [docs/MCP.md](docs/MCP.md).
+The same workflow is available as MCP tools over stdio, so a model can open a case, ask the person the questions the gate raises and record their answers. The application enforces two rules whatever the model does: an unknown never passes, and a requirement can be given up only when no option is left and that exact change was offered. A third rule, that only the person's own word settles a fact, is requested of the model and cannot be enforced by a server that does not see who typed the answer. Nothing is booked. See [docs/MCP.md](docs/MCP.md).
 
 ## Run it
 
@@ -124,7 +131,7 @@ src/application     Use cases and the taste provider port
 src/infrastructure  Configuration, SQLite and repositories
 src/qloo            Qloo client, matching, normalisation and the live provider
 src/simulation      The labelled simulated catalogue, provider and scenarios
-src/evaluation      Independent oracle, evaluation runners, baselines and reports
+src/evaluation      Oracle, evaluation runners, baselines and reports
 src/interfaces      The Express API and the MCP server
 web                 React interface
 e2e                 Browser tests

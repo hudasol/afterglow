@@ -33,7 +33,7 @@ Qloo results are used as evidence inside a product flow. They never override a h
 
 **Honest status.** The live Qloo path was run against the real API on 25 October 2026. A smoke test of 16 requests gave the verdict go ([report](../data/evaluation/smoke-2026-10-25.json)). A preregistered evaluation over 20 scenarios in five cities then met 9 of its 12 predictions and missed 3 ([registered result](EVALUATION_LIVE.md)). The first run exposed two defects in the product, which were fixed and recorded as a dated amendment, and a second run on the same scenarios gave the same 9 and 3 ([second run](EVALUATION_LIVE_SECOND_RUN.md), [notes on the misses](EVALUATION_LIVE_NOTES.md)).
 
-On 28 October 2026 the product was compared with simpler ways of choosing a replacement: random, nearest first, popular and Qloo taste alone, each with and without the gate, judged by an independent oracle. The questions, the statistics and 14 numeric predictions were registered before the 20 test scenarios in five other cities were ranked ([registration](PREREGISTRATION_V2.md)), and the test run was made once. All 20 scenarios completed, 13 predictions were met and 1 was missed ([results](EVALUATION_BASELINES_TEST.md), [notes](EVALUATION_BASELINES_NOTES.md)).
+On 28 October 2026 the product was compared with simpler ways of choosing a replacement: random, nearest first, popular and Qloo taste alone, each with and without the gate, judged by a separately written oracle. The questions, the statistics and 14 numeric predictions were registered before the 20 test scenarios in five other cities were ranked ([registration](PREREGISTRATION_V2.md)), and the test run was made once. All 20 scenarios completed, 13 predictions were met and 1 was missed ([results](EVALUATION_BASELINES_TEST.md), [notes](EVALUATION_BASELINES_NOTES.md)).
 
 - Without the gate, the top three held a place that breaks a requirement in 18 of 20 scenarios for Qloo taste alone, 20 of 20 for popularity and 10 of 20 for nearest first. AFTERGLOW offered none in the 19 scenarios where it had a place to offer.
 - The Qloo ranking changes the answer: the top choice differs from nearest first in 14 of 19 scenarios and from popularity in 15 of 19.
@@ -92,7 +92,7 @@ To use live Qloo, copy `.env.example` to `.env`, set `QLOO_API_KEY`, run `npm ru
 - Three of the 12 preregistered predictions were missed in both live runs: how much the ranking changes when the signals are swapped (P4, P5) and how often the Taste On top choice differs from the nearest place (P9). A read only look at the pools showed why in part. When a plan sends only vibe tags, Qloo gave all 40 places the same taste score in all five such scenarios, so the order follows distance, and the application says so beside the shortlist. The registered result is not changed.
 - Qloo states opening hours for about 70 percent of the places in the evaluation pools, step free access for about 74 percent and a dietary fact for about 63 percent where one was needed. It never states group capacity or covered seating. For facts that stay unknown AFTERGLOW can look at OpenStreetMap, which volunteers edit, and that lookup has not yet been run successfully against real data, because the public Overpass servers did not answer when it was tried. Whatever remains stays unknown until the person checks it, and the gate treats unknown as not passing.
 - The live evaluation measures how the pipeline behaves on real Qloo data for plans the team chose. It does not measure whether Qloo affinity predicts what a person will enjoy, and the hours, access and dietary facts Qloo states were not checked against the venues.
-- The offline evaluation uses an invented, hand authored catalogue. In it, a plain top three broke at least one requirement in 12 of 17 scenarios, and the gated shortlists broke none as judged by an independent oracle. These figures show how the pipeline behaves on that catalogue. They are not a rate in the real world and they say nothing about how well Qloo predicts what people enjoy.
+- The offline evaluation uses an invented, hand authored catalogue. In it, a plain top three broke at least one requirement in 12 of 17 scenarios, and the gated shortlists broke none as judged by a separately written oracle. These figures show how the pipeline behaves on that catalogue. They are not a rate in the real world and they say nothing about how well Qloo predicts what people enjoy.
 - The baseline comparison shows that the gate removes conflicts that plain lists contain and that the Qloo signal changes the answer. It does not show that people would prefer the result. Most offered places still need the person's check: in 11 of the 19 scenarios with a gated list none of the three places was fully verified, because Qloo states the facts for only part of its places. In one Los Angeles scenario all 40 places failed a requirement, because the candidate pool comes from a search over the whole city.
 - No people took part in any evaluation.
 - AFTERGLOW does not book, call or message anyone. Confirmed means the person said so.
@@ -112,7 +112,7 @@ It anchors the intent, matches the group's taste to Qloo entities and tags, eval
 
 ### How we built it
 
-TypeScript with a layered design: a pure domain layer, an application layer behind a taste provider port, SQLite for an event sourced case history, an Express API and a React interface. A labelled simulated provider makes the product demonstrable and testable without a key. An independent oracle re-implements the constraint rules so the gate can be checked against something other than itself.
+TypeScript with a layered design: a pure domain layer, an application layer behind a taste provider port, SQLite for an event sourced case history, an Express API and a React interface. A labelled simulated provider makes the product demonstrable and testable without a key. A separately written oracle restates the constraint rules so the gate can be checked against something other than itself. It shares the distance and time helpers with the gate, and a test compares the two on generated facts.
 
 ### Challenges
 
@@ -120,7 +120,7 @@ Designing for unknown facts. Qloo states opening hours, step free access and die
 
 ### Accomplishments
 
-A gate that is checked by an independent implementation. Provenance on every fact. A flow that asks the person rather than guessing when a match is ambiguous. A browser test suite with accessibility checks, and documented, reproducible evaluations that were registered before they were run, report their misses and state their limits. Tests fail when a figure in the documents stops matching the recorded results.
+A gate that is checked against a separately written statement of the rules. Provenance on every fact. A flow that asks the person rather than guessing when a match is ambiguous. A browser test suite with accessibility checks, and documented, reproducible evaluations that were registered before they were run, report their misses and state their limits. Tests fail when a figure in the documents stops matching the recorded results.
 
 ### What we learned
 

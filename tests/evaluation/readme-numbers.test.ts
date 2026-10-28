@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import type { BaselineResultsFile } from '../../src/evaluation/baseline-report.js';
+import { violationKinds, type BaselineResultsFile } from '../../src/evaluation/baseline-report.js';
 
 const root = resolve(import.meta.dirname, '../..');
 const readme = readFileSync(resolve(root, 'README.md'), 'utf8').replace(/\s+/gu, ' ');
@@ -52,6 +52,23 @@ describe('README figures', () => {
     const lists = test.results.map((r) => r.gated.afterglow).filter((l) => l !== null);
     const none = lists.filter((l) => l.verified === 0).length;
     expect(readme).toContain(`In ${none} of the ${lists.length} scenarios with a gated list`);
+  });
+
+  it('match the figures with distance set aside', () => {
+    const beyond = Object.fromEntries(
+      violationKinds(test.results).map((row) => [row.arm, row.scenariosBeyondDistance.count]),
+    );
+    expect(readme).toContain(
+      `With distance set aside the figures are ${beyond['taste_only']}, ${beyond['popular']}, ${beyond['nearest']} and ${beyond['random']} of 20.`,
+    );
+  });
+
+  it('match the signal swap figure of the second live run', () => {
+    const second = JSON.parse(
+      readFileSync(resolve(root, 'results/live-qloo-second-run.json'), 'utf8'),
+    ) as { live: { metrics: Array<{ id: string; observed: number | null }> } };
+    const p4 = second.live.metrics.find((m) => m.id === 'P4')?.observed;
+    expect(readme).toContain(`left ${two(p4)} of the top three unchanged`);
   });
 
   it('does not use dashes or emojis in prose', () => {

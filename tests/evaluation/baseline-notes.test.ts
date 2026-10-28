@@ -106,3 +106,72 @@ describe('notes on the held out comparison', () => {
     expect(notes).not.toMatch(/\p{Extended_Pictographic}/u);
   });
 });
+
+describe('notes on what the gate and Qloo each contribute', () => {
+  it('say that every gated approach ends with no violation and the same verified count', () => {
+    const arms = ['random', 'nearest', 'popular', 'taste_only', 'afterglow'] as const;
+    const lists = arms.map((arm) =>
+      done.map((r) => r.gated[arm]).filter((l): l is NonNullable<typeof l> => l !== null),
+    );
+    for (const list of lists) {
+      expect(list.reduce((sum, l) => sum + l.violations, 0)).toBe(0);
+    }
+    const means = lists.map(
+      (list) => list.reduce((sum, l) => sum + l.verified, 0) / (list.length || 1),
+    );
+    for (const mean of means) expect(mean.toFixed(2)).toBe('1.05');
+    expect(notes).toContain('the same mean of 1.05 verified places per list');
+  });
+
+  it('count the requirements that Qloo data can and cannot fail', () => {
+    const scenarios = JSON.parse(read('evaluation/test-scenarios.json')) as Array<{
+      anchor: { hardConstraints?: Array<{ kind: string }> };
+    }>;
+    const kinds: Record<string, number> = {};
+    for (const s of scenarios) {
+      for (const c of s.anchor.hardConstraints ?? []) kinds[c.kind] = (kinds[c.kind] ?? 0) + 1;
+    }
+    const total = Object.values(kinds).reduce((sum, n) => sum + n, 0);
+    const failable =
+      (kinds['open_at_plan_time'] ?? 0) +
+      (kinds['max_distance_km'] ?? 0) +
+      (kinds['max_price_level'] ?? 0);
+    expect(total).toBe(75);
+    expect(failable).toBe(50);
+    expect(kinds['open_at_plan_time']).toBe(20);
+    expect(kinds['max_distance_km']).toBe(20);
+    expect(kinds['max_price_level']).toBe(10);
+    expect(kinds['fits_party_size']).toBe(10);
+    expect(kinds['covered_space']).toBe(5);
+    expect(kinds['step_free_access']).toBe(5);
+    expect(kinds['dietary']).toBe(5);
+    expect(notes).toContain('Of the 75 hard requirements');
+    expect(notes).toContain('50 can be failed: opening hours (20), distance (20) and price (10)');
+    expect(notes).toContain(
+      'party size (10), covered seating (5), step free access (5) and diet (5)',
+    );
+  });
+
+  it('quote the signal swap figures of the second live run', () => {
+    const second = JSON.parse(read('results/live-qloo-second-run.json')) as {
+      live: { metrics: Array<{ id: string; observed: number | null }> };
+    };
+    const observed = (id: string) => second.live.metrics.find((m) => m.id === id)?.observed;
+    expect(two(observed('P4'))).toBe('0.70');
+    expect(two(observed('P5'))).toBe('0.45');
+    expect(two(observed('P9'))).toBe('0.40');
+    expect(notes).toContain('left 0.70 of the top three unchanged');
+    expect(notes).toContain('changed the top choice in 0.45 of scenarios');
+    expect(notes).toContain('differed between Taste On and Taste Off in 0.40');
+  });
+
+  it('quote how many places the gate leaves', () => {
+    const eligible = done.map((r) => r.eligible).sort((a, b) => a - b);
+    const median = ((eligible[9] ?? NaN) + (eligible[10] ?? NaN)) / 2;
+    expect(median).toBe(17);
+    expect(eligible.filter((n) => n <= 3)).toHaveLength(2);
+    expect(done.every((r) => r.poolSize === 40)).toBe(true);
+    expect(notes).toContain('a median of 17 of the 40 places');
+    expect(notes).toContain('three or fewer in 2 of the 20');
+  });
+});
