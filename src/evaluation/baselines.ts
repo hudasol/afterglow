@@ -29,8 +29,19 @@ export const UNGATED_ARMS = ['random', 'nearest', 'popular', 'taste_only'] as co
 export type GatedArm = (typeof GATED_ARMS)[number];
 export type UngatedArm = (typeof UNGATED_ARMS)[number];
 
+/** One place on a list, with what the independent oracle and the gate say about it. */
+export interface ListedPlace {
+  name: string;
+  /** What the oracle finds against the place on a known fact. Empty when nothing is found. */
+  against: string[];
+  feasibility: OptionView['feasibility'];
+  distanceKm: number | null;
+  affinity: number | null;
+}
+
 export interface ListMeasures {
   names: string[];
+  places: ListedPlace[];
   /** Places on the list that break a requirement, judged by the independent oracle. */
   violations: number;
   /** Places the gate rules out, places it cannot decide, and places that pass on known facts. */
@@ -117,18 +128,24 @@ function measure(
   const sd = eligibleAffinities.length > 1 ? standardDeviation(eligibleAffinities) : 0;
   const poolMean = mean(eligibleAffinities);
   const tagged = list.filter((o) => (o.candidate.taste.tagNames?.length ?? 0) > 0);
+  const against = (o: OptionView): string[] =>
+    oracleViolations(
+      o.candidate,
+      view.plan,
+      view.originalLocation,
+      view.anchor.originalVenue.name,
+      checkOriginal,
+    );
   return {
     names: list.map((o) => o.candidate.name),
-    violations: list.filter(
-      (o) =>
-        oracleViolations(
-          o.candidate,
-          view.plan,
-          view.originalLocation,
-          view.anchor.originalVenue.name,
-          checkOriginal,
-        ).length > 0,
-    ).length,
+    places: list.map((o) => ({
+      name: o.candidate.name,
+      against: against(o),
+      feasibility: o.feasibility,
+      distanceKm: o.distanceKm,
+      affinity: affinityOf(o),
+    })),
+    violations: list.filter((o) => against(o).length > 0).length,
     ruledOut: list.filter((o) => o.feasibility === 'rejected').length,
     needsCheck: list.filter((o) => o.feasibility === 'needs_verification').length,
     verified: list.filter((o) => o.feasibility === 'feasible').length,

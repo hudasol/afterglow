@@ -11,6 +11,7 @@ import type { BaselineResult, ListMeasures } from '../../src/evaluation/baseline
 function list(overrides: Partial<ListMeasures> = {}): ListMeasures {
   return {
     names: ['A', 'B', 'C'],
+    places: [],
     violations: 0,
     ruledOut: 0,
     needsCheck: 1,
@@ -135,6 +136,35 @@ describe('baseline report', () => {
     const dev = renderBaselineReport(file([result('one')], 'dev'));
     expect(dev).not.toContain('Predictions and results');
     expect(dev).toContain('development scenarios');
+  });
+
+  it('names the places and the reason for each requirement that is broken', () => {
+    const detailed = result('one', {
+      ungated: {
+        ...result('x').ungated,
+        taste_only: list({
+          violations: 1,
+          places: [
+            {
+              name: 'Mall',
+              against: ['price', 'dietary:halal'],
+              feasibility: 'rejected',
+              distanceKm: 2,
+              affinity: 0.8,
+            },
+            {
+              name: 'Bistro',
+              against: [],
+              feasibility: 'feasible',
+              distanceKm: 1,
+              affinity: 0.7,
+            },
+          ],
+        }),
+      },
+    });
+    const text = renderBaselineReport(file([detailed]));
+    expect(text).toContain('Mall (over the price limit, not halal); Bistro');
   });
 
   it('states the method and the limits', () => {

@@ -8,6 +8,7 @@ import {
   GATED_ARMS,
   UNGATED_ARMS,
   type BaselineResult,
+  type ListedPlace,
   type ListMeasures,
 } from './baselines.js';
 import {
@@ -449,6 +450,25 @@ const proportion = (i: ProportionInterval | null): string =>
     ? 'n/a'
     : `${i.count} of ${i.total}, ${two(i.share)} (${two(i.low)} to ${two(i.high)})`;
 
+/** The oracle's short codes in words a reader of the report can follow. */
+export function reasonText(code: string): string {
+  if (code === 'price') return 'over the price limit';
+  if (code === 'distance') return 'too far away';
+  if (code === 'hours') return 'closed during the plan';
+  if (code === 'capacity') return 'too small for the party';
+  if (code === 'covered') return 'not covered';
+  if (code === 'step_free') return 'not step free';
+  if (code === 'is the original venue') return 'the venue that fell through';
+  if (code.startsWith('dietary:')) return `not ${code.slice('dietary:'.length)}`;
+  return code;
+}
+
+function placeText(place: ListedPlace): string {
+  return place.against.length === 0
+    ? place.name
+    : `${place.name} (${place.against.map(reasonText).join(', ')})`;
+}
+
 const ARM_LABEL: Record<string, string> = {
   random: 'Random',
   nearest: 'Nearest first',
@@ -600,6 +620,21 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
     lines.push(
       `| ${cell(r.id)} | ${r.poolSize} | ${r.eligible} | ${r.coverage.scored} | ${count(r.gated.afterglow)} | ${count(r.ungated.nearest)} | ${count(r.ungated.popular)} | ${count(r.ungated.taste_only)} | ${r.ok ? 'completed' : cell(`failed: ${r.error ?? 'unknown'}`)} |`,
     );
+  }
+  lines.push('');
+  lines.push('## The lists, place by place');
+  lines.push('');
+  lines.push(
+    'The AFTERGLOW top three next to the taste only top three without the gate. A reason in brackets is what the independent oracle finds against that place on a known fact.',
+  );
+  lines.push('');
+  lines.push('| Scenario | AFTERGLOW top three | Taste only top three without the gate |');
+  lines.push('| --- | --- | --- |');
+  for (const r of file.results) {
+    if (!r.ok) continue;
+    const ours = (r.gated.afterglow?.places ?? []).map(placeText).join('; ');
+    const theirs = (r.ungated.taste_only?.places ?? []).map(placeText).join('; ');
+    lines.push(`| ${cell(r.id)} | ${cell(ours) || 'none'} | ${cell(theirs) || 'none'} |`);
   }
   lines.push('');
   lines.push('## What this does not show');
