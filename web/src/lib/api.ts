@@ -101,6 +101,8 @@ export interface ProbeResult {
   latencyMs: number;
   code?: string;
   message: string;
+  /** True when this is the answer from a moment ago, so Qloo was not asked again. */
+  cached: boolean;
 }
 
 export interface Provenance {

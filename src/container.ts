@@ -10,6 +10,7 @@ import { OverpassClient, type OverpassOptions } from './openstreetmap/overpass.j
 import { OsmPlaceFactsProvider } from './openstreetmap/provider.js';
 import { runOsmSmoke } from './openstreetmap/smoke.js';
 import { QlooTasteProvider } from './qloo/provider.js';
+import { memoiseAsync } from './shared/memoise-async.js';
 import { SimulatedTasteProvider } from './simulation/provider.js';
 
 export interface Container {
@@ -60,8 +61,10 @@ export function buildContainer(config: Config = loadConfig()): Container {
     ...(placeFacts ? { placeFacts } : {}),
   });
 
-  const probe = client
-    ? async (): Promise<ProbeResult> => {
+  // The probe spends one Qloo call. Its answer is repeated for a minute, so a page that is
+  // refreshed or a script that polls cannot use up the daily allowance.
+  const askQloo = client
+    ? memoiseAsync(async (): Promise<Omit<ProbeResult, 'cached'>> => {
         const started = Date.now();
         try {
           await client.get('/search', { query: 'jazz', take: 1 }, undefined, { bypassCache: true });
@@ -79,6 +82,12 @@ export function buildContainer(config: Config = loadConfig()): Container {
             message: qloo?.message ?? 'The Qloo request could not be completed.',
           };
         }
+      }, PROBE_CACHE_MS * 2)
+    : null;
+  const probe = askQloo
+    ? async (): Promise<ProbeResult> => {
+        const { value, cached } = await askQloo();
+        return { ...value, cached };
       }
     : null;
 

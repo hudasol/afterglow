@@ -3,6 +3,9 @@
  * category tag returns in a city. It writes no results file and needs QLOO_API_KEY.
  *
  *   npm run qloo:categories -- Chicago Berlin
+ *   npm run qloo:categories -- --phrases "dessert shop,bakery" Chicago Berlin
+ *
+ * With --phrases the listed phrases are checked in place of the product's category phrases.
  *
  * Every value printed is a count, a public tag name or an identifier.
  */
@@ -24,8 +27,19 @@ interface Row {
 }
 
 async function main(): Promise<void> {
-  const cities = process.argv.slice(2);
-  if (cities.length === 0) throw new Error('Usage: qloo-categories <city> [city ...]');
+  const args = process.argv.slice(2);
+  const phraseIndex = args.indexOf('--phrases');
+  const custom =
+    phraseIndex === -1
+      ? null
+      : (args[phraseIndex + 1] ?? '')
+          .split(',')
+          .map((phrase) => phrase.trim())
+          .filter(Boolean);
+  const cities = args.filter(
+    (arg, index) => arg !== '--phrases' && (phraseIndex === -1 || index !== phraseIndex + 1),
+  );
+  if (cities.length === 0) throw new Error('Usage: qloo-categories [--phrases a,b] <city> ...');
   const client = liveClient();
   if (!client) {
     console.error('QLOO_API_KEY is not set, so nothing was requested.');
@@ -33,8 +47,13 @@ async function main(): Promise<void> {
     return;
   }
   const rows: Row[] = [];
-  for (const category of venueCategorySchema.options) {
-    const phrase = categoryTagPhrase[category];
+  const subjects = custom
+    ? custom.map((phrase) => ({ category: 'custom', phrase }))
+    : venueCategorySchema.options.map((category) => ({
+        category: category as string,
+        phrase: categoryTagPhrase[category],
+      }));
+  for (const { category, phrase } of subjects) {
     const resolution = await resolveTag(client, 'category', phrase, [] as CallTrace[], PLACE_TYPE);
     const tags = [
       ...(resolution.selected ? [resolution.selected] : []),

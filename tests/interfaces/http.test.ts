@@ -236,11 +236,11 @@ describe('http interface', () => {
       {},
       {
         liveConfigured: true,
-        probe: async () => ({ ok: true, latencyMs: 12, message: 'ok' }),
+        probe: async () => ({ ok: true, latencyMs: 12, message: 'ok', cached: false }),
       },
     );
     closer = server.close;
     const probe = await (await server.request('/api/integration/probe', { method: 'POST' })).json();
-    expect(probe).toEqual({ ok: true, latencyMs: 12, message: 'ok' });
+    expect(probe).toEqual({ ok: true, latencyMs: 12, message: 'ok', cached: false });
   });
 });

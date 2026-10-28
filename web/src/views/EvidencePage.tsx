@@ -135,6 +135,7 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         ok: false,
         latencyMs: 0,
         message: caught instanceof Error ? caught.message : 'The check failed.',
+        cached: false,
       });
     } finally {
       setProbing(false);
@@ -196,6 +197,9 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
                   : probe.code
                     ? ` Code ${probe.code}.`
                     : ''}
+                {probe.cached
+                  ? ' This is the answer from a moment ago, so Qloo was not asked again.'
+                  : ''}
               </p>
             ) : null}
           </>

@@ -28,6 +28,8 @@ export interface ProbeResult {
   latencyMs: number;
   code?: string;
   message: string;
+  /** True when this is the answer from a moment ago, so Qloo was not asked again. */
+  cached: boolean;
 }
 
 /** The outcome of a small real query to OpenStreetMap, made from this server. */

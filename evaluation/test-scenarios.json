@@ -55,7 +55,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Intelligentsia Coffee"
+        "name": "Sawada Coffee"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -99,7 +99,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Lou Malnati's Pizzeria"
+        "name": "Girl & the Goat"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Food everyone can eat", "Space for children"],
@@ -144,7 +144,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "Green Mill Cocktail Lounge"
+        "name": "Andy's Jazz Club"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],
@@ -227,7 +227,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Alfred Coffee"
+        "name": "Menotti's Coffee Stop"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -316,7 +316,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "The Baked Potato"
+        "name": "Catalina Jazz Club"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],
@@ -571,7 +571,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Single Origin Roasters"
+        "name": "Paramount Coffee Project"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -615,7 +615,7 @@
       "durationMinutes": 120,
       "category": "restaurant",
       "originalVenue": {
-        "name": "Mamak"
+        "name": "Sailors Thai"
       },
       "useOriginalVenueAsSignal": false,
       "preserve": ["Food everyone can eat", "Space for children"],
@@ -660,7 +660,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "The Basement"
+        "name": "Venue 505"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],
@@ -700,7 +700,7 @@
       "durationMinutes": 150,
       "category": "bar",
       "originalVenue": {
-        "name": "Bar Raval"
+        "name": "Bar Isabel"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Lively enough for a birthday", "Good cocktails"],
@@ -743,7 +743,7 @@
       "durationMinutes": 90,
       "category": "cafe",
       "originalVenue": {
-        "name": "Jimmy's Coffee"
+        "name": "Dineen Coffee Co"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Quiet enough to hold a conversation", "Good coffee"],
@@ -832,7 +832,7 @@
       "durationMinutes": 150,
       "category": "live_music",
       "originalVenue": {
-        "name": "The Rex Hotel Jazz & Blues Bar"
+        "name": "The Rex Hotel Jazz and Blues Bar"
       },
       "useOriginalVenueAsSignal": true,
       "preserve": ["Live music we can listen to", "A table for the whole group"],

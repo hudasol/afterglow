@@ -65,7 +65,9 @@ jobs:
         run: npm run eval -- --preflight evaluation/test-scenarios.json
       - name: Check how each venue category resolves
         if: ${{ inputs.mode == 'categories' }}
-        run: npm run qloo:categories -- Chicago Berlin Dubai
+        run: |
+          npm run qloo:categories -- Chicago Berlin Dubai
+          npm run qloo:categories -- --phrases "dessert shop,bakery,ice cream,patisserie,sweets,live music venue,jazz club,music venue,concert hall" Chicago Berlin Dubai
       - name: Rank the development scenarios against the baselines
         if: ${{ inputs.mode == 'baselines-dev' }}
         run: npm run eval:baselines -- --run dev
