@@ -287,6 +287,17 @@ describe('http interface', () => {
     });
   });
 
+  it('offers live presets only where a live case can be opened', async () => {
+    const off = await startServer();
+    expect((await (await off.request('/api/live-presets')).json()).presets).toEqual([]);
+    await off.close();
+    const on = await startServer({}, { liveConfigured: true });
+    closer = on.close;
+    const { presets } = await (await on.request('/api/live-presets')).json();
+    expect(presets).toHaveLength(5);
+    expect(presets[0]).toMatchObject({ city: 'New York', anchor: { partySize: 4 } });
+  });
+
   it('serves the featured scenarios and a missing probe as unavailable', async () => {
     const server = await startServer();
     closer = server.close;

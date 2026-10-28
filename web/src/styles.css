@@ -1333,3 +1333,14 @@ code,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.live-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+.live-controls .field {
+  min-width: 12rem;
+}

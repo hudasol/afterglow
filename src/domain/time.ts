@@ -58,3 +58,49 @@ export function localWeekday(iso: string): number {
   const offset = offsetMinutes(iso);
   return new Date(new Date(iso).getTime() + offset * 60_000).getUTCDay();
 }
+
+/** Offset of an IANA time zone from UTC at an instant, in minutes. DST is taken into account. */
+export function zoneOffsetMinutes(timeZone: string, at: Date): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    timeZoneName: 'longOffset',
+  }).formatToParts(at);
+  const name = parts.find((part) => part.type === 'timeZoneName')?.value ?? 'GMT';
+  const match = /^GMT([+-])(\d{2}):(\d{2})$/u.exec(name);
+  if (!match) return 0;
+  const sign = match[1] === '-' ? -1 : 1;
+  return sign * (Number(match[2]) * 60 + Number(match[3]));
+}
+
+/**
+ * The next time the given weekday (0 for Sunday) comes round at hour:minute on the clock of a
+ * time zone, as an ISO time with that zone's offset on that day. Today never counts, so the
+ * result is always at least a day away.
+ */
+export function nextLocalOccurrence(
+  now: Date,
+  timeZone: string,
+  weekday: number,
+  hour: number,
+  minute: number,
+): string {
+  const localNow = new Date(now.getTime() + zoneOffsetMinutes(timeZone, now) * 60_000);
+  let ahead = (weekday - localNow.getUTCDay() + 7) % 7;
+  if (ahead === 0) ahead = 7;
+  const day = new Date(
+    Date.UTC(
+      localNow.getUTCFullYear(),
+      localNow.getUTCMonth(),
+      localNow.getUTCDate() + ahead,
+      hour,
+      minute,
+    ),
+  );
+  // The offset can differ between now and that day, so it is read at the day itself.
+  let offset = zoneOffsetMinutes(
+    timeZone,
+    new Date(day.getTime() - zoneOffsetMinutes(timeZone, now) * 60_000),
+  );
+  offset = zoneOffsetMinutes(timeZone, new Date(day.getTime() - offset * 60_000));
+  return `${day.getUTCFullYear()}-${pad(day.getUTCMonth() + 1)}-${pad(day.getUTCDate())}T${pad(hour)}:${pad(minute)}:00${formatOffset(offset)}`;
+}

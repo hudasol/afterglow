@@ -13,6 +13,7 @@ import { AppError } from '../../application/errors.js';
 import type { RecoveryService } from '../../application/recovery-service.js';
 import { sessionKeyFromToken } from '../../application/session.js';
 import { caseModeSchema } from '../../domain/case.js';
+import { livePresets } from '../../domain/live-presets.js';
 import { disruptionSchema } from '../../domain/plan.js';
 import {
   liveRunView,
@@ -305,6 +306,11 @@ export function createApp(options: AppOptions): express.Express {
       res.json(await integration.osmProbe());
     }),
   );
+
+  // Ready made plans for live cases. They are offered only where a live case can be opened.
+  api.get('/live-presets', (_req, res) => {
+    res.json({ presets: integration.liveConfigured ? livePresets(new Date()) : [] });
+  });
 
   api.get('/scenarios', (_req, res) => {
     res.json({

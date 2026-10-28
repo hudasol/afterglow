@@ -4,6 +4,7 @@ import {
   api,
   ApiError,
   type EvaluationReportFile,
+  type LivePreset,
   type ScenarioPreset,
   type Showcase,
   type ShowcaseEntry,
@@ -94,6 +95,10 @@ export function Home() {
   const [report, setReport] = useState<EvaluationReportFile | null>(null);
   const [launching, setLaunching] = useState(false);
   const [launchError, setLaunchError] = useState<string | null>(null);
+  const [livePresets, setLivePresets] = useState<LivePreset[]>([]);
+  const [liveId, setLiveId] = useState('');
+  const [liveOpening, setLiveOpening] = useState(false);
+  const [liveError, setLiveError] = useState<string | null>(null);
 
   // The first example that needs no choice from the person, so one press reaches a shortlist.
   const quickExample = presets.find((preset) => !preset.choices);
@@ -117,8 +122,33 @@ export function Home() {
     }
   }
 
+  const chosenLive = livePresets.find((preset) => preset.id === liveId) ?? livePresets[0];
+
+  async function runLive(): Promise<void> {
+    if (!chosenLive) return;
+    setLiveOpening(true);
+    setLiveError(null);
+    try {
+      const view = await api.openCase({
+        mode: 'live',
+        anchor: chosenLive.anchor,
+        disruption: chosenLive.disruption,
+      });
+      go(caseHref(view.id));
+    } catch (caught) {
+      setLiveError(
+        caught instanceof ApiError ? caught.message : 'The live example could not be opened.',
+      );
+      setLiveOpening(false);
+    }
+  }
+
   useEffect(() => {
     let cancelled = false;
+    api
+      .livePresets()
+      .then((result) => !cancelled && setLivePresets(result.presets))
+      .catch(() => undefined);
     api
       .showcase()
       .then((result) => !cancelled && setShowcase(result))
@@ -182,6 +212,53 @@ export function Home() {
           </p>
         )}
       </section>
+
+      {livePresets.length > 0 && chosenLive ? (
+        <section className="panel live-example" aria-labelledby="home-live">
+          <h2 id="home-live">Run it on real Qloo data</h2>
+          <p style={{ marginTop: '0.5rem' }}>
+            {chosenLive.summary} Opening this case asks Qloo for places, their tags and a taste
+            ranking. It can take up to half a minute, and the server limits how many live cases one
+            address can open in an hour.
+          </p>
+          <div className="live-controls">
+            <div className="field">
+              <label htmlFor="live-city">City</label>
+              <select
+                id="live-city"
+                value={chosenLive.id}
+                onChange={(event) => setLiveId(event.target.value)}
+                disabled={liveOpening}
+              >
+                {livePresets.map((preset) => (
+                  <option key={preset.id} value={preset.id}>
+                    {preset.city}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="button"
+              className="btn primary"
+              disabled={liveOpening}
+              onClick={() => void runLive()}
+            >
+              {liveOpening ? 'Asking Qloo' : `Run in ${chosenLive.city}`}
+            </button>
+          </div>
+          {liveOpening ? (
+            <p className="muted-text" role="status" style={{ marginTop: '0.6rem' }}>
+              Asking Qloo. This can take up to half a minute on the first request after the server
+              has been idle.
+            </p>
+          ) : null}
+          {liveError ? (
+            <p className="error" role="alert" style={{ marginTop: '0.6rem' }}>
+              {liveError}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="principles" aria-label="How AFTERGLOW works">
         <div>

@@ -75,6 +75,16 @@ export interface ScenarioPreset {
   choices?: Record<string, string>;
 }
 
+/** A ready made plan for a live case, offered only where the server can open one. */
+export interface LivePreset {
+  id: string;
+  city: string;
+  title: string;
+  summary: string;
+  anchor: IntentAnchor;
+  disruption: Disruption;
+}
+
 export interface CaseListItem {
   id: string;
   title: string;
@@ -233,6 +243,7 @@ export const api = {
   showcase: () => request<Showcase>('GET', '/showcase'),
   status: () => request<ServerStatus>('GET', '/status'),
   scenarios: () => request<{ scenarios: ScenarioPreset[] }>('GET', '/scenarios'),
+  livePresets: () => request<{ presets: LivePreset[] }>('GET', '/live-presets'),
   evaluation: () =>
     request<{ reports: EvaluationReportFile[]; smoke: SmokeReportFile[]; liveRuns: LiveRunView[] }>(
       'GET',
