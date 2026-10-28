@@ -195,7 +195,7 @@ test.describe('integration status honesty', () => {
     await expect(page.getByText('9 predictions met, 3 missed').first()).toBeVisible();
     const summary = page.getByRole('region', { name: 'What the recorded results show' });
     await expect(summary).toContainText('13 of 14 predictions written before the test run');
-    await expect(summary).toContainText('Missed on the test scenarios');
+    await expect(summary).toContainText('A prediction on the test scenarios was missed');
     await expect(summary).toContainText('No such baseline was run');
     await expect(page.getByRole('heading', { name: 'Against simpler approaches' })).toBeVisible();
     await expect(page.getByText('13 predictions met, 1 missed')).toBeVisible();

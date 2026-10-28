@@ -5,6 +5,8 @@ import { missedPredictions, missedInEveryLiveRun, swapOverlap, twoPlaces } from 
  * A plain summary that sits above the detail: what the recorded results support and what they do
  * not. Every figure is read from the recorded runs, so it cannot drift from the tables below.
  */
+const lowerFirst = (text: string): string => text.charAt(0).toLowerCase() + text.slice(1);
+
 export function EvidenceSummary({
   heldOut,
   liveRuns,
@@ -57,8 +59,8 @@ export function EvidenceSummary({
             </li>
             {missedHeldOut.map((prediction) => (
               <li key={prediction.id}>
-                Missed on the test scenarios: {prediction.claim}. Predicted {prediction.predicted},
-                observed {prediction.observed}.
+                A prediction on the test scenarios was missed, the {lowerFirst(prediction.claim)}.
+                Predicted {prediction.predicted}, observed {prediction.observed}.
               </li>
             ))}
             <li>Whether anyone would prefer the result. No people took part in any evaluation.</li>
