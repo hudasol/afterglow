@@ -1,7 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { violationKinds, type BaselineResultsFile } from '../../src/evaluation/baseline-report.js';
+import {
+  recordedOrder,
+  violationKinds,
+  type BaselineResultsFile,
+} from '../../src/evaluation/baseline-report.js';
 
 const root = resolve(import.meta.dirname, '../..');
 const readme = readFileSync(resolve(root, 'README.md'), 'utf8').replace(/\s+/gu, ' ');
@@ -52,6 +56,12 @@ describe('README figures', () => {
     const lists = test.results.map((r) => r.gated.afterglow).filter((l) => l !== null);
     const none = lists.filter((l) => l.verified === 0).length;
     expect(readme).toContain(`In ${none} of the ${lists.length} scenarios with a gated list`);
+  });
+
+  it('agree with the recorded order example on how often the first choices differ', () => {
+    const nearest = s.topChoiceDiffers.nearest;
+    const order = recordedOrder(test);
+    expect(order?.firstChoicesDiffer).toEqual({ count: nearest?.count, total: nearest?.total });
   });
 
   it('match the figures with distance set aside', () => {

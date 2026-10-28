@@ -792,6 +792,58 @@ export interface RecordedExample {
  * place that breaks a requirement and AFTERGLOW offers something. The rule is fixed and is stated
  * next to the example, so the example is not picked by hand.
  */
+/** One place on a recorded list, with the figures that decide its position. */
+export interface OrderedPlace {
+  name: string;
+  /** Distance from the venue that fell through, when Qloo locates both. */
+  km: number | null;
+  /** The raw Qloo affinity, as returned. Absent when Qloo gave none. */
+  affinity: number | null;
+}
+
+/** The same eligible places in two orders, from one recorded scenario. */
+export interface RecordedOrder {
+  set: ScenarioSet;
+  generatedAt: string;
+  providerLabel: string;
+  scenarioId: string;
+  title: string;
+  nearest: OrderedPlace[];
+  afterglow: OrderedPlace[];
+  /** In how many completed scenarios with both lists the first choices differ. */
+  firstChoicesDiffer: { count: number; total: number };
+}
+
+/**
+ * The first scenario, in the order of the scenario file, in which the first choice of the AFTERGLOW
+ * list is not the first choice of the nearest first list, both lists taken from the same places that
+ * passed the gate. The rule is fixed and shown next to the example. What it shows is that the Qloo
+ * signal changes the order. It does not show that people would prefer the result.
+ */
+export function recordedOrder(file: BaselineResultsFile): RecordedOrder | null {
+  const done = file.results.filter((r) => r.ok);
+  const both = done.filter((r) => r.gated.nearest && r.gated.afterglow);
+  const differs = (r: BaselineResult) =>
+    r.gated.nearest?.places[0]?.name !== r.gated.afterglow?.places[0]?.name;
+  const pick = both.find(differs);
+  if (!pick || !pick.gated.nearest || !pick.gated.afterglow) return null;
+  const show = (place: ListedPlace): OrderedPlace => ({
+    name: place.name,
+    km: place.distanceKm,
+    affinity: place.affinity,
+  });
+  return {
+    set: file.set,
+    generatedAt: file.generatedAt,
+    providerLabel: file.provider.label,
+    scenarioId: pick.id,
+    title: pick.title,
+    nearest: pick.gated.nearest.places.map(show),
+    afterglow: pick.gated.afterglow.places.map(show),
+    firstChoicesDiffer: { count: both.filter(differs).length, total: both.length },
+  };
+}
+
 export function recordedExample(file: BaselineResultsFile): RecordedExample | null {
   const done = file.results.filter((r) => r.ok);
   const pick = done.find(
@@ -842,6 +894,16 @@ export interface BaselineArmView {
   vibe: string;
 }
 
+/** The few numbers the front page and the top of the Evidence page quote. */
+export interface BaselineHeadline {
+  /** Scenarios with a place that breaks a requirement in the plain top three, by approach. */
+  plainBreaking: Array<{ approach: string; count: number; total: number }>;
+  /** Scenarios where the AFTERGLOW top three holds a place that breaks a requirement. */
+  gatedBreaking: { count: number; total: number } | null;
+  /** Mean share of the top three that carries a requested vibe. */
+  vibe: { afterglow: number | null; nearest: number | null };
+}
+
 /** A compact view of a recorded run for the Evidence page. The text is the same as in the generated document. */
 export interface BaselineRunView {
   set: ScenarioSet;
@@ -856,6 +918,7 @@ export interface BaselineRunView {
   /** Empty for the development scenarios, which were used to set the predictions and carry none. */
   predictions: BaselinePredictionView[];
   arms: BaselineArmView[];
+  headline: BaselineHeadline;
 }
 
 export function baselineRunView(file: BaselineResultsFile, label: string): BaselineRunView {
@@ -891,6 +954,23 @@ export function baselineRunView(file: BaselineResultsFile, label: string): Basel
     misses: s.misses,
     notEvaluated: s.notEvaluated,
     predictions,
+    headline: {
+      plainBreaking: s.arms
+        .filter((row) => !row.gated && row.violating !== null)
+        .map((row) => ({
+          approach: ARM_LABEL[row.arm] ?? row.arm,
+          count: row.violating?.count ?? 0,
+          total: row.violating?.total ?? 0,
+        })),
+      gatedBreaking: (() => {
+        const row = s.arms.find((r) => r.gated && r.arm === 'afterglow')?.violating;
+        return row ? { count: row.count, total: row.total } : null;
+      })(),
+      vibe: {
+        afterglow: s.arms.find((r) => r.gated && r.arm === 'afterglow')?.vibe?.mean ?? null,
+        nearest: s.arms.find((r) => r.gated && r.arm === 'nearest')?.vibe?.mean ?? null,
+      },
+    },
     arms: s.arms.map((row) => ({
       approach: ARM_LABEL[row.arm] ?? row.arm,
       gate: row.gated,

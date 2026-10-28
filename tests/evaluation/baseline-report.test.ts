@@ -4,6 +4,7 @@ import {
   baselineRunView,
   coverageNotes,
   recordedExample,
+  recordedOrder,
   renderBaselineReport,
   summariseBaselines,
   violationKinds,
@@ -259,6 +260,33 @@ describe('baseline run view', () => {
     }
     expect(view.hits + view.misses + view.notEvaluated).toBe(BASELINE_PREDICTIONS.length);
   });
+
+  it('gives the headline figures that the front page quotes, from the same summary', () => {
+    const broken = result('broken', {
+      ungated: {
+        random: list({ violations: 1 }),
+        nearest: list(),
+        popular: list({ violations: 2 }),
+        taste_only: list({ violations: 1 }),
+      },
+    });
+    const clean = result('clean', {
+      ungated: { random: list(), nearest: list(), popular: list(), taste_only: list() },
+    });
+    const run = file([broken, clean]);
+    const view = baselineRunView(run, 'Test scenarios');
+    const summary = run.summary;
+    const byName = Object.fromEntries(view.headline.plainBreaking.map((r) => [r.approach, r]));
+    expect(byName['Random']).toEqual({ approach: 'Random', count: 1, total: 2 });
+    expect(byName['Nearest first']).toEqual({ approach: 'Nearest first', count: 0, total: 2 });
+    expect(byName['Popular']?.count).toBe(1);
+    expect(view.headline.plainBreaking).toHaveLength(4);
+    expect(view.headline.gatedBreaking).toEqual({ count: 0, total: 2 });
+    expect(view.headline.vibe.afterglow).toBe(
+      summary.arms.find((a) => a.gated && a.arm === 'afterglow')?.vibe?.mean,
+    );
+    expect(view.headline.vibe.nearest).toBe(0.5);
+  });
 });
 
 describe('coverage notes', () => {
@@ -327,5 +355,45 @@ describe('violationKinds', () => {
     const failed = result('failed', { ok: false });
     const kinds = violationKinds([failed]);
     expect(kinds.every((row) => row.scenariosBeyondDistance.total === 0)).toBe(true);
+  });
+});
+
+describe('recordedOrder', () => {
+  const place = (name: string, km: number, affinity: number) => ({
+    name,
+    against: [],
+    feasibility: 'needs_verification' as const,
+    distanceKm: km,
+    affinity,
+  });
+
+  it('takes the first scenario whose first choices differ, and counts all of them', () => {
+    const same = result('same', {
+      gated: {
+        ...result('x').gated,
+        nearest: list({ places: [place('Near', 1, 0.5)] }),
+        afterglow: list({ places: [place('Near', 1, 0.5)] }),
+      },
+    });
+    const differs = result('differs', {
+      gated: {
+        ...result('x').gated,
+        nearest: list({ places: [place('Near', 0.5, 0.4), place('Mid', 2, 0.6)] }),
+        afterglow: list({ places: [place('Mid', 2, 0.6), place('Near', 0.5, 0.4)] }),
+      },
+    });
+    const missing = result('missing', {
+      gated: { ...result('x').gated, nearest: null },
+    });
+    const example = recordedOrder(file([same, differs, missing, differs]));
+    expect(example?.scenarioId).toBe('differs');
+    expect(example?.nearest.map((p) => p.name)).toEqual(['Near', 'Mid']);
+    expect(example?.afterglow.map((p) => p.name)).toEqual(['Mid', 'Near']);
+    expect(example?.afterglow[0]).toEqual({ name: 'Mid', km: 2, affinity: 0.6 });
+    expect(example?.firstChoicesDiffer).toEqual({ count: 2, total: 3 });
+  });
+
+  it('is absent when no scenario has two lists that differ', () => {
+    expect(recordedOrder(file([result('one')]))).toBeNull();
   });
 });

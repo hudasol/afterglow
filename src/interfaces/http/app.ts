@@ -23,9 +23,11 @@ import {
 import {
   baselineRunView,
   recordedExample,
+  recordedOrder,
   type BaselineResultsFile,
   type BaselineRunView,
   type RecordedExample,
+  type RecordedOrder,
 } from '../../evaluation/baseline-report.js';
 import { buildShowcase, type Showcase } from '../../evaluation/showcase.js';
 import { scenarios } from '../../simulation/scenarios.js';
@@ -373,6 +375,7 @@ export function createApp(options: AppOptions): express.Express {
     }
     const baselineRuns: BaselineRunView[] = [];
     let example: RecordedExample | null = null;
+    let order: RecordedOrder | null = null;
     for (const [file, label] of [
       ['baselines-test.json', 'Test scenarios, ranked once after the predictions were registered'],
       ['baselines-dev.json', 'Development scenarios, used to set the predictions'],
@@ -384,6 +387,7 @@ export function createApp(options: AppOptions): express.Express {
         ) as BaselineResultsFile;
         baselineRuns.push(baselineRunView(recorded, label));
         example ??= recordedExample(recorded);
+        order ??= recordedOrder(recorded);
       } catch {
         // A missing or malformed file is skipped rather than failing the page.
       }
@@ -394,6 +398,7 @@ export function createApp(options: AppOptions): express.Express {
       liveRuns,
       baselineRuns,
       recordedExample: example,
+      recordedOrder: order,
     });
   });
 

@@ -246,6 +246,28 @@ export interface BaselineRunView {
     lift: string;
     vibe: string;
   }[];
+  headline: {
+    plainBreaking: { approach: string; count: number; total: number }[];
+    gatedBreaking: { count: number; total: number } | null;
+    vibe: { afterglow: number | null; nearest: number | null };
+  };
+}
+
+export interface OrderedPlace {
+  name: string;
+  km: number | null;
+  affinity: number | null;
+}
+
+export interface RecordedOrder {
+  set: 'dev' | 'test';
+  generatedAt: string;
+  providerLabel: string;
+  scenarioId: string;
+  title: string;
+  nearest: OrderedPlace[];
+  afterglow: OrderedPlace[];
+  firstChoicesDiffer: { count: number; total: number };
 }
 
 export interface RecordedExample {
@@ -295,6 +317,7 @@ export const api = {
       liveRuns: LiveRunView[];
       baselineRuns: BaselineRunView[];
       recordedExample: RecordedExample | null;
+      recordedOrder: RecordedOrder | null;
     }>('GET', '/evaluation'),
   probe: () => request<ProbeResult>('POST', '/integration/probe'),
   osmProbe: () => request<OsmProbeResult>('POST', '/integration/osm-probe'),
