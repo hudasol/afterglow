@@ -115,7 +115,16 @@ The reasoning behind the numbers, so that a miss can be read against it:
 
 ## Amendments
 
-Any change to the design after seeing results will be added here as a dated amendment that keeps the original text. There are none at the time of registration.
+Any change to the design after seeing results will be added here as a dated amendment that keeps the original text. There were none at the time of registration.
+
+### Amendment 1, 28 October 2026, written after the test run
+
+This amendment changes no prediction, threshold, scenario, seed or metric. It corrects one description and discloses three facts that the section above leaves out. The text above is unchanged.
+
+1. **The oracle is not independent in the full sense.** The text above calls the oracle independent and says it shares no code with the gate. That is too strong. `src/evaluation/oracle.ts` states the rules separately and reads the raw facts, but it uses the same three helper functions as the gate for distance, local time and name matching (`distanceKm`, `localMinuteOfDay`, `normaliseName`). The word independent in the description of the oracle and in the claim of B1 should be read as "a separately written statement of the rules over the same helpers". Because it reads the same facts as the gate, the oracle can find a disagreement in the rules but cannot find a fact that is wrong. A test now compares the oracle with the gate on generated facts, and the helpers are checked against known distances and times.
+2. **A language model probe was run before registration.** On 28 October 2026 a workflow that asked a hosted model service to name two restaurants in Dubai was added, edited twice and later removed (commits aee130e, c407036, 277b972, removed in 9f523e3). Its purpose was to find out whether a language model baseline could be run from the Actions runner without a paid key. It used no scenario, no Qloo output and no ranking, and it informed no threshold. No usable answer came back, and no language model baseline was added.
+3. **Two thresholds were changed in the registration commit.** Before commit 8a67152 the code had B4 at 0.70 and B11 at 0.15. The registration commit changed them to 0.65 and 0.10, because applying the stated rule to the unrounded development bounds gave those values. This happened before any test scenario was ranked.
+4. **What ran when.** The test run is the workflow run [40707580529](https://github.com/hudasol/afterglow/actions/runs/40707580529). It ran on commit 8a67152, the registration commit, and was started at 14:36:17 UTC, eight seconds after that commit was made at 14:36:09 UTC. It finished at 14:38:05 UTC. Results files made from now on record the commit and the run that produced them. The results files already recorded do not, and are not edited. The registration commits are 498f4cf for the first evaluation and 8a67152 for this one.
 
 ## A language model without Qloo data
 
