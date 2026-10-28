@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   api,
   type EvaluationReportFile,
+  type BaselineRunView,
   type LiveRunView,
   type OsmProbeResult,
   type ProbeResult,
@@ -104,6 +105,7 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
   const [reports, setReports] = useState<EvaluationReportFile[] | null>(null);
   const [smoke, setSmoke] = useState<SmokeReportFile[]>([]);
   const [liveRuns, setLiveRuns] = useState<LiveRunView[]>([]);
+  const [baselineRuns, setBaselineRuns] = useState<BaselineRunView[]>([]);
   const [probe, setProbe] = useState<ProbeResult | null>(null);
   const [probing, setProbing] = useState(false);
   const [osm, setOsm] = useState<OsmProbeResult | { error: string } | null>(null);
@@ -118,6 +120,7 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
         setReports(result.reports);
         setSmoke(result.smoke);
         setLiveRuns(result.liveRuns);
+        setBaselineRuns(result.baselineRuns ?? []);
       })
       .catch(() => !cancelled && setReports([]));
     return () => {
@@ -380,6 +383,116 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
           ))
         )}
       </section>
+
+      {baselineRuns.length > 0 ? (
+        <section aria-labelledby="ev-baselines" className="stack">
+          <h2 id="ev-baselines">Against simpler approaches</h2>
+          <p className="muted-text">
+            The same plans ranked five ways from the same pool of places: at random, nearest first,
+            most popular, by Qloo taste alone, and by AFTERGLOW. Each is also shown without the
+            gate, which is how a plain recommender behaves. A requirement counts as broken only when
+            a fact that is known is against the place. See{' '}
+            <a href={`${REPO}/blob/main/docs/PREREGISTRATION_V2.md`}>the preregistration</a>,{' '}
+            <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_TEST.md`}>the test results</a> and{' '}
+            <a href={`${REPO}/blob/main/docs/EVALUATION_BASELINES_DEV.md`}>
+              the development results
+            </a>
+            .
+          </p>
+          {baselineRuns.map((run) => (
+            <article className="panel" key={run.set} aria-labelledby={`base-${run.set}`}>
+              <h3 id={`base-${run.set}`}>{run.label}</h3>
+              <p className="small muted-text">
+                {run.providerLabel}. {formatStamp(run.generatedAt)}. {run.completed} of{' '}
+                {run.scenarios} scenarios completed
+                {run.set === 'test'
+                  ? `. ${run.hits} predictions met, ${run.misses} missed${
+                      run.notEvaluated > 0 ? `, ${run.notEvaluated} not evaluated` : ''
+                    }.`
+                  : '. No predictions were made for these scenarios.'}
+              </p>
+              <div
+                className="table-wrap"
+                tabIndex={0}
+                role="region"
+                aria-label={`${run.label}, approaches compared`}
+              >
+                <table className="data" style={{ marginTop: '0.8rem' }}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Approach</th>
+                      <th scope="col">Gate</th>
+                      <th scope="col">Top three breaks a requirement</th>
+                      <th scope="col">Mean km from the venue</th>
+                      <th scope="col">Affinity lift</th>
+                      <th scope="col">With a requested vibe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {run.arms.map((arm) => (
+                      <tr key={`${arm.approach}-${arm.gate}`}>
+                        <td>{arm.approach}</td>
+                        <td>{arm.gate ? 'Yes' : 'No'}</td>
+                        <td>{arm.breaking}</td>
+                        <td>{arm.km}</td>
+                        <td>{arm.lift}</td>
+                        <td>{arm.vibe}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {run.predictions.length > 0 ? (
+                <div
+                  className="table-wrap"
+                  tabIndex={0}
+                  role="region"
+                  aria-label={`${run.label}, predictions`}
+                >
+                  <table className="data" style={{ marginTop: '0.8rem' }}>
+                    <thead>
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Measure</th>
+                        <th scope="col">Predicted</th>
+                        <th scope="col">Observed</th>
+                        <th scope="col">95% interval</th>
+                        <th scope="col">Result</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {run.predictions.map((p) => (
+                        <tr key={p.id}>
+                          <td>{p.id}</td>
+                          <td>{p.claim}</td>
+                          <td>{p.predicted}</td>
+                          <td>{p.observed}</td>
+                          <td>{p.interval}</td>
+                          <td>
+                            <span className={`pill ${p.verdict === 'HIT' ? 'ok' : 'bad'}`}>
+                              {p.verdict === 'HIT'
+                                ? 'Met'
+                                : p.verdict === 'MISS'
+                                  ? 'Missed'
+                                  : 'Not evaluated'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : null}
+            </article>
+          ))}
+          <p className="small muted-text">
+            Affinity lift is the mean Qloo affinity of the top three minus the mean of the places
+            that passed the gate, in standard deviations of those places. It shows that the Qloo
+            signal is used. It does not show that people would prefer the result: no person judged
+            any list.
+          </p>
+        </section>
+      ) : null}
 
       <section aria-labelledby="ev-eval" className="stack">
         <h2 id="ev-eval">Evaluation</h2>

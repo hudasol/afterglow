@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   BASELINE_PREDICTIONS,
+  baselineRunView,
+  recordedExample,
   renderBaselineReport,
   summariseBaselines,
   type BaselineResultsFile,
@@ -176,5 +178,83 @@ describe('baseline report', () => {
   it('does not use dashes or emojis in prose', () => {
     expect(rendered).not.toMatch(/—|–/u);
     expect(rendered).not.toMatch(/\p{Extended_Pictographic}/u);
+  });
+});
+
+describe('recorded example', () => {
+  const place = (name: string, against: string[], feasibility: 'feasible' | 'rejected') => ({
+    name,
+    against,
+    feasibility,
+    distanceKm: 1,
+    affinity: 0.5,
+  });
+  const plain = (violations: number, against: string[] = []) =>
+    list({
+      violations,
+      places: [place('Mall', against, 'rejected'), place('Bistro', [], 'feasible')],
+    });
+
+  it('takes the first scenario in file order whose plain taste list breaks a requirement', () => {
+    const clean = result('clean', {
+      ungated: { ...result('x').ungated, taste_only: plain(0) },
+    });
+    const first = result('first', {
+      ungated: { ...result('x').ungated, taste_only: plain(1, ['price']) },
+      gated: {
+        ...result('x').gated,
+        afterglow: list({ places: [place('Cafe', [], 'feasible')] }),
+      },
+    });
+    const later = result('later', {
+      ungated: { ...result('x').ungated, taste_only: plain(2, ['dietary:halal']) },
+      gated: {
+        ...result('x').gated,
+        afterglow: list({ places: [place('Other', [], 'feasible')] }),
+      },
+    });
+    const example = recordedExample(file([clean, first, later]));
+    expect(example?.scenarioId).toBe('first');
+    expect(example?.plain[0]).toEqual({ name: 'Mall', reasons: ['over the price limit'] });
+    expect(example?.afterglow).toEqual([{ name: 'Cafe', needsCheck: false }]);
+    expect(example?.plainBreaking).toEqual({ count: 2, total: 3 });
+  });
+
+  it('returns nothing when no plain list breaks a requirement', () => {
+    expect(
+      recordedExample(
+        file([result('a', { ungated: { ...result('x').ungated, taste_only: plain(0) } })]),
+      ),
+    ).toBeNull();
+  });
+
+  it('skips a scenario that did not complete', () => {
+    const failed = result('failed', {
+      ok: false,
+      error: 'No search ran',
+      ungated: { ...result('x').ungated, taste_only: plain(1, ['price']) },
+    });
+    expect(recordedExample(file([failed]))).toBeNull();
+  });
+});
+
+describe('baseline run view', () => {
+  it('lists the predictions for the test set only', () => {
+    const test = baselineRunView(file([result('one')], 'test'), 'Test scenarios');
+    expect(test.predictions.map((p) => p.id)).toEqual(BASELINE_PREDICTIONS.map((p) => p.id));
+    const dev = baselineRunView(file([result('one')], 'dev'), 'Development scenarios');
+    expect(dev.predictions).toEqual([]);
+    expect(dev.label).toBe('Development scenarios');
+  });
+
+  it('carries the same figures as the generated document', () => {
+    const run = file([result('one'), result('two')]);
+    const view = baselineRunView(run, 'Test scenarios');
+    const text = renderBaselineReport(run);
+    for (const row of view.arms) {
+      expect(text).toContain(row.breaking);
+      expect(text).toContain(row.km);
+    }
+    expect(view.hits + view.misses + view.notEvaluated).toBe(BASELINE_PREDICTIONS.length);
   });
 });

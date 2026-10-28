@@ -20,6 +20,13 @@ import {
   type LiveResultsFile,
   type LiveRunView,
 } from '../../evaluation/live-report.js';
+import {
+  baselineRunView,
+  recordedExample,
+  type BaselineResultsFile,
+  type BaselineRunView,
+  type RecordedExample,
+} from '../../evaluation/baseline-report.js';
 import { buildShowcase, type Showcase } from '../../evaluation/showcase.js';
 import { scenarios } from '../../simulation/scenarios.js';
 import { rateLimit, windowLimiter } from './rate-limit.js';
@@ -357,7 +364,30 @@ export function createApp(options: AppOptions): express.Express {
         // A missing or malformed file is skipped rather than failing the page.
       }
     }
-    res.json({ reports: readAll('report-'), smoke: readAll('smoke-'), liveRuns });
+    const baselineRuns: BaselineRunView[] = [];
+    let example: RecordedExample | null = null;
+    for (const [file, label] of [
+      ['baselines-test.json', 'Test scenarios, ranked once after the predictions were registered'],
+      ['baselines-dev.json', 'Development scenarios, used to set the predictions'],
+    ] as const) {
+      if (!options.resultsRoot) break;
+      try {
+        const recorded = JSON.parse(
+          readFileSync(join(options.resultsRoot, file), 'utf8'),
+        ) as BaselineResultsFile;
+        baselineRuns.push(baselineRunView(recorded, label));
+        example ??= recordedExample(recorded);
+      } catch {
+        // A missing or malformed file is skipped rather than failing the page.
+      }
+    }
+    res.json({
+      reports: readAll('report-'),
+      smoke: readAll('smoke-'),
+      liveRuns,
+      baselineRuns,
+      recordedExample: example,
+    });
   });
 
   let showcase: Promise<Showcase> | null = null;

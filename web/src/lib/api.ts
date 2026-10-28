@@ -215,6 +215,49 @@ export interface LiveRunView {
   }[];
 }
 
+export interface BaselineRunView {
+  set: 'dev' | 'test';
+  label: string;
+  generatedAt: string;
+  providerLabel: string;
+  scenarios: number;
+  completed: number;
+  hits: number;
+  misses: number;
+  notEvaluated: number;
+  predictions: {
+    id: string;
+    group: string;
+    claim: string;
+    predicted: string;
+    observed: string;
+    interval: string;
+    scenarios: string;
+    verdict: 'HIT' | 'MISS' | 'NOT EVALUATED';
+  }[];
+  arms: {
+    approach: string;
+    gate: boolean;
+    scenarios: number;
+    breaking: string;
+    perList: string;
+    km: string;
+    lift: string;
+    vibe: string;
+  }[];
+}
+
+export interface RecordedExample {
+  set: 'dev' | 'test';
+  generatedAt: string;
+  providerLabel: string;
+  scenarioId: string;
+  title: string;
+  plain: { name: string; reasons: string[] }[];
+  afterglow: { name: string; needsCheck: boolean }[];
+  plainBreaking: { count: number; total: number };
+}
+
 export interface SmokeReportFile {
   generatedAt: string;
   verdict: 'go' | 'conditional' | 'no_go';
@@ -245,10 +288,13 @@ export const api = {
   scenarios: () => request<{ scenarios: ScenarioPreset[] }>('GET', '/scenarios'),
   livePresets: () => request<{ presets: LivePreset[] }>('GET', '/live-presets'),
   evaluation: () =>
-    request<{ reports: EvaluationReportFile[]; smoke: SmokeReportFile[]; liveRuns: LiveRunView[] }>(
-      'GET',
-      '/evaluation',
-    ),
+    request<{
+      reports: EvaluationReportFile[];
+      smoke: SmokeReportFile[];
+      liveRuns: LiveRunView[];
+      baselineRuns: BaselineRunView[];
+      recordedExample: RecordedExample | null;
+    }>('GET', '/evaluation'),
   probe: () => request<ProbeResult>('POST', '/integration/probe'),
   osmProbe: () => request<OsmProbeResult>('POST', '/integration/osm-probe'),
   listCases: () => request<{ cases: CaseListItem[] }>('GET', '/cases'),

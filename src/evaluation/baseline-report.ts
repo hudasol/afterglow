@@ -543,6 +543,8 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   lines.push('');
   lines.push(
     'Affinity lift is the mean Qloo affinity of the top three minus the mean of the places that passed the gate, divided by the standard deviation of the same places. Zero means no better than the pool on average. Qloo affinity is the quantity AFTERGLOW and the taste only list both rank by, so the lift shows that the Qloo signal is being used. It is not a measure of what a person would prefer.',
+    '',
+    'The count of verified places is the same for every gated approach by construction. The gate lists places whose facts are all confirmed before places that need a check, whatever the approach, so each list holds as many verified places as the pool has, up to three. Nearest first has no distance to rank by when the venue that fell through could not be located, so it covers fewer scenarios than the others.',
   );
   lines.push('');
 
@@ -653,4 +655,136 @@ export function renderBaselineReport(file: BaselineResultsFile): string {
   );
   lines.push('');
   return `${lines.join('\n')}\n`;
+}
+
+/** One recorded scenario, shown on the front page next to the claim it illustrates. */
+export interface RecordedExample {
+  set: ScenarioSet;
+  generatedAt: string;
+  providerLabel: string;
+  scenarioId: string;
+  title: string;
+  /** The top three of the taste only list without the gate, with what each place breaks. */
+  plain: Array<{ name: string; reasons: string[] }>;
+  /** The AFTERGLOW top three. */
+  afterglow: Array<{ name: string; needsCheck: boolean }>;
+  /** How many completed scenarios of the run had a place breaking a requirement in the plain list. */
+  plainBreaking: { count: number; total: number };
+}
+
+/**
+ * The first scenario, in the order of the scenario file, in which the plain taste only list holds a
+ * place that breaks a requirement and AFTERGLOW offers something. The rule is fixed and is stated
+ * next to the example, so the example is not picked by hand.
+ */
+export function recordedExample(file: BaselineResultsFile): RecordedExample | null {
+  const done = file.results.filter((r) => r.ok);
+  const pick = done.find(
+    (r) =>
+      (r.ungated.taste_only?.violations ?? 0) > 0 && (r.gated.afterglow?.places.length ?? 0) > 0,
+  );
+  if (!pick) return null;
+  return {
+    set: file.set,
+    generatedAt: file.generatedAt,
+    providerLabel: file.provider.label,
+    scenarioId: pick.id,
+    title: pick.title,
+    plain: (pick.ungated.taste_only?.places ?? []).map((place) => ({
+      name: place.name,
+      reasons: place.against.map(reasonText),
+    })),
+    afterglow: (pick.gated.afterglow?.places ?? []).map((place) => ({
+      name: place.name,
+      needsCheck: place.feasibility !== 'feasible',
+    })),
+    plainBreaking: {
+      count: done.filter((r) => (r.ungated.taste_only?.violations ?? 0) > 0).length,
+      total: done.length,
+    },
+  };
+}
+
+export interface BaselinePredictionView {
+  id: string;
+  group: string;
+  claim: string;
+  predicted: string;
+  observed: string;
+  interval: string;
+  scenarios: string;
+  verdict: Verdict;
+}
+
+export interface BaselineArmView {
+  approach: string;
+  gate: boolean;
+  scenarios: number;
+  breaking: string;
+  perList: string;
+  km: string;
+  lift: string;
+  vibe: string;
+}
+
+/** A compact view of a recorded run for the Evidence page. The text is the same as in the generated document. */
+export interface BaselineRunView {
+  set: ScenarioSet;
+  label: string;
+  generatedAt: string;
+  providerLabel: string;
+  scenarios: number;
+  completed: number;
+  hits: number;
+  misses: number;
+  notEvaluated: number;
+  /** Empty for the development scenarios, which were used to set the predictions and carry none. */
+  predictions: BaselinePredictionView[];
+  arms: BaselineArmView[];
+}
+
+export function baselineRunView(file: BaselineResultsFile, label: string): BaselineRunView {
+  const s = file.summary;
+  const predictions: BaselinePredictionView[] = [];
+  if (file.set === 'test') {
+    for (const prediction of BASELINE_PREDICTIONS) {
+      const metric = s.metrics.find((m) => m.id === prediction.id);
+      if (!metric) continue;
+      predictions.push({
+        id: prediction.id,
+        group: prediction.group,
+        claim: prediction.claim,
+        predicted: comparatorText(prediction),
+        observed: showValue(metric.observed, prediction.unit),
+        interval:
+          metric.low !== null && metric.high !== null
+            ? `${showValue(metric.low, prediction.unit)} to ${showValue(metric.high, prediction.unit)}`
+            : 'not applicable',
+        scenarios: `${metric.basis.used} of ${metric.basis.of}`,
+        verdict: metric.verdict,
+      });
+    }
+  }
+  return {
+    set: file.set,
+    label,
+    generatedAt: file.generatedAt,
+    providerLabel: file.provider.label,
+    scenarios: file.scenarioCount,
+    completed: s.completed,
+    hits: s.hits,
+    misses: s.misses,
+    notEvaluated: s.notEvaluated,
+    predictions,
+    arms: s.arms.map((row) => ({
+      approach: ARM_LABEL[row.arm] ?? row.arm,
+      gate: row.gated,
+      scenarios: row.scenarios,
+      breaking: proportion(row.violating),
+      perList: two(row.meanViolations),
+      km: interval(row.km),
+      lift: interval(row.lift),
+      vibe: interval(row.vibe),
+    })),
+  };
 }
