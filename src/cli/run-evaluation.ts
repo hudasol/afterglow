@@ -12,7 +12,6 @@
  */
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { z } from 'zod';
 import {
   renderLiveReport,
   summariseLive,
@@ -22,25 +21,11 @@ import { diagnoseScenario } from '../evaluation/diagnose.js';
 import { renderReport } from '../evaluation/report-markdown.js';
 import { runEvaluation } from '../evaluation/runner.js';
 import type { ResolutionKind } from '../domain/case.js';
-import { categoryTagPhrase, intentAnchorInputSchema } from '../domain/intent.js';
-import { disruptionSchema } from '../domain/plan.js';
-import { loadConfig } from '../infrastructure/config.js';
-import { QlooClient } from '../qloo/client.js';
+import { categoryTagPhrase } from '../domain/intent.js';
+import { liveClient, loadLiveScenarios, toSpec } from '../evaluation/live-scenarios.js';
 import { QlooTasteProvider } from '../qloo/provider.js';
 import { SimulatedTasteProvider } from '../simulation/provider.js';
 import { scenarios, type ScenarioSpec } from '../simulation/scenarios.js';
-
-const liveScenarioSchema = z.object({
-  id: z.string().min(1),
-  title: z.string().min(1),
-  summary: z.string().default(''),
-  anchor: intentAnchorInputSchema,
-  disruption: disruptionSchema,
-  /** An id or a type for each ambiguous input, so a scenario can name its choice before the ids are known. */
-  choices: z.record(z.string(), z.string()).optional(),
-  /** Another scenario whose taste signals are swapped in for the placebo comparison. */
-  placeboFrom: z.string().min(1).optional(),
-});
 
 const LIVE_RESULTS = 'results/live-qloo.json';
 const LIVE_DOC = 'docs/EVALUATION_LIVE.md';
@@ -50,21 +35,6 @@ const SECOND_RUN = {
   label: 'second run',
   note: 'This is the second run on the same frozen scenarios and the same predictions. It was made after two product defects that the first run exposed were fixed: the original venue could be taken from another country, and Qloo timed out when five or more tag signals were sent. It is not independent of the first run, because the fixes were chosen after seeing which scenarios failed. It does not replace the first run, which is the registered result.',
 };
-
-function loadLiveScenarios(file: string): Array<z.infer<typeof liveScenarioSchema>> {
-  return z.array(liveScenarioSchema).parse(JSON.parse(readFileSync(resolve(file), 'utf8')));
-}
-
-function liveClient(): QlooClient | null {
-  const config = loadConfig();
-  if (!config.QLOO_API_KEY) return null;
-  return new QlooClient({
-    apiKey: config.QLOO_API_KEY,
-    baseUrl: config.QLOO_API_URL,
-    timeoutMs: config.QLOO_TIMEOUT_MS,
-    dailyCallCap: config.QLOO_DAILY_CALL_CAP,
-  });
-}
 
 /** Resolves every signal, category and original venue in the scenarios, and ranks nothing. */
 async function preflight(file: string): Promise<void> {
@@ -142,9 +112,7 @@ async function main(): Promise<void> {
     const provider = new QlooTasteProvider(client);
     for (const scenario of loadLiveScenarios(target)) {
       if (only.length > 0 && !only.includes(scenario.id)) continue;
-      const { choices, placeboFrom, ...item } = scenario;
-      void placeboFrom;
-      const spec: ScenarioSpec = { ...item, featured: false, ...(choices ? { choices } : {}) };
+      const spec = toSpec(scenario);
       try {
         console.log(JSON.stringify(await diagnoseScenario(provider, spec)));
       } catch (error) {
@@ -201,11 +169,7 @@ async function main(): Promise<void> {
     return;
   }
   const parsed = loadLiveScenarios(file);
-  const specs: ScenarioSpec[] = parsed.map(({ choices, placeboFrom: _from, ...item }) => ({
-    ...item,
-    featured: false,
-    ...(choices ? { choices } : {}),
-  }));
+  const specs: ScenarioSpec[] = parsed.map(toSpec);
   const byId = new Map(specs.map((spec) => [spec.id, spec]));
   const standIn = new Map(parsed.map((item) => [item.id, item.placeboFrom]));
   const report = await runEvaluation(new QlooTasteProvider(client), specs, {

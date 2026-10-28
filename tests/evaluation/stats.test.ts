@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { bootstrapMean, median, mulberry32, wilson } from '../../src/evaluation/stats.js';
+import {
+  bootstrapDifference,
+  bootstrapMean,
+  median,
+  mulberry32,
+  wilson,
+} from '../../src/evaluation/stats.js';
 
 describe('seeded generator', () => {
   it('gives the same sequence for the same seed', () => {
@@ -52,5 +58,34 @@ describe('median', () => {
     expect(median([3, 1, 2])).toBe(2);
     expect(median([4, 1, 2, 3])).toBe(2.5);
     expect(median([])).toBeNull();
+  });
+});
+
+describe('bootstrap difference', () => {
+  it('is the mean of the paired differences and keeps the pairing', () => {
+    const pairs: Array<[number, number]> = [
+      [3, 1],
+      [4, 2],
+      [5, 3],
+      [6, 4],
+    ];
+    const result = bootstrapDifference(pairs);
+    expect(result?.mean).toBe(2);
+    // Every pair differs by exactly 2, so resampling pairs cannot move the interval.
+    expect(result?.low).toBe(2);
+    expect(result?.high).toBe(2);
+  });
+
+  it('is repeatable for a seed and gives nothing for no pairs', () => {
+    const pairs: Array<[number, number]> = [
+      [1, 0],
+      [0, 1],
+      [2, 0],
+      [0, 3],
+      [5, 1],
+    ];
+    expect(bootstrapDifference(pairs, 1)).toEqual(bootstrapDifference(pairs, 1));
+    expect(bootstrapDifference(pairs, 2)?.mean).toBeCloseTo(0.6);
+    expect(bootstrapDifference([])).toBeNull();
   });
 });

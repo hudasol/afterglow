@@ -23,11 +23,14 @@ export const BOOTSTRAP_SEED = 20261025;
 export const BOOTSTRAP_RESAMPLES = 10_000;
 
 /** The mean with a 95 percent percentile bootstrap interval across scenarios. */
-export function bootstrapMean(values: readonly number[]): MeanInterval | null {
+export function bootstrapMean(
+  values: readonly number[],
+  seed: number = BOOTSTRAP_SEED,
+): MeanInterval | null {
   if (values.length === 0) return null;
   const n = values.length;
   const average = (items: readonly number[]) => items.reduce((a, b) => a + b, 0) / items.length;
-  const random = mulberry32(BOOTSTRAP_SEED);
+  const random = mulberry32(seed);
   const means: number[] = [];
   for (let r = 0; r < BOOTSTRAP_RESAMPLES; r += 1) {
     let sum = 0;
@@ -38,6 +41,20 @@ export function bootstrapMean(values: readonly number[]): MeanInterval | null {
   const at = (q: number) =>
     means[Math.min(means.length - 1, Math.floor(q * means.length))] as number;
   return { n, mean: average(values), low: at(0.025), high: at(0.975) };
+}
+
+/**
+ * The mean of a minus b over scenarios, with a 95 percent interval from resampling whole
+ * scenarios, so that the pairing is kept.
+ */
+export function bootstrapDifference(
+  pairs: ReadonlyArray<readonly [number, number]>,
+  seed: number = BOOTSTRAP_SEED,
+): MeanInterval | null {
+  return bootstrapMean(
+    pairs.map(([a, b]) => a - b),
+    seed,
+  );
 }
 
 export interface ProportionInterval {
