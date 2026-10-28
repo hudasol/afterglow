@@ -727,7 +727,8 @@
       "condition": "rain"
     },
     "choices": {
-      "Drake": "urn:entity:artist"
+      "Drake": "urn:entity:artist",
+      "Bellwoods Brewery": "8F4484B6-8225-428E-8B5E-BE7ADAC3A572"
     }
   },
   {
