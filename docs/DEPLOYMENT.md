@@ -34,6 +34,8 @@ A blueprint is included in `render.yaml`.
 
 Render sets `PORT` and `RENDER`. When `RENDER` is `true` the server trusts the first proxy so rate limiting sees client addresses.
 
+Two limits protect a public demo and can be tuned without a code change. `AFTERGLOW_RATE_LIMIT_PER_MINUTE` (default 120) bounds requests per client, and `AFTERGLOW_LIVE_ACTIONS_PER_HOUR` (default 12) bounds the actions per client that spend Qloo calls. Together with `QLOO_DAILY_CALL_CAP` they keep one visitor from using the allowance of the others. The full list of variables is in the README.
+
 ## Other hosts
 
 Any host that runs Node.js 22.13 or newer works. Build with `npm ci --include=dev && npm run build`, start with `npm start`, bind `HOST=0.0.0.0` and set `AFTERGLOW_PUBLIC_DEMO=true` or `AFTERGLOW_ACCESS_TOKEN` to a value of 16 or more characters. A static only host is not suitable because the Qloo key must stay on a server.
