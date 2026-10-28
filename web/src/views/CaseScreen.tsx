@@ -59,6 +59,11 @@ function AnchorSummary({ view }: { view: CaseView }) {
               </li>
             ))}
           </ul>
+          <p className="small muted-text">
+            Your own words, kept on the server and never sent to Qloo. They do not change the
+            ranking. The ranking uses the names and vibes listed under taste signals and the venue
+            that fell through.
+          </p>
         </dd>
         <dt>Taste signals</dt>
         <dd>
@@ -137,6 +142,11 @@ function CompareTab({ view }: { view: CaseView }) {
     value === null ? 'not defined' : `${Math.round(value * 100)}%`;
   return (
     <div className="stack">
+      {view.run?.tasteNote ? (
+        <div className="callout" role="note">
+          <strong>About the taste ranking.</strong> {view.run.tasteNote}
+        </div>
+      ) : null}
       <p className="lede" style={{ color: 'var(--ink-2)' }}>
         Every order uses the same places and the same gate. The only difference is the ordering
         rule. Nearest first sorts by distance, then price. Most popular first sorts by how popular
@@ -433,8 +443,11 @@ export function CaseScreen({ id, tab }: { id: string; tab: CaseTab }) {
                   ? 'Taste ranking was partly reduced.'
                   : 'Taste ranking was not available.'}
               </strong>{' '}
-              {view.run.tasteNote ?? ''} Options are ordered by distance, then price, and the gate
-              still applies in full.
+              {view.run.tasteNote ?? ''}{' '}
+              {view.run.tasteStatus === 'degraded'
+                ? 'The scores Qloo did return were still used to order the places.'
+                : 'Options are ordered by distance, then price.'}{' '}
+              The gate still applies in full.
             </div>
           ) : null}
 

@@ -169,6 +169,7 @@ export function Inspector({
                       type="button"
                       className="btn small"
                       disabled={busy !== null}
+                      aria-label={`It meets this requirement: ${verdict.description}`}
                       onClick={() => onAttest(candidate.id, verdict.key, true)}
                     >
                       It meets this
@@ -177,6 +178,7 @@ export function Inspector({
                       type="button"
                       className="btn small"
                       disabled={busy !== null}
+                      aria-label={`It does not meet this requirement: ${verdict.description}`}
                       onClick={() => onAttest(candidate.id, verdict.key, false)}
                     >
                       It does not
@@ -195,8 +197,7 @@ export function Inspector({
           <div className="stack">
             <Meter value={option.providerTaste.affinity} label={affinityLabel(view.mode)} />
             <p className="small">
-              Rank {option.providerTaste.rank} of {view.run?.poolSize ?? 0} places in this search,
-              as returned by the provider.{' '}
+              Position {option.providerTaste.rank} in the provider's ranking for this search.{' '}
               {view.mode === 'live'
                 ? 'Affinity describes what groups tend to like, not what you will enjoy.'
                 : ''}
@@ -210,7 +211,7 @@ export function Inspector({
             ) : null}
             {option.matchedTags.length > 0 ? (
               <p className="small">
-                Shares the tags you asked to keep: {option.matchedTags.join(', ')}.
+                Carries the vibes you asked for: {option.matchedTags.join(', ')}.
               </p>
             ) : null}
             {option.tasteOn ? (
@@ -222,8 +223,8 @@ export function Inspector({
               </p>
             ) : option.feasibility === 'rejected' ? (
               <p className="small">
-                This place scored well for taste but is not ranked, because ruled out places are
-                never ranked.
+                This place has a taste score but is not ranked, because ruled out places are never
+                ranked.
               </p>
             ) : null}
           </div>
