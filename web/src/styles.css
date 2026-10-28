@@ -8,6 +8,7 @@
   --ink-3: #635d7e;
   --line: #d9d4e6;
   --line-strong: #b9b2d0;
+  --control-line: #8179a6;
   --accent: #4b3a8c;
   --accent-hover: #382a70;
   --accent-ink: #ffffff;
@@ -43,6 +44,7 @@
     --ink-3: #a59dc6;
     --line: #3a3466;
     --line-strong: #5a5290;
+    --control-line: #7a70c0;
     --accent: #b9a8ff;
     --accent-hover: #d2c7ff;
     --accent-ink: #14112a;
@@ -265,7 +267,7 @@ main {
 /* Buttons */
 .btn {
   appearance: none;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--control-line);
   background: var(--surface);
   color: var(--ink);
   font: inherit;
@@ -622,7 +624,7 @@ main {
   gap: 0.35rem;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--control-line);
   font-size: 0.85rem;
   background: var(--surface);
   color: var(--ink-2);
@@ -907,7 +909,7 @@ textarea {
   font: inherit;
   color: var(--ink);
   background: var(--surface);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.7rem;
   min-height: 2.75rem;
@@ -988,7 +990,7 @@ fieldset {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 .mode-choice label {
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius);
   padding: 0.9rem 1rem;
   display: grid;
@@ -1244,7 +1246,7 @@ code,
   align-items: center;
   min-height: 2.5rem;
   padding: 0.3rem 1rem;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--control-line);
   border-radius: 999px;
   background: var(--surface);
   color: var(--ink);
