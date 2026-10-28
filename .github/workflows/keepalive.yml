@@ -18,7 +18,7 @@ jobs:
       - name: Ping the hosted demo inside the judging window
         run: |
           now=$(date -u +%s)
-          start=$(date -u -d '2026-10-30 12:00:00' +%s)
+          start=$(date -u -d '2026-10-29 12:00:00' +%s)
           end=$(date -u -d '2026-11-06 00:00:00' +%s)
           if [ "$now" -lt "$start" ] || [ "$now" -ge "$end" ]; then
             echo "Outside the judging window. Nothing to do."
