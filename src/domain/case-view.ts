@@ -11,7 +11,7 @@ import {
   type StoredEvent,
   type TasteResolution,
 } from './case.js';
-import { known, unknown, type Fact } from './evidence.js';
+import { isKnown, known, unknown, type Fact } from './evidence.js';
 import {
   buildExclusions,
   suggestRelaxations,
@@ -99,6 +99,8 @@ export interface CaseView {
   updatedAt: string;
   anchor: IntentAnchor;
   plan: EffectivePlan;
+  /** Where the venue that fell through is, when that could be established. Distances are measured from it. */
+  originalLocation: GeoPoint | null;
   disruptions: { description: string; kind: string }[];
   resolutions: TasteResolution[];
   pendingChoices: (TasteResolution & { key: string })[];
@@ -315,6 +317,7 @@ export function buildCaseView(
     updatedAt: state.updatedAt,
     anchor: state.opened.anchor,
     plan: ctx.plan,
+    originalLocation: isKnown(ctx.originalLocation) ? ctx.originalLocation.value : null,
     disruptions: state.disruptions.map((disruption) => ({
       kind: disruption.kind,
       description: describeDisruption(disruption),
