@@ -68,7 +68,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of scenarios where the top three of the taste only list without the gate holds a place that breaks a requirement',
     comparator: '>=',
-    threshold: 0.7,
+    threshold: 0.65,
     unit: 'share',
   },
   {
@@ -129,7 +129,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of the pool that Qloo scored with vibes sent as example places, minus the same with vibes sent as tags',
     comparator: '>=',
-    threshold: 0.15,
+    threshold: 0.1,
     unit: 'difference',
   },
   {

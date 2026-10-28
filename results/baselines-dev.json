@@ -3407,7 +3407,7 @@
           "names": [
             "La REcyclerie",
             "Rosa Bonheur sur Seine",
-            "Le Chalet des \u00celes"
+            "Le Chalet des Îles"
           ],
           "places": [
             {
@@ -3425,7 +3425,7 @@
               "affinity": 0.8325551385543559
             },
             {
-              "name": "Le Chalet des \u00celes",
+              "name": "Le Chalet des Îles",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 5.890615799086666,
@@ -3443,20 +3443,20 @@
         },
         "nearest": {
           "names": [
-            "Caf\u00e9 de Flore",
-            "Le Caf\u00e9 Marly",
+            "Café de Flore",
+            "Le Café Marly",
             "Rosa Bonheur sur Seine"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
               "affinity": 0.89545036565609
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 1.0977844710004563,
@@ -3481,20 +3481,20 @@
         },
         "popular": {
           "names": [
-            "Caf\u00e9 de Flore",
-            "Le Caf\u00e9 Marly",
+            "Café de Flore",
+            "Le Café Marly",
             "La Maison Rose"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
               "affinity": 0.89545036565609
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 1.0977844710004563,
@@ -3519,13 +3519,13 @@
         },
         "taste_only": {
           "names": [
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "La Maison Rose",
-            "Le Caf\u00e9 Marly"
+            "Le Café Marly"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
@@ -3539,7 +3539,7 @@
               "affinity": 0.8794119538553961
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 1.0977844710004563,
@@ -3557,20 +3557,20 @@
         },
         "afterglow": {
           "names": [
-            "Caf\u00e9 de Flore",
-            "Le Caf\u00e9 Marly",
+            "Café de Flore",
+            "Le Café Marly",
             "La Maison Rose"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
               "affinity": 0.89545036565609
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 1.0977844710004563,
@@ -3642,7 +3642,7 @@
         "nearest": {
           "names": [
             "Le Procope",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Kong"
           ],
           "places": [
@@ -3654,7 +3654,7 @@
               "affinity": 0.8861037123775286
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
@@ -3682,7 +3682,7 @@
         "popular": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Angelina"
           ],
           "places": [
@@ -3696,7 +3696,7 @@
               "affinity": 0.9410037031944494
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
@@ -3724,7 +3724,7 @@
         "taste_only": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Angelina"
           ],
           "places": [
@@ -3738,7 +3738,7 @@
               "affinity": 0.9410037031944494
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
@@ -3777,20 +3777,20 @@
         "exemplarCount": 0,
         "list": {
           "names": [
-            "Caf\u00e9 de Flore",
-            "Le Caf\u00e9 Marly",
+            "Café de Flore",
+            "Le Café Marly",
             "Rosa Bonheur sur Seine"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.5166128253933496,
               "affinity": null
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 1.0977844710004563,
@@ -3835,7 +3835,7 @@
           "names": [
             "Buddha-Bar",
             "Le Perchoir",
-            "Le Chalet des \u00celes"
+            "Le Chalet des Îles"
           ],
           "places": [
             {
@@ -3853,7 +3853,7 @@
               "affinity": 0.8302989589170793
             },
             {
-              "name": "Le Chalet des \u00celes",
+              "name": "Le Chalet des Îles",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 5.864223390519726,
@@ -3871,13 +3871,13 @@
         },
         "nearest": {
           "names": [
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Kong",
-            "Le Caf\u00e9 Marly"
+            "Le Café Marly"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -3891,7 +3891,7 @@
               "affinity": 0.8456398312364124
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.9864837959847921,
@@ -3909,13 +3909,13 @@
         },
         "popular": {
           "names": [
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Madame Brasserie",
             "Kong"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -3948,8 +3948,8 @@
         "taste_only": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
-            "Caf\u00e9 de la Paix"
+            "Café de Flore",
+            "Café de la Paix"
           ],
           "places": [
             {
@@ -3960,14 +3960,14 @@
               "affinity": 0.876525170720444
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
               "affinity": 0.8580863855439835
             },
             {
-              "name": "Caf\u00e9 de la Paix",
+              "name": "Café de la Paix",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 2.0537610989799058,
@@ -3986,8 +3986,8 @@
         "afterglow": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
-            "Caf\u00e9 de la Paix"
+            "Café de Flore",
+            "Café de la Paix"
           ],
           "places": [
             {
@@ -3998,14 +3998,14 @@
               "affinity": 0.876525170720444
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
               "affinity": 0.8580863855439835
             },
             {
-              "name": "Caf\u00e9 de la Paix",
+              "name": "Café de la Paix",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 2.0537610989799058,
@@ -4026,7 +4026,7 @@
         "random": {
           "names": [
             "Bercy Village",
-            "Point \u00c9ph\u00e9m\u00e8re",
+            "Point Éphémère",
             "L'As du Fallafel"
           ],
           "places": [
@@ -4038,7 +4038,7 @@
               "affinity": 0.8432921373585891
             },
             {
-              "name": "Point \u00c9ph\u00e9m\u00e8re",
+              "name": "Point Éphémère",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 3.83480468344565,
@@ -4065,13 +4065,13 @@
         },
         "nearest": {
           "names": [
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Kong",
-            "Le Caf\u00e9 Marly"
+            "Le Café Marly"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -4085,7 +4085,7 @@
               "affinity": 0.8456398312364124
             },
             {
-              "name": "Le Caf\u00e9 Marly",
+              "name": "Le Café Marly",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.9864837959847921,
@@ -4104,7 +4104,7 @@
         "popular": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Angelina"
           ],
           "places": [
@@ -4116,7 +4116,7 @@
               "affinity": 0.876525170720444
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -4145,7 +4145,7 @@
           "names": [
             "Madame Brasserie",
             "Les Ombres",
-            "Caf\u00e9 de Flore"
+            "Café de Flore"
           ],
           "places": [
             {
@@ -4165,7 +4165,7 @@
               "affinity": 0.8590519877602107
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -4195,20 +4195,20 @@
         "exemplarCount": 0,
         "list": {
           "names": [
-            "Caf\u00e9 de la Paix",
-            "Caf\u00e9 de Flore",
+            "Café de la Paix",
+            "Café de Flore",
             "Madame Brasserie"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de la Paix",
+              "name": "Café de la Paix",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 2.0537610989799058,
               "affinity": 0.8553639160518604
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 0.4713329818662108,
@@ -4291,7 +4291,7 @@
           "names": [
             "L'As du Fallafel",
             "Le Perchoir",
-            "Caf\u00e9 de Flore"
+            "Café de Flore"
           ],
           "places": [
             {
@@ -4309,7 +4309,7 @@
               "affinity": 0.9078306077083754
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 3.089116370974403,
@@ -4327,20 +4327,20 @@
         },
         "popular": {
           "names": [
-            "Caf\u00e9 de Flore",
-            "La Felicit\u00e0",
+            "Café de Flore",
+            "La Felicità",
             "L'As du Fallafel"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 3.089116370974403,
               "affinity": 0.895676224565384
             },
             {
-              "name": "La Felicit\u00e0",
+              "name": "La Felicità",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 4.824878088995538,
@@ -4366,7 +4366,7 @@
         "taste_only": {
           "names": [
             "Le Perchoir",
-            "La Felicit\u00e0",
+            "La Felicità",
             "Rosa Bonheur sur Seine"
           ],
           "places": [
@@ -4378,7 +4378,7 @@
               "affinity": 0.9078306077083754
             },
             {
-              "name": "La Felicit\u00e0",
+              "name": "La Felicità",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 4.824878088995538,
@@ -4405,7 +4405,7 @@
           "names": [
             "Le Perchoir",
             "Rosa Bonheur sur Seine",
-            "La Felicit\u00e0"
+            "La Felicità"
           ],
           "places": [
             {
@@ -4423,7 +4423,7 @@
               "affinity": 0.8995931292625643
             },
             {
-              "name": "La Felicit\u00e0",
+              "name": "La Felicità",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 4.824878088995538,
@@ -4445,7 +4445,7 @@
           "names": [
             "Le Bristol Paris",
             "Mandarin Oriental, Paris",
-            "Caf\u00e9 de Flore"
+            "Café de Flore"
           ],
           "places": [
             {
@@ -4463,7 +4463,7 @@
               "affinity": 0.8534829212645577
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 3.089116370974403,
@@ -4481,13 +4481,13 @@
         },
         "nearest": {
           "names": [
-            "Point \u00c9ph\u00e9m\u00e8re",
-            "Bouillon R\u00e9publique",
+            "Point Éphémère",
+            "Bouillon République",
             "Bouillon Chartier Grands Boulevards"
           ],
           "places": [
             {
-              "name": "Point \u00c9ph\u00e9m\u00e8re",
+              "name": "Point Éphémère",
               "against": [
                 "hours"
               ],
@@ -4496,7 +4496,7 @@
               "affinity": 0.929718953427258
             },
             {
-              "name": "Bouillon R\u00e9publique",
+              "name": "Bouillon République",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 1.1758482130278711,
@@ -4522,7 +4522,7 @@
         "popular": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Angelina"
           ],
           "places": [
@@ -4536,7 +4536,7 @@
               "affinity": 0.9188998147835181
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 3.089116370974403,
@@ -4564,20 +4564,20 @@
         },
         "taste_only": {
           "names": [
-            "Cin\u00e9math\u00e8que Fran\u00e7aise",
-            "Point \u00c9ph\u00e9m\u00e8re",
+            "Cinémathèque Française",
+            "Point Éphémère",
             "La Machine du Moulin Rouge"
           ],
           "places": [
             {
-              "name": "Cin\u00e9math\u00e8que Fran\u00e7aise",
+              "name": "Cinémathèque Française",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 4.6434794440769345,
               "affinity": 0.9566039694441206
             },
             {
-              "name": "Point \u00c9ph\u00e9m\u00e8re",
+              "name": "Point Éphémère",
               "against": [
                 "hours"
               ],
@@ -4620,7 +4620,7 @@
           "names": [
             "Le Perchoir",
             "Rosa Bonheur sur Seine",
-            "La Felicit\u00e0"
+            "La Felicità"
           ],
           "places": [
             {
@@ -4638,7 +4638,7 @@
               "affinity": 0.8995931292625643
             },
             {
-              "name": "La Felicit\u00e0",
+              "name": "La Felicità",
               "against": [],
               "feasibility": "feasible",
               "distanceKm": 4.824878088995538,
@@ -4675,7 +4675,7 @@
         "random": {
           "names": [
             "Matignon",
-            "Point \u00c9ph\u00e9m\u00e8re",
+            "Point Éphémère",
             "Rosa Bonheur sur Seine"
           ],
           "places": [
@@ -4687,7 +4687,7 @@
               "affinity": 0.8236607296919372
             },
             {
-              "name": "Point \u00c9ph\u00e9m\u00e8re",
+              "name": "Point Éphémère",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 2.3609574822779167,
@@ -4713,7 +4713,7 @@
         "nearest": {
           "names": [
             "L'As du Fallafel",
-            "Bouillon R\u00e9publique",
+            "Bouillon République",
             "Kong"
           ],
           "places": [
@@ -4725,7 +4725,7 @@
               "affinity": 0.8521197617484392
             },
             {
-              "name": "Bouillon R\u00e9publique",
+              "name": "Bouillon République",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 0.6442042312694106,
@@ -4750,13 +4750,13 @@
         },
         "popular": {
           "names": [
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Hotel Costes",
             "Bercy Village"
           ],
           "places": [
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 2.253986123405562,
@@ -4790,7 +4790,7 @@
           "names": [
             "Madame Brasserie",
             "La Maison Rose",
-            "Ladur\u00e9e"
+            "Ladurée"
           ],
           "places": [
             {
@@ -4808,7 +4808,7 @@
               "affinity": 0.8810576853606032
             },
             {
-              "name": "Ladur\u00e9e",
+              "name": "Ladurée",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 4.435627090400696,
@@ -4909,7 +4909,7 @@
         "nearest": {
           "names": [
             "L'As du Fallafel",
-            "Bouillon R\u00e9publique",
+            "Bouillon République",
             "Ober Mamma"
           ],
           "places": [
@@ -4921,7 +4921,7 @@
               "affinity": 0.8521197617484392
             },
             {
-              "name": "Bouillon R\u00e9publique",
+              "name": "Bouillon République",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 0.6442042312694106,
@@ -4949,7 +4949,7 @@
         "popular": {
           "names": [
             "Madame Brasserie",
-            "Caf\u00e9 de Flore",
+            "Café de Flore",
             "Angelina"
           ],
           "places": [
@@ -4961,7 +4961,7 @@
               "affinity": 0.9051466005443393
             },
             {
-              "name": "Caf\u00e9 de Flore",
+              "name": "Café de Flore",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 2.253986123405562,
@@ -5041,7 +5041,7 @@
         "list": {
           "names": [
             "L'As du Fallafel",
-            "Bouillon R\u00e9publique",
+            "Bouillon République",
             "Kong"
           ],
           "places": [
@@ -5053,7 +5053,7 @@
               "affinity": 0.7649962877984056
             },
             {
-              "name": "Bouillon R\u00e9publique",
+              "name": "Bouillon République",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": 0.6442042312694106,
@@ -5416,13 +5416,13 @@
         },
         "taste_only": {
           "names": [
-            "Pierre Herm\u00e9 Paris Aoyama",
+            "Pierre Hermé Paris Aoyama",
             "Ivy Place",
             "THE APOLLO Ginza"
           ],
           "places": [
             {
-              "name": "Pierre Herm\u00e9 Paris Aoyama",
+              "name": "Pierre Hermé Paris Aoyama",
               "against": [
                 "hours",
                 "price"
@@ -7899,13 +7899,13 @@
         },
         "taste_only": {
           "names": [
-            "C\u00c9 LA VI",
+            "CÉ LA VI",
             "McGettigan's Souk Madinat Jumeirah",
             "DRIFT Dubai"
           ],
           "places": [
             {
-              "name": "C\u00c9 LA VI",
+              "name": "CÉ LA VI",
               "against": [
                 "price"
               ],
@@ -8165,13 +8165,13 @@
       "ungated": {
         "random": {
           "names": [
-            "C\u00c9 LA VI",
+            "CÉ LA VI",
             "Arabian Ranches Golf Club",
             "SALT"
           ],
           "places": [
             {
-              "name": "C\u00c9 LA VI",
+              "name": "CÉ LA VI",
               "against": [],
               "feasibility": "needs_verification",
               "distanceKm": null,
@@ -9045,9 +9045,20 @@
           "of": 20
         },
         "verdict": "HIT"
+      },
+      {
+        "id": "B14",
+        "observed": 0,
+        "low": 0,
+        "high": 0.16112516018512965,
+        "basis": {
+          "used": 20,
+          "of": 20
+        },
+        "verdict": "HIT"
       }
     ],
-    "hits": 13,
+    "hits": 14,
     "misses": 0,
     "notEvaluated": 0
   }

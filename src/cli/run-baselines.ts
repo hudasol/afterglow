@@ -5,6 +5,9 @@
  *   npm run eval:baselines -- --run dev    Ranks the development scenarios on Qloo. Needs QLOO_API_KEY.
  *   npm run eval:baselines -- --run test   Ranks the test scenarios on Qloo. Needs QLOO_API_KEY.
  *   npm run eval:baselines -- --render dev Rewrites the Markdown from the results file. No requests.
+ *   npm run eval:baselines -- --resummarise dev
+ *                                          Recomputes the summary in the results file from the results
+ *                                          of its scenarios, then rewrites the Markdown. No requests.
  *   npm run eval:baselines -- --offline    Runs the offline simulated catalogue, to check the code. Writes nothing.
  *
  * A run writes results/baselines-<set>.json and docs/EVALUATION_BASELINES_<SET>.md, and prints the
@@ -57,6 +60,19 @@ async function main(): Promise<void> {
     return;
   }
 
+  const resummariseIndex = args.indexOf('--resummarise');
+  if (resummariseIndex !== -1) {
+    const set = setFrom(args[resummariseIndex + 1]);
+    const path = resolve(root, SETS[set].results);
+    const file = JSON.parse(readFileSync(path, 'utf8')) as BaselineResultsFile;
+    // The summary is a pure function of the results, so this changes no measured value.
+    const updated: BaselineResultsFile = { ...file, summary: summariseBaselines(file.results) };
+    writeFileSync(path, `${JSON.stringify(updated, null, 2)}\n`);
+    writeFileSync(resolve(root, SETS[set].doc), renderBaselineReport(updated));
+    console.log(`Recomputed the summary in ${SETS[set].results} and wrote ${SETS[set].doc}.`);
+    return;
+  }
+
   if (args.includes('--offline')) {
     const provider = new SimulatedTasteProvider();
     const results: BaselineResult[] = [];
@@ -69,7 +85,10 @@ async function main(): Promise<void> {
   }
 
   const runIndex = args.indexOf('--run');
-  if (runIndex === -1) throw new Error('Use --run <dev|test>, --render <dev|test> or --offline.');
+  if (runIndex === -1)
+    throw new Error(
+      'Use --run <dev|test>, --render <dev|test>, --resummarise <dev|test> or --offline.',
+    );
   const set = setFrom(args[runIndex + 1]);
   const client = liveClient();
   if (!client) {
