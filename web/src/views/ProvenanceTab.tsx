@@ -126,6 +126,24 @@ export function ProvenanceTab({ caseId, refreshKey }: { caseId: string; refreshK
               Search {data.result.runId} returned {data.result.poolSize} places. Taste ranking:{' '}
               {data.result.tasteStatus}.{data.result.tasteNote ? ` ${data.result.tasteNote}` : ''}
             </p>
+            {data.result.exemplars.length > 0 ? (
+              <>
+                <h3>Vibes sent as example places</h3>
+                <p className="small">
+                  Qloo scored every place identically when a vibe was sent as a tag on its own. Each
+                  vibe was therefore sent as places that carry it, found in Qloo and taken from
+                  outside this search, and the whole pool was ranked by how close each place is to
+                  those examples.
+                </p>
+                <ul className="small">
+                  {data.result.exemplars.map((set) => (
+                    <li key={set.tag}>
+                      <strong>{set.tag}:</strong> {set.places.join(', ')}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
             {data.result.placeFacts ? (
               <p>
                 OpenStreetMap was asked about {data.result.placeFacts.looked} places, matched{' '}

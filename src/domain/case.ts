@@ -80,6 +80,11 @@ export const searchRunSchema = z.object({
     categoryTag: z.string().max(200).optional(),
     /** The venue that fell through, when it was used as a taste signal. */
     lostVenue: z.string().max(200).optional(),
+    /** Vibes that were sent as example places, with the places. Absent when vibes were sent as tags. */
+    exemplars: z
+      .array(z.object({ tag: z.string().max(200), places: z.array(z.string().max(200)).max(6) }))
+      .max(10)
+      .optional(),
     location: z.string().max(100),
   }),
   traces: z.array(callTraceSchema).max(60),

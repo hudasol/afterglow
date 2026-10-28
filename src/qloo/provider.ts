@@ -11,7 +11,7 @@ import type { ResolutionKind, TasteResolution } from '../domain/case.js';
 import type { Candidate } from '../domain/venue.js';
 import type { QlooClient, QueryParams } from './client.js';
 import { QlooError } from './errors.js';
-import { resultArray, toCandidate, toTasteScores } from './normalize.js';
+import { resultArray, toCandidate, toEntityRef, toTasteScores } from './normalize.js';
 import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
 
 /**
@@ -19,6 +19,14 @@ import { PLACE_TYPE, resolveEntity, resolveTag } from './resolve.js';
  * between 0.2 and 13 seconds, and with five or more it took thirty to sixty seconds.
  */
 export const MAX_TAG_SIGNALS = 4;
+/**
+ * Entity signals sent in one ranking request, counting the names the person likes, the venue that
+ * fell through and any example places. Example places were measured with up to eight.
+ */
+export const MAX_ENTITY_SIGNALS = 8;
+const EXEMPLARS_PER_TAG = 3;
+/** More places than needed are asked for, because those already in the pool are dropped. */
+const EXEMPLAR_FETCH = 6;
 const RANK_TIMEOUT_MS = 25_000;
 const LIGHT_TIMEOUT_MS = 15_000;
 
@@ -30,14 +38,28 @@ function translate(error: unknown): ProviderError {
 }
 
 /** Live adapter. Every value it returns came from the Qloo API in this process. */
+export interface QlooProviderOptions {
+  /**
+   * Send vibe tags as example places (the default). When false the tags are sent as tag signals,
+   * which is how the first version worked and is kept so the two can be compared.
+   */
+  vibeExemplars?: boolean;
+}
+
 export class QlooTasteProvider implements TasteProvider {
   readonly descriptor: ProviderDescriptor;
   readonly #client: QlooClient | null;
   readonly #clock: () => Date;
+  readonly #vibeExemplars: boolean;
 
-  constructor(client: QlooClient | null, clock: () => Date = () => new Date()) {
+  constructor(
+    client: QlooClient | null,
+    clock: () => Date = () => new Date(),
+    options: QlooProviderOptions = {},
+  ) {
     this.#client = client;
     this.#clock = clock;
+    this.#vibeExemplars = options.vibeExemplars ?? true;
     this.descriptor = { mode: 'live', label: 'Qloo hackathon API', configured: client !== null };
   }
 
@@ -94,6 +116,46 @@ export class QlooTasteProvider implements TasteProvider {
     }
   }
 
+  /**
+   * Places that carry a vibe, found in Qloo and kept out of the pool being ranked. Sent as entity
+   * signals they give Qloo a taste to compare the pool with. A vibe tag sent on its own gave every
+   * place the same score, and sent together with names it gave a score to only part of the pool.
+   */
+  async #findExemplars(
+    tagIds: readonly string[],
+    exclude: ReadonlySet<string>,
+    ctx: ProviderContext,
+  ): Promise<Exemplars[]> {
+    const client = this.#require();
+    const found: Exemplars[] = [];
+    for (const tagId of tagIds) {
+      try {
+        const response = await client.get(
+          '/v2/insights',
+          { 'filter.type': PLACE_TYPE, 'filter.tags': tagId, take: EXEMPLAR_FETCH },
+          ctx.traces,
+          { timeoutMs: LIGHT_TIMEOUT_MS, maxAttempts: 2 },
+        );
+        const places = resultArray(response, 'entities')
+          .map((value) => toEntityRef(value))
+          .filter((ref): ref is NonNullable<typeof ref> => ref !== undefined)
+          .filter((ref) => !exclude.has(ref.id))
+          .slice(0, EXEMPLARS_PER_TAG)
+          .map((ref) => ({ id: ref.id, name: ref.name }));
+        if (places.length > 0) found.push({ tagId, places });
+      } catch (error) {
+        // A problem with the key or the allowance is the same for every request.
+        if (
+          error instanceof QlooError &&
+          (error.code === 'QLOO_AUTH' || error.code === 'QLOO_BUDGET_EXHAUSTED')
+        ) {
+          throw translate(error);
+        }
+      }
+    }
+    return found;
+  }
+
   async rank(request: RankRequest, ctx: ProviderContext): Promise<RankResponse> {
     const client = this.#require();
     const ids = [...new Set(request.candidateIds)];
@@ -105,28 +167,54 @@ export class QlooTasteProvider implements TasteProvider {
       );
     }
 
+    const names = [...new Set(request.entityIds)];
     const base: QueryParams = {
       'filter.type': PLACE_TYPE,
       'filter.results.entities': ids,
       take: ids.length,
-      ...(request.entityIds.length > 0 ? { 'signal.interests.entities': request.entityIds } : {}),
     };
 
-    // Qloo answers quickly with a few tag signals and slowly with many, so the request starts
-    // with at most MAX_TAG_SIGNALS of them and, if Qloo cannot answer, tries lighter requests
-    // that keep the names the person likes. Each step down is reported to the person.
+    // Qloo answers quickly with a few tag signals and slowly with many, so a request sent with
+    // tags starts with at most MAX_TAG_SIGNALS of them and, if Qloo cannot answer, tries lighter
+    // requests that keep the names the person likes. Each step down is reported to the person.
     const tags = [...new Set(request.tagIds)].slice(0, MAX_TAG_SIGNALS);
     interface Rung {
+      entityIds: string[];
       tags: string[];
       timeoutMs: number;
       attempts: number;
+      /** Set on the rung that sends example places in place of the tags. */
+      exemplars?: Exemplars[];
     }
-    const rungs: Rung[] = [{ tags, timeoutMs: RANK_TIMEOUT_MS, attempts: 1 }];
+    const rungs: Rung[] = [];
+
+    if (this.#vibeExemplars && tags.length > 0) {
+      const exemplars = await this.#findExemplars(tags, new Set([...ids, ...names]), ctx);
+      const entityIds = [...names, ...interleave(exemplars)].slice(0, MAX_ENTITY_SIGNALS);
+      if (exemplars.length > 0 && entityIds.length > names.length) {
+        const used = new Set(entityIds);
+        rungs.push({
+          entityIds,
+          tags: [],
+          timeoutMs: RANK_TIMEOUT_MS,
+          attempts: 2,
+          exemplars: exemplars
+            .map((set) => ({ tagId: set.tagId, places: set.places.filter((p) => used.has(p.id)) }))
+            .filter((set) => set.places.length > 0),
+        });
+      }
+    }
+    rungs.push({ entityIds: names, tags, timeoutMs: RANK_TIMEOUT_MS, attempts: 1 });
     if (tags.length > 2) {
-      rungs.push({ tags: tags.slice(0, 2), timeoutMs: RANK_TIMEOUT_MS, attempts: 2 });
+      rungs.push({
+        entityIds: names,
+        tags: tags.slice(0, 2),
+        timeoutMs: RANK_TIMEOUT_MS,
+        attempts: 2,
+      });
     }
-    if (tags.length > 0 && request.entityIds.length > 0) {
-      rungs.push({ tags: [], timeoutMs: LIGHT_TIMEOUT_MS, attempts: 3 });
+    if (tags.length > 0 && names.length > 0) {
+      rungs.push({ entityIds: names, tags: [], timeoutMs: LIGHT_TIMEOUT_MS, attempts: 3 });
     }
 
     let lastError: unknown;
@@ -134,6 +222,7 @@ export class QlooTasteProvider implements TasteProvider {
       for (const explain of [true, false]) {
         const query: QueryParams = {
           ...base,
+          ...(rung.entityIds.length > 0 ? { 'signal.interests.entities': rung.entityIds } : {}),
           ...(rung.tags.length > 0 ? { 'signal.interests.tags': rung.tags } : {}),
           ...(explain ? { 'feature.explainability': true } : {}),
         };
@@ -143,15 +232,22 @@ export class QlooTasteProvider implements TasteProvider {
             maxAttempts: rung.attempts,
           });
           const notes: string[] = [];
-          if (index > 0) notes.push(this.#stepDownNote(lastError, tags.length, rung.tags.length));
+          if (index > 0) {
+            notes.push(
+              this.#stepDownNote(lastError, rungs[0]?.exemplars !== undefined, tags.length, rung),
+            );
+          }
           if (!explain) {
             notes.push(
               'Qloo did not accept the explainability option, so no explanation text is available for this ranking.',
             );
           }
+          const exemplars = rung.exemplars;
           return {
             scores: toTasteScores(response, new Set(ids)),
-            appliedTagIds: rung.tags,
+            // A vibe sent as example places counts as applied, because that is how it was used.
+            appliedTagIds: exemplars ? exemplars.map((set) => set.tagId) : rung.tags,
+            ...(exemplars ? { exemplars } : {}),
             ...(notes.length > 0 ? { degradedNote: notes.join(' ') } : {}),
           };
         } catch (error) {
@@ -173,12 +269,45 @@ export class QlooTasteProvider implements TasteProvider {
     throw translate(lastError);
   }
 
-  #stepDownNote(cause: unknown, asked: number, sent: number): string {
+  #stepDownNote(
+    cause: unknown,
+    triedExemplars: boolean,
+    asked: number,
+    rung: { tags: string[]; exemplars?: unknown },
+  ): string {
+    const sent = rung.tags.length;
+    const prefix = triedExemplars
+      ? 'Qloo could not answer with example places for the vibes. '
+      : '';
     if (sent === 0) {
-      return cause instanceof QlooError && cause.code === 'QLOO_BAD_REQUEST'
-        ? 'Qloo did not accept tag signals together with entity signals, so only the entity signals were applied.'
-        : 'Qloo could not answer with the vibe signals, so only the names you like and the venue that fell through were applied.';
+      return `${prefix}${
+        cause instanceof QlooError && cause.code === 'QLOO_BAD_REQUEST'
+          ? 'Qloo did not accept tag signals together with entity signals, so only the entity signals were applied.'
+          : 'Qloo could not answer with the vibe signals, so only the names you like and the venue that fell through were applied.'
+      }`;
     }
-    return `Qloo could not answer with ${asked} vibe signals, so only the first ${sent} were applied.`;
+    if (triedExemplars && sent === asked) {
+      return `${prefix}The vibe tags were sent as tags instead.`;
+    }
+    return `${prefix}Qloo could not answer with ${asked} vibe signals, so only the first ${sent} were applied.`;
   }
+}
+
+/** One vibe tag and the example places sent in its place. */
+export interface Exemplars {
+  tagId: string;
+  places: Array<{ id: string; name: string }>;
+}
+
+/** Takes one place from each vibe in turn, so no single vibe uses up the entity signals. */
+function interleave(sets: readonly Exemplars[]): string[] {
+  const ids: string[] = [];
+  const longest = Math.max(0, ...sets.map((set) => set.places.length));
+  for (let index = 0; index < longest; index += 1) {
+    for (const set of sets) {
+      const place = set.places[index];
+      if (place && !ids.includes(place.id)) ids.push(place.id);
+    }
+  }
+  return ids;
 }

@@ -179,6 +179,7 @@ export class RecoveryService {
             tasteStatus: run.tasteStatus,
             tasteNote: run.tasteNote,
             placeFacts: run.placeFacts,
+            exemplars: run.appliedSignals.exemplars ?? [],
             shortlist: view.options
               .filter((option) => view.shortlistIds.includes(option.candidate.id))
               .map((option) => ({
@@ -704,6 +705,7 @@ export class RecoveryService {
     let tasteNote: string | undefined;
     // Only the tags that were sent count as applied, so the Evidence tab never claims more.
     let appliedTags: ResolvedRef[] = [];
+    let exemplars: NonNullable<SearchRun['appliedSignals']['exemplars']> = [];
 
     if (pool.length === 0) {
       tasteNote = 'The provider returned no places for this city and category.';
@@ -723,6 +725,10 @@ export class RecoveryService {
         appliedTags = ranked.appliedTagIds
           ? tags.filter((tag) => ranked.appliedTagIds?.includes(tag.id))
           : tags;
+        exemplars = (ranked.exemplars ?? []).flatMap((set) => {
+          const tag = tags.find((candidate) => candidate.id === set.tagId);
+          return tag ? [{ tag: tag.name, places: set.places.map((place) => place.name) }] : [];
+        });
         if (ranked.scores.length === 0) {
           tasteNote =
             'The provider returned no taste scores for these places, so only the practical baseline is shown.';
@@ -763,6 +769,7 @@ export class RecoveryService {
         tagNames: [...new Set(appliedTags.map((tag) => tag.name))],
         ...(category ? { categoryTag: category.name } : {}),
         ...(lostVenue ? { lostVenue: lostVenue.name } : {}),
+        ...(exemplars.length > 0 ? { exemplars } : {}),
         location: anchor.city,
       },
       traces: traces.slice(0, MAX_TRACES),

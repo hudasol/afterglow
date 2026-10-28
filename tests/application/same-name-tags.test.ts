@@ -124,3 +124,37 @@ describe('what the ranking says about its own strength', () => {
     expect(view.run?.tasteNote ?? '').not.toContain('scored');
   });
 });
+
+describe('vibes sent as example places', () => {
+  it('records the places and names them in the trace and the evidence', async () => {
+    const live = new StubLive();
+    live.rank = async () => ({
+      scores: [{ candidateId: 'p1', rank: 1, affinity: 0.7 }],
+      appliedTagIds: ['urn:tag:ambience:romantic'],
+      exemplars: [
+        {
+          tagId: 'urn:tag:ambience:romantic',
+          places: [
+            { id: 'x1', name: 'Candle Room' },
+            { id: 'x2', name: 'Rose Garden' },
+          ],
+        },
+      ],
+    });
+    const { service } = makeService({ live });
+    const view = await service.openCase('session-exemplars', {
+      mode: 'live',
+      anchor: makeAnchor({ tasteTags: ['romantic'], useOriginalVenueAsSignal: false }),
+      disruption: { kind: 'venue_unavailable' },
+    });
+    expect(view.run?.appliedSignals.exemplars).toEqual([
+      { tag: 'Romantic', places: ['Candle Room', 'Rose Garden'] },
+    ]);
+    const evidence = service.getProvenance('session-exemplars', view.id);
+    expect(evidence.result?.exemplars).toEqual([
+      { tag: 'Romantic', places: ['Candle Room', 'Rose Garden'] },
+    ]);
+    const trace = JSON.stringify(service.getTrace('session-exemplars', view.id));
+    expect(trace).toContain('places that carry the vibe Romantic: Candle Room and Rose Garden');
+  });
+});

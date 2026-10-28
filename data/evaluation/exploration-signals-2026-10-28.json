@@ -1,0 +1,1272 @@
+{
+  "kind": "qloo_exploration",
+  "scenarios": [
+    {
+      "id": "ny-a-friday-anniversary",
+      "poolSize": 40,
+      "eligible": 21,
+      "baseVibeShare": 0.19047619047619047,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 10,
+          "spread": 0.05261133972177734,
+          "top": [
+            "Eataly - Flatiron",
+            "Mr. Purple",
+            "Pietro Nolita"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.3,
+          "scored": 39,
+          "spread": 0.1316350030780855,
+          "top": [
+            "Irving Plaza",
+            "Baby's All Right",
+            "Wythe Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 3,
+          "seconds": 0.5,
+          "scored": 40,
+          "spread": 0.1516909346759644,
+          "top": [
+            "230 Fifth Rooftop Bar",
+            "Hard Rock Cafe",
+            "Pietro Nolita"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 5,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.15727015432637026,
+          "top": [
+            "230 Fifth Rooftop Bar",
+            "Hard Rock Cafe",
+            "Carlo's Bakery"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 3,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.2059513657515153,
+          "top": [
+            "House of Yes",
+            "Baby's All Right",
+            "Irving Plaza"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "ny-b-saturday-vegetarian",
+      "poolSize": 40,
+      "eligible": 23,
+      "baseVibeShare": 0.08695652173913043,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 20,
+          "spread": 0.06655727704847691,
+          "top": [
+            "Refinery Rooftop",
+            "Eataly - Flatiron",
+            "Tavern On the Green"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.3,
+          "scored": 39,
+          "spread": 0.16937725460643493,
+          "top": [
+            "Irving Plaza",
+            "Tavern On the Green",
+            "Balthazar"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.12150520680891708,
+          "top": [
+            "230 Fifth Rooftop Bar",
+            "Taiyaki NYC Japanese Ice Cream",
+            "Irving Plaza"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.15094215371367303,
+          "top": [
+            "230 Fifth Rooftop Bar",
+            "Irving Plaza",
+            "Hard Rock Cafe"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 8,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.17009168845837463,
+          "top": [
+            "Baby's All Right",
+            "House of Yes",
+            "Wythe Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "ny-c-monday-budget",
+      "poolSize": 40,
+      "eligible": 12,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0.15849242132663655,
+          "top": [
+            "Eataly - Flatiron",
+            "Taiyaki NYC Japanese Ice Cream",
+            "The Bowery Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.15849242132663655,
+          "top": [
+            "Baby's All Right",
+            "Hard Rock Cafe",
+            "Wythe Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "ny-d-wednesday-group",
+      "poolSize": 40,
+      "eligible": 29,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 0,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0,
+          "top": [
+            "Ellen's Stardust Diner",
+            "Bubba Gump Shrimp Co.",
+            "Hard Rock Cafe"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.12316639337836777,
+          "top": [
+            "Hard Rock Cafe",
+            "230 Fifth Rooftop Bar",
+            "Bubba Gump Shrimp Co."
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 6,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.1916773440131757,
+          "top": [
+            "Mr. Purple",
+            "Beauty & Essex",
+            "1 Hotel Brooklyn Bridge"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "lon-a-friday-anniversary",
+      "poolSize": 40,
+      "eligible": 24,
+      "baseVibeShare": 0.125,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 16,
+          "spread": 0.10197648399484494,
+          "top": [
+            "Brasserie Zedel",
+            "The Wolseley Piccadilly",
+            "Ronnie Scott's"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11967220667725076,
+          "top": [
+            "The Wolseley Piccadilly",
+            "Ham Yard Hotel",
+            "Duck & Waffle"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 3,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.14628582670863466,
+          "top": [
+            "Sky Garden",
+            "Selfridges",
+            "Aura x"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 5,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13178290290826278,
+          "top": [
+            "Sky Garden",
+            "Selfridges",
+            "Duck & Waffle"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 3,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.1656714989912733,
+          "top": [
+            "Sky Garden",
+            "Aura x",
+            "Selfridges"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "lon-b-saturday-vegetarian",
+      "poolSize": 40,
+      "eligible": 29,
+      "baseVibeShare": 0.034482758620689655,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 20,
+          "spread": 0.04345416879177044,
+          "top": [
+            "Balconies Restaurant",
+            "Aqua Shard",
+            "Ronnie Scott's"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13280221190636732,
+          "top": [
+            "The Wolseley Piccadilly",
+            "Aqua Shard",
+            "Ham Yard Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.08389464936160906,
+          "top": [
+            "Sky Garden",
+            "The O2",
+            "The Monument"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.08621426927239617,
+          "top": [
+            "Sky Garden",
+            "Aura x",
+            "The O2"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.09624866180187808,
+          "top": [
+            "Mercato Metropolitano",
+            "Aura x",
+            "Brasserie Zedel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "lon-c-monday-budget",
+      "poolSize": 40,
+      "eligible": 17,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0.10243486860277695,
+          "top": [
+            "Brasserie Zedel",
+            "Mercato Metropolitano",
+            "The Monument"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.10243486860277695,
+          "top": [
+            "Aura x",
+            "BOXPARK Shoreditch",
+            "Park Plaza London Westminster Bridge"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "lon-d-wednesday-group",
+      "poolSize": 40,
+      "eligible": 25,
+      "baseVibeShare": 0.32,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 0,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0,
+          "top": [
+            "Ham Yard Hotel",
+            "Quaglino's",
+            "Ronnie Scott's"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13530092823669493,
+          "top": [
+            "The Tower Hotel, by Thistle",
+            "Park Plaza London Westminster Bridge",
+            "Hilton London Metropole"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.14494582509701892,
+          "top": [
+            "Mercato Metropolitano",
+            "Pop Brixton",
+            "Ronnie Scott's"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "par-a-friday-anniversary",
+      "poolSize": 40,
+      "eligible": 24,
+      "baseVibeShare": 0.375,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 1,
+          "spread": null,
+          "top": [
+            "Caf\u00e9 de Flore",
+            "Le Caf\u00e9 Marly",
+            "Rosa Bonheur sur Seine"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.0691084653649312,
+          "top": [
+            "Cin\u00e9math\u00e8que Fran\u00e7aise",
+            "Point \u00c9ph\u00e9m\u00e8re",
+            "La Maroquinerie"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 3,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.2223186854013598,
+          "top": [
+            "La Maison Rose",
+            "Caf\u00e9 de Flore",
+            "Bercy Village"
+          ],
+          "vibeShare": 0.6666666666666666,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 5,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.1725872068714146,
+          "top": [
+            "Caf\u00e9 de Flore",
+            "Le Procope",
+            "Bercy Village"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 3,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.2267619328399353,
+          "top": [
+            "Bercy Village",
+            "La Maison Rose",
+            "Aquarium Club Paris"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "par-b-saturday-vegetarian",
+      "poolSize": 40,
+      "eligible": 30,
+      "baseVibeShare": 0.03333333333333333,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 23,
+          "spread": 0.03682107607921137,
+          "top": [
+            "Caf\u00e9 de Flore",
+            "Kong",
+            "Le Caf\u00e9 Marly"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.17122593048152324,
+          "top": [
+            "Madame Brasserie",
+            "Caf\u00e9 de la Paix",
+            "Ladur\u00e9e"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13912060260553383,
+          "top": [
+            "Madame Brasserie",
+            "La Maison Rose",
+            "Caf\u00e9 de la Paix"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.1950626287926558,
+          "top": [
+            "Madame Brasserie",
+            "Ladur\u00e9e",
+            "La Maison Rose"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13666202589554366,
+          "top": [
+            "Cin\u00e9math\u00e8que Fran\u00e7aise",
+            "Point \u00c9ph\u00e9m\u00e8re",
+            "La Maroquinerie"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "par-c-monday-budget",
+      "poolSize": 40,
+      "eligible": 18,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0.1336321100551322,
+          "top": [
+            "Le Perchoir",
+            "Caf\u00e9 de Flore",
+            "Rosa Bonheur sur Seine"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.1336321100551322,
+          "top": [
+            "Cin\u00e9math\u00e8que Fran\u00e7aise",
+            "La Maroquinerie",
+            "Aquarium Club Paris"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "par-d-wednesday-group",
+      "poolSize": 40,
+      "eligible": 29,
+      "baseVibeShare": 0.034482758620689655,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 0,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0,
+          "top": [
+            "L'As du Fallafel",
+            "Bouillon R\u00e9publique",
+            "Kong"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11839518067334731,
+          "top": [
+            "Bouillon Chartier Grands Boulevards",
+            "Le Procope",
+            "L'As du Fallafel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 7,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.07526627099384053,
+          "top": [
+            "Le Perchoir",
+            "Le Chalet des \u00celes",
+            "Bercy Village"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "tok-a-friday-anniversary",
+      "poolSize": 40,
+      "eligible": 10,
+      "baseVibeShare": 0.1,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 3,
+          "spread": 0.012609763107023886,
+          "top": [
+            "TWO ROOMS",
+            "THE APOLLO Ginza",
+            "Spring Valley Brewery Tokyo"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.10432271746422228,
+          "top": [
+            "TWO ROOMS",
+            "THE APOLLO Ginza",
+            "The Great Burger"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.1064503641713812,
+          "top": [
+            "THE APOLLO Ginza",
+            "Spring Valley Brewery Tokyo",
+            "The Great Burger"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.09146479548849351,
+          "top": [
+            "THE APOLLO Ginza",
+            "Asakusa",
+            "The Great Burger"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 7,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.15759715497346305,
+          "top": [
+            "Asakusa",
+            "Billboard Live Tokyo",
+            "Tower Records Shibuya"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "tok-b-saturday-vegetarian",
+      "poolSize": 40,
+      "eligible": 15,
+      "baseVibeShare": 0.06666666666666667,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 5,
+          "spread": 0.043405661877492174,
+          "top": [
+            "THE APOLLO Ginza",
+            "Path",
+            "Canal Cafe"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.10411249255782629,
+          "top": [
+            "THE APOLLO Ginza",
+            "Path",
+            "Hotel Gajoen Tokyo"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.08077094897817416,
+          "top": [
+            "BOOK AND BED TOKYO Shinjuku",
+            "Fuglen Tokyo",
+            "THE APOLLO Ginza"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.09521213666673134,
+          "top": [
+            "THE APOLLO Ginza",
+            "Path",
+            "Hotel Gajoen Tokyo"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13301003644042597,
+          "top": [
+            "Canal Cafe",
+            "The Great Burger",
+            "Hacienda"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "tok-c-monday-budget",
+      "poolSize": 40,
+      "eligible": 11,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0.13160247783521162,
+          "top": [
+            "Canal Cafe",
+            "Egg Baby Cafe",
+            "crisscross"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13160247783521162,
+          "top": [
+            "Canal Cafe",
+            "Nui. Hostel & Bar Lounge",
+            "Fuglen Tokyo"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        }
+      ]
+    },
+    {
+      "id": "tok-d-wednesday-group",
+      "poolSize": 40,
+      "eligible": 17,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 0,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0,
+          "top": [
+            "TWO ROOMS",
+            "The Great Burger",
+            "Tower Records Shibuya"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11465679707914778,
+          "top": [
+            "Hacienda",
+            "The Great Burger",
+            "TWO ROOMS"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 6,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.14154779091656067,
+          "top": [
+            "Spring Valley Brewery Tokyo",
+            "THE APOLLO Ginza",
+            "Hacienda"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0
+        }
+      ]
+    },
+    {
+      "id": "dxb-a-friday-anniversary",
+      "poolSize": 40,
+      "eligible": 10,
+      "baseVibeShare": 0.4,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 29,
+          "spread": 0.1286332513664895,
+          "top": [
+            "Mint Leaf of London Dubai",
+            "The Cheesecake Factory",
+            "Lounge at Address Downtown"
+          ],
+          "vibeShare": 0.6666666666666666,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.07558764885105207,
+          "top": [
+            "Lounge at Address Downtown",
+            "Raffles Dubai",
+            "The Cheesecake Factory"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 3,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11604440415229578,
+          "top": [
+            "Nikki Beach Dubai (Beach Club & Restaurant)",
+            "Dubai Opera",
+            "Lounge at Address Downtown"
+          ],
+          "vibeShare": 1,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 5,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.10793883548342575,
+          "top": [
+            "Nikki Beach Dubai (Beach Club & Restaurant)",
+            "Dubai Opera",
+            "Lounge at Address Downtown"
+          ],
+          "vibeShare": 1,
+          "overlapWithNearest": 0
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 3,
+          "seconds": 0.3,
+          "scored": 40,
+          "spread": 0.11326592333393604,
+          "top": [
+            "Dubai Opera",
+            "Hafiz Mustafa 1864 The Dubai Mall",
+            "Mint Leaf of London Dubai"
+          ],
+          "vibeShare": 0.6666666666666666,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "dxb-b-saturday-vegetarian",
+      "poolSize": 40,
+      "eligible": 12,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 32,
+          "spread": 0.05541836916871257,
+          "top": [
+            "McGettigan's Souk Madinat Jumeirah",
+            "Barasti Beach",
+            "Nola Eatery & Social House"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.11265982692113563,
+          "top": [
+            "Pier 7",
+            "McGettigan's Souk Madinat Jumeirah",
+            "Waldorf Astoria Dubai Palm Jumeirah"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11795590634226871,
+          "top": [
+            "McGettigan's Souk Madinat Jumeirah",
+            "Pier 7",
+            "Barasti Beach"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        },
+        {
+          "form": "names_and_exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 39,
+          "spread": 0.13423206431899115,
+          "top": [
+            "McGettigan's Souk Madinat Jumeirah",
+            "Pier 7",
+            "J Club at Jumeirah Beach Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.6666666666666666
+        },
+        {
+          "form": "exemplars_city",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.05245582340123134,
+          "top": [
+            "Kempinski Hotel Mall of the Emirates",
+            "Fairmont The Palm",
+            "Waldorf Astoria Dubai Palm Jumeirah"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    },
+    {
+      "id": "dxb-c-monday-budget",
+      "poolSize": 40,
+      "eligible": 21,
+      "baseVibeShare": 0,
+      "nearestVibeShare": 0,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 2,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0.13715422486062645,
+          "top": [
+            "McGettigan's Souk Madinat Jumeirah",
+            "Barasti Beach",
+            "Fairmont The Palm"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "names",
+          "entitySignals": 2,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.13715422486062645,
+          "top": [
+            "McGettigan's Souk Madinat Jumeirah",
+            "Barasti Beach",
+            "Fairmont The Palm"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 1
+        }
+      ]
+    },
+    {
+      "id": "dxb-d-wednesday-group",
+      "poolSize": 40,
+      "eligible": 33,
+      "baseVibeShare": 0.42424242424242425,
+      "nearestVibeShare": 0.3333333333333333,
+      "rows": [
+        {
+          "form": "current",
+          "entitySignals": 0,
+          "seconds": null,
+          "scored": 40,
+          "spread": 0,
+          "top": [
+            "Ikea Cafe",
+            "Barasti Beach",
+            "Lounge at Address Downtown"
+          ],
+          "vibeShare": 0.3333333333333333,
+          "overlapWithNearest": 1
+        },
+        {
+          "form": "exemplars_global",
+          "entitySignals": 8,
+          "seconds": 0.2,
+          "scored": 40,
+          "spread": 0.11845845890032858,
+          "top": [
+            "Hilton Dubai The Walk",
+            "Barasti Beach",
+            "The First Collection Marina, Dubai, a Tribute Portfolio Hotel"
+          ],
+          "vibeShare": 0,
+          "overlapWithNearest": 0.3333333333333333
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "form": "current",
+      "scenarios": 20,
+      "meanScoredShare": 0.69875,
+      "meanSpread": 0.06341071020190435,
+      "meanVibeShare": 0.15,
+      "meanOverlapWithNearest": 0.6333333333333333,
+      "meanSeconds": null
+    },
+    {
+      "form": "names",
+      "scenarios": 15,
+      "meanScoredShare": 0.9933333333333334,
+      "meanSpread": 0.12358799070594753,
+      "meanVibeShare": 0.06666666666666667,
+      "meanOverlapWithNearest": 0.26666666666666666,
+      "meanSeconds": 0.22000000000000006
+    },
+    {
+      "form": "exemplars_global",
+      "scenarios": 15,
+      "meanScoredShare": 1,
+      "meanSpread": 0.12640101916493499,
+      "meanVibeShare": 0.15555555555555553,
+      "meanOverlapWithNearest": 0.26666666666666666,
+      "meanSeconds": 0.22000000000000006
+    },
+    {
+      "form": "names_and_exemplars_global",
+      "scenarios": 10,
+      "meanScoredShare": 0.99,
+      "meanSpread": 0.13227071478424143,
+      "meanVibeShare": 0.16666666666666666,
+      "meanOverlapWithNearest": 0.26666666666666666,
+      "meanSeconds": 0.19999999999999998
+    },
+    {
+      "form": "exemplars_city",
+      "scenarios": 14,
+      "meanScoredShare": 1,
+      "meanSpread": 0.14365381020772663,
+      "meanVibeShare": 0.11904761904761904,
+      "meanOverlapWithNearest": 0.11904761904761904,
+      "meanSeconds": 0.23571428571428574
+    }
+  ],
+  "baseline": {
+    "meanBaseVibeShare": 0.10953203268495623,
+    "meanNearestVibeShare": 0.09999999999999999
+  }
+}

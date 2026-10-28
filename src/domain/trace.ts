@@ -70,11 +70,13 @@ function topReasons(view: CaseView): string[] {
 function plannedSignals(view: CaseView): string {
   const run = view.run;
   if (!run) return 'No taste signals were available.';
-  const { entityNames, tagNames, lostVenue } = run.appliedSignals;
+  const { entityNames, tagNames, lostVenue, exemplars = [] } = run.appliedSignals;
+  const asTags = tagNames.filter((name) => !exemplars.some((set) => set.tag === name));
   const parts = [
     entityNames.length > 0 ? `names: ${list(entityNames)}` : null,
-    tagNames.length > 0 ? `vibes: ${list(tagNames)}` : null,
+    asTags.length > 0 ? `vibes: ${list(asTags)}` : null,
     lostVenue ? `the venue that fell through: ${lostVenue}` : null,
+    ...exemplars.map((set) => `places that carry the vibe ${set.tag}: ${list(set.places)}`),
   ].filter((part): part is string => part !== null);
   return parts.length > 0
     ? `Taste signals for this search: ${parts.join('; ')}.`

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { QlooClient } from '../../src/qloo/client.js';
 import { toCandidate, toTasteScores, readPoint, resultArray } from '../../src/qloo/normalize.js';
-import { QlooTasteProvider } from '../../src/qloo/provider.js';
+import { QlooTasteProvider, type QlooProviderOptions } from '../../src/qloo/provider.js';
 import {
   jsonResponse,
   recordedJazzAnyTags,
@@ -14,7 +14,10 @@ import {
   syntheticTagResponse,
 } from '../helpers/qloo-fixtures.js';
 
-function providerWith(handler: (url: URL) => Response | Promise<Response>) {
+function providerWith(
+  handler: (url: URL) => Response | Promise<Response>,
+  options: QlooProviderOptions = { vibeExemplars: false },
+) {
   const seen: URL[] = [];
   const client = new QlooClient({
     apiKey: 'test-key-never-real',
@@ -27,7 +30,10 @@ function providerWith(handler: (url: URL) => Response | Promise<Response>) {
       return handler(url);
     }) as typeof fetch,
   });
-  return { provider: new QlooTasteProvider(client, () => new Date('2026-10-24T00:00:00Z')), seen };
+  return {
+    provider: new QlooTasteProvider(client, () => new Date('2026-10-24T00:00:00Z'), options),
+    seen,
+  };
 }
 
 describe('normalisers', () => {
@@ -234,6 +240,148 @@ describe('QlooTasteProvider', () => {
     );
     expect(response.scores).toHaveLength(1);
     expect(response.degradedNote).toContain('only the entity signals');
+  });
+
+  describe('vibes sent as example places', () => {
+    const entity = (id: string, name: string) => ({
+      entity_id: id,
+      name,
+      type: 'urn:entity:place',
+    });
+    const placesFor = (url: URL) => {
+      const tag = url.searchParams.get('filter.tags');
+      return tag === 't:1'
+        ? [entity('x-1', 'Rooftop One'), entity('x-2', 'Rooftop Two'), entity('p-1', 'In Pool')]
+        : tag === 't:2'
+          ? [entity('y-1', 'Candle One'), entity('y-2', 'Candle Two')]
+          : [];
+    };
+    const isExemplarLookup = (url: URL) => url.searchParams.has('filter.tags');
+    const handler = (url: URL) =>
+      isExemplarLookup(url)
+        ? jsonResponse({ results: { entities: placesFor(url) } })
+        : jsonResponse(syntheticPlaceResponse);
+
+    it('sends places that carry the vibe as entity signals and no tag signal', async () => {
+      const { provider, seen } = providerWith(handler, {});
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: ['e-1'], tagIds: ['t:1', 't:2'] },
+        { traces: [] },
+      );
+      const ranking = seen.find((url) => url.searchParams.has('filter.results.entities'));
+      expect(ranking?.searchParams.get('signal.interests.tags')).toBeNull();
+      expect(ranking?.searchParams.get('signal.interests.entities')).toBe('e-1,x-1,y-1,x-2,y-2');
+      expect(response.appliedTagIds).toEqual(['t:1', 't:2']);
+      expect(response.exemplars).toEqual([
+        {
+          tagId: 't:1',
+          places: [
+            { id: 'x-1', name: 'Rooftop One' },
+            { id: 'x-2', name: 'Rooftop Two' },
+          ],
+        },
+        {
+          tagId: 't:2',
+          places: [
+            { id: 'y-1', name: 'Candle One' },
+            { id: 'y-2', name: 'Candle Two' },
+          ],
+        },
+      ]);
+      expect(response.degradedNote).toBeUndefined();
+    });
+
+    it('never uses a place from the pool being ranked as an example of itself', async () => {
+      const { provider, seen } = providerWith(handler, {});
+      await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: [], tagIds: ['t:1'] },
+        { traces: [] },
+      );
+      const ranking = seen.find((url) => url.searchParams.has('filter.results.entities'));
+      expect(ranking?.searchParams.get('signal.interests.entities')).toBe('x-1,x-2');
+    });
+
+    it('keeps the entity signals within the cap, names first', async () => {
+      const many = (url: URL) =>
+        isExemplarLookup(url)
+          ? jsonResponse({
+              results: {
+                entities: Array.from({ length: 6 }, (_, i) =>
+                  entity(`${url.searchParams.get('filter.tags')}-e${i}`, `Place ${i}`),
+                ),
+              },
+            })
+          : jsonResponse(syntheticPlaceResponse);
+      const { provider, seen } = providerWith(many, {});
+      await provider.rank(
+        {
+          city: 'T',
+          candidateIds: ['p-1'],
+          entityIds: ['n-1', 'n-2'],
+          tagIds: ['t:1', 't:2', 't:3', 't:4'],
+        },
+        { traces: [] },
+      );
+      const ranking = seen.find((url) => url.searchParams.has('filter.results.entities'));
+      const sent = ranking?.searchParams.get('signal.interests.entities')?.split(',') ?? [];
+      expect(sent).toHaveLength(8);
+      expect(sent.slice(0, 2)).toEqual(['n-1', 'n-2']);
+      expect(new Set(sent.slice(2).map((id) => id.split('-')[0])).size).toBe(4);
+    });
+
+    it('sends the vibe as a tag instead, and says so, when no example place is found', async () => {
+      const none = (url: URL) =>
+        isExemplarLookup(url) && !url.searchParams.has('filter.results.entities')
+          ? jsonResponse({ results: { entities: [] } })
+          : jsonResponse(syntheticPlaceResponse);
+      const { provider } = providerWith(none, {});
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1'], entityIds: ['e-1'], tagIds: ['t:1'] },
+        { traces: [] },
+      );
+      expect(response.exemplars).toBeUndefined();
+      expect(response.appliedTagIds).toEqual(['t:1']);
+    });
+
+    it('falls back to tags with a note when Qloo cannot answer with example places', async () => {
+      const failing = (url: URL) => {
+        if (isExemplarLookup(url) && !url.searchParams.has('filter.results.entities')) {
+          return jsonResponse({ results: { entities: placesFor(url) } });
+        }
+        return url.searchParams.has('signal.interests.tags')
+          ? jsonResponse(syntheticPlaceResponse)
+          : new Response('{}', { status: 400 });
+      };
+      const { provider } = providerWith(failing, {});
+      const response = await provider.rank(
+        { city: 'T', candidateIds: ['p-1', 'p-2'], entityIds: ['e-1'], tagIds: ['t:1'] },
+        { traces: [] },
+      );
+      expect(response.exemplars).toBeUndefined();
+      expect(response.appliedTagIds).toEqual(['t:1']);
+      expect(response.degradedNote).toContain('example places');
+      expect(response.degradedNote).toContain('sent as tags instead');
+    });
+
+    it('does not look for example places when no vibe is given', async () => {
+      const { provider, seen } = providerWith(handler, {});
+      await provider.rank(
+        { city: 'T', candidateIds: ['p-1'], entityIds: ['e-1'], tagIds: [] },
+        { traces: [] },
+      );
+      expect(seen).toHaveLength(1);
+    });
+
+    it('stops at once when the key is refused while looking for example places', async () => {
+      const { provider, seen } = providerWith(() => new Response('{}', { status: 401 }), {});
+      await expect(
+        provider.rank(
+          { city: 'T', candidateIds: ['p-1'], entityIds: ['e-1'], tagIds: ['t:1'] },
+          { traces: [] },
+        ),
+      ).rejects.toMatchObject({ code: 'QLOO_AUTH' });
+      expect(seen).toHaveLength(1);
+    });
   });
 
   describe('ranking with many tag signals', () => {

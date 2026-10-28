@@ -133,6 +133,7 @@ export interface Provenance {
     tasteStatus: string;
     tasteNote: string | undefined;
     placeFacts: { looked: number; matched: number; filled: number; note?: string } | undefined;
+    exemplars: { tag: string; places: string[] }[];
     shortlist: {
       name: string;
       providerRank: number | null;

@@ -42,8 +42,10 @@ export interface RankResponse {
   scores: TasteScore[];
   /** Set when the provider had to drop part of the request. Shown to the person. */
   degradedNote?: string;
-  /** The tag signals that were actually sent, which can be fewer than were asked for. */
+  /** The vibe tags that were applied, as tags or as example places. Can be fewer than were asked for. */
   appliedTagIds?: string[];
+  /** Places found for a vibe tag and sent as signals in its place. Listed so the person can see them. */
+  exemplars?: Array<{ tagId: string; places: Array<{ id: string; name: string }> }>;
 }
 
 export interface ProviderDescriptor {

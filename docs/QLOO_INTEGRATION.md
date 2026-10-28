@@ -78,6 +78,24 @@ Two things about the answers matter for how a ranking is read, and the applicati
 
 Names alone gave a score for every place, with a spread of 0.10 to 0.16 between the smallest and the largest. The numbers are in [data/evaluation/affinity-spread-2026-10-25.json](../data/evaluation/affinity-spread-2026-10-25.json). We do not know why Qloo behaves this way, and the product does not guess.
 
+### Vibes sent as example places
+
+Because a vibe tag on its own gave no usable score, a read only experiment on the same 20 scenarios ranked each pool several more ways. Those scenarios had been seen by then, so from here they are the development set and are no longer evidence about unseen plans. The comparison is in [data/evaluation/exploration-signals-2026-10-28.json](../data/evaluation/exploration-signals-2026-10-28.json). Example places are places that carry the vibe, found with `/v2/insights` and `filter.tags`, left out when they belong to the pool being ranked, and sent as `signal.interests.entities`.
+
+| Form of the signals                    | Plans | Places scored of the pool | Spread of affinity |
+| -------------------------------------- | ----- | ------------------------- | ------------------ |
+| As the product sent them before (mean) | 20    | 0.70                      | 0.063              |
+| Names only                             | 15    | 0.99                      | 0.124              |
+| Example places only, found anywhere    | 15    | 1.00                      | 0.126              |
+| Names and example places               | 10    | 0.99                      | 0.132              |
+| Example places only, found in the city | 14    | 1.00                      | 0.144              |
+
+Sent as example places, a vibe gave Qloo a score for every place and a spread comparable with names alone, in about 0.2 seconds. The share of the top three that carry a tag the person asked for did not separate the forms at this sample size (about 0.10 for nearest first and for a random pick, about 0.15 to 0.17 for the Qloo forms, on a quarter of the plans that have tags to compare), and no claim is made from it. What the experiment supports is narrower: with example places the taste score is no longer the same for every place, so taste can change the order.
+
+The product therefore sends each vibe as up to three example places found anywhere, together with the names the group likes, up to eight entity signals in all, and no tag signal in the same request. The Evidence tab lists the places that stood in for each vibe. When Qloo cannot answer that request the provider falls back to the tag ladder described above and says so. The example places are places the person did not choose, usually in other cities. That is a reading of what the vibe means in Qloo's graph, and it is shown, not hidden.
+
+Affinity is also rescaled before it is blended with closeness. Across one pool the values lie within about 0.1 of each other, while closeness spans 0 to 1, so the stated weight of 0.75 on taste let distance decide the order. The rescaling is across the places that passed the gate, the lowest scored place becoming 0 and the highest 1, and identical affinities become a neutral 0.5. These two changes are evaluated on new scenarios under a second preregistration, see [PREREGISTRATION_V2.md](PREREGISTRATION_V2.md).
+
 ## What is read from responses
 
 AFTERGLOW reads names, ids, types, descriptions, image links, tags, popularity, an affinity value, an explanation, an address when one is present, a price level when it is an integer from 1 to 4, and a location only from an object with explicit latitude and longitude keys. A bare coordinate array is ignored.
