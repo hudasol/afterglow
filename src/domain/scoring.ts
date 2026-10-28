@@ -8,9 +8,13 @@ const DISTANCE_CAP_KM = 10;
 
 export const SCORE_FORMULA =
   'Recovery score = 0.75 x taste score + 0.25 x closeness score. ' +
-  'Taste score is the Qloo affinity when Qloo returned one, otherwise a rank based value. ' +
+  'Taste score is the Qloo affinity rescaled across the places that passed the gate, so the lowest scored place is 0 and the highest is 1, ' +
+  'or a rank based value when Qloo gave no affinity. ' +
   'Closeness score is 1 minus distance to the original venue over 10 km. ' +
   'When a component is unavailable the remaining weights are renormalised.';
+
+/** Affinity values closer together than this carry no information about order. */
+const FLAT_AFFINITY_RANGE = 1e-6;
 
 export function distanceToOriginal(
   candidate: Candidate,
@@ -30,15 +34,38 @@ export interface TasteBasis {
   basis: 'affinity' | 'rank';
 }
 
-/** Normalised taste value in 0..1 for every scored candidate in one ranking response. */
-export function tasteValues(scores: readonly TasteScore[]): Map<string, TasteBasis> {
+/**
+ * Taste value in 0..1 for every scored candidate in one ranking response.
+ *
+ * Qloo's affinity has no calibrated scale, and across one pool its values often lie within a
+ * range of 0.1. Blended unchanged with a closeness score that spans 0 to 1, the 0.75 weight on
+ * taste would be a weight in name only, because distance would settle the order. Affinity is
+ * therefore rescaled across the places that can be offered (`within`, or every scored place when
+ * it is not given), so the weights describe how much each part may move the order. When every
+ * affinity is the same the taste value is 0.5 for all, which leaves the order to closeness.
+ */
+export function tasteValues(
+  scores: readonly TasteScore[],
+  within?: ReadonlySet<string>,
+): Map<string, TasteBasis> {
   const result = new Map<string, TasteBasis>();
-  const count = scores.length;
+  const inScope = within ? scores.filter((score) => within.has(score.candidateId)) : scores;
+  const affinities = inScope
+    .map((score) => score.affinity)
+    .filter((value): value is number => value !== undefined && value >= 0 && value <= 1);
+  const low = affinities.length > 0 ? Math.min(...affinities) : 0;
+  const range = (affinities.length > 0 ? Math.max(...affinities) : 0) - low;
+  const count = inScope.length;
+  const position = new Map(
+    [...inScope].sort((a, b) => a.rank - b.rank).map((score, index) => [score.candidateId, index]),
+  );
   for (const score of scores) {
     if (score.affinity !== undefined && score.affinity >= 0 && score.affinity <= 1) {
-      result.set(score.candidateId, { value: score.affinity, basis: 'affinity' });
+      const value = range < FLAT_AFFINITY_RANGE ? 0.5 : (score.affinity - low) / range;
+      result.set(score.candidateId, { value, basis: 'affinity' });
     } else {
-      const value = count <= 1 ? 1 : 1 - (score.rank - 1) / (count - 1);
+      const place = position.get(score.candidateId);
+      const value = count <= 1 || place === undefined ? 1 : 1 - place / (count - 1);
       result.set(score.candidateId, { value, basis: 'rank' });
     }
   }

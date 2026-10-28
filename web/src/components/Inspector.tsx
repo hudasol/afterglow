@@ -218,7 +218,10 @@ export function Inspector({
               <p className="small">
                 Recovery score {option.tasteOn.score.composite.toFixed(2)} <Source kind="app" />.
                 Taste part {option.tasteOn.score.tasteComponent?.toFixed(2) ?? 'unavailable'}
-                {option.tasteOn.score.tasteBasis === 'rank' ? ' (rank based)' : ''}, closeness part{' '}
+                {option.tasteOn.score.tasteBasis === 'rank'
+                  ? ' (rank based)'
+                  : ' (affinity rescaled across the places that passed the gate)'}
+                , closeness part{' '}
                 {option.tasteOn.score.closenessComponent?.toFixed(2) ?? 'unavailable'}.
               </p>
             ) : option.feasibility === 'rejected' ? (

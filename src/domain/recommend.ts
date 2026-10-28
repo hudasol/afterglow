@@ -114,7 +114,7 @@ export function recommend(
 
   if (!tasteScores) return { gate, rejectedIds, tasteOff, tasteOn: null, popular };
 
-  const values = tasteValues(tasteScores);
+  const values = tasteValues(tasteScores, new Set(eligible.map((entry) => entry.candidate.id)));
   const byId = new Map(tasteScores.map((score) => [score.candidateId, score]));
   const scored = eligible.map((entry) => ({
     ...entry,
