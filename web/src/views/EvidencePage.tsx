@@ -116,7 +116,6 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
 
   useEffect(() => {
     let cancelled = false;
-    setLoadFailed(false);
     api
       .evaluation()
       .then((result) => {
@@ -522,6 +521,7 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
               style={{ marginTop: '0.5rem' }}
               onClick={() => {
                 setReports(null);
+                setLoadFailed(false);
                 setAttempt((n) => n + 1);
               }}
             >
