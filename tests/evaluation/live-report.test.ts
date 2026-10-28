@@ -201,22 +201,26 @@ describe.each([
   ['second run', 'results/live-qloo-second-run.json', 'docs/EVALUATION_LIVE_SECOND_RUN.md'],
 ])('the recorded live results of the %s', (_name, resultsFile, docFile) => {
   const resultsPath = resolve(root, resultsFile);
-  const present = existsSync(resultsPath);
   const load = () => JSON.parse(readFileSync(resultsPath, 'utf8')) as LiveResultsFile;
 
-  it.skipIf(!present)('contain the summary that the code computes from the scenarios', () => {
+  it('are committed with the repository', () => {
+    expect(existsSync(resultsPath), `${resultsFile} is missing`).toBe(true);
+    expect(existsSync(resolve(root, docFile)), `${docFile} is missing`).toBe(true);
+  });
+
+  it('contain the summary that the code computes from the scenarios', () => {
     const recorded = load();
     expect(recorded.kind).toBe('live_qloo');
     expect(recorded.live).toEqual(summariseLive(recorded.results));
     expect(recorded.summary).toEqual(aggregate(recorded.results));
   });
 
-  it.skipIf(!present)('are the numbers shown in the generated document', () => {
+  it('are the numbers shown in the generated document', () => {
     const document = readFileSync(resolve(root, docFile), 'utf8');
     expect(document).toBe(renderLiveReport(load()));
   });
 
-  it.skipIf(!present)('judge exactly the predictions written before the run', () => {
+  it('judge exactly the predictions written before the run', () => {
     expect(load().live.metrics.map((m) => m.id)).toEqual(PREDICTIONS.map((p) => p.id));
   });
 });
