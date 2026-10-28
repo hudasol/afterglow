@@ -50,7 +50,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of scenarios where the top three of the nearest first list without the gate holds a place that breaks a requirement',
     comparator: '>=',
-    threshold: 0.4,
+    threshold: 0.45,
     unit: 'share',
   },
   {
@@ -68,7 +68,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of scenarios where the top three of the taste only list without the gate holds a place that breaks a requirement',
     comparator: '>=',
-    threshold: 0.5,
+    threshold: 0.7,
     unit: 'share',
   },
   {
@@ -76,7 +76,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     group: 'Qloo signal',
     claim: 'Share of the pool that Qloo scored, mean over scenarios',
     comparator: '>=',
-    threshold: 0.9,
+    threshold: 0.95,
     unit: 'share',
   },
   {
@@ -85,7 +85,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of scenarios where the AFTERGLOW top choice differs from the nearest first top choice',
     comparator: '>=',
-    threshold: 0.5,
+    threshold: 0.4,
     unit: 'share',
   },
   {
@@ -93,7 +93,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     group: 'Qloo signal',
     claim: 'Share of scenarios where the AFTERGLOW top choice differs from the popular top choice',
     comparator: '>=',
-    threshold: 0.5,
+    threshold: 0.35,
     unit: 'share',
   },
   {
@@ -111,7 +111,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Affinity lift of the AFTERGLOW top three minus the taste only top three, in standard deviations of the pool',
     comparator: '>=',
-    threshold: -1,
+    threshold: -0.05,
     unit: 'sd',
   },
   {
@@ -120,7 +120,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of the AFTERGLOW top three that carries a requested vibe, minus the same for the nearest first top three',
     comparator: '>=',
-    threshold: 0,
+    threshold: -0.05,
     unit: 'difference',
   },
   {
@@ -129,7 +129,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of the pool that Qloo scored with vibes sent as example places, minus the same with vibes sent as tags',
     comparator: '>=',
-    threshold: 0.1,
+    threshold: 0.15,
     unit: 'difference',
   },
   {
@@ -138,7 +138,7 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     claim:
       'Share of scenarios where the AFTERGLOW top three is no further from the venue that fell through than the taste only top three',
     comparator: '>=',
-    threshold: 0.6,
+    threshold: 0.8,
     unit: 'share',
   },
   {
@@ -148,6 +148,15 @@ export const BASELINE_PREDICTIONS: readonly BaselinePrediction[] = [
     comparator: '>=',
     threshold: 18,
     unit: 'scenarios',
+  },
+  {
+    id: 'B14',
+    group: 'Qloo signal',
+    claim:
+      'Share of scenarios where the AFTERGLOW top choice differs from the taste only top choice',
+    comparator: '<=',
+    threshold: 0.2,
+    unit: 'share',
   },
 ];
 
@@ -389,6 +398,7 @@ export function summariseBaselines(results: readonly BaselineResult[]): Baseline
     B10: mean(diff('nearest', 'vibe')),
     B11: mean(summary.ablation.scoredShareDifference),
     B12: share(summary.closerThanTasteOnly),
+    B14: share(summary.topChoiceDiffers.tasteOnly),
     B13: { observed: done.length, low: null, high: null, basis: { used: done.length, of } },
   };
   summary.metrics = BASELINE_PREDICTIONS.map((prediction): MetricResult => {

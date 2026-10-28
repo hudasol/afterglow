@@ -5,6 +5,7 @@ import {
   ApiError,
   type EvaluationReportFile,
   type LivePreset,
+  type RecordedExample,
   type ScenarioPreset,
   type Showcase,
   type ShowcaseEntry,
@@ -88,11 +89,88 @@ function Vignette({ showcase }: { showcase: Showcase }) {
   );
 }
 
+function RecordedVignette({ example }: { example: RecordedExample }) {
+  const when = new Date(example.generatedAt).toISOString().slice(0, 10);
+  const setName = example.set === 'test' ? 'held out test scenarios' : 'development scenarios';
+  return (
+    <figure
+      className="vignette"
+      aria-label="An example of the gate at work, recorded from live Qloo data"
+      style={{ margin: 0 }}
+    >
+      <div className="vignette-sky" aria-hidden="true" />
+      <div className="vignette-body">
+        <h2 style={{ fontSize: '1.25rem' }}>{example.title}</h2>
+        <p className="small muted-text">
+          The venue fell through. Both lists below rank the same places, using Qloo taste data.
+        </p>
+        <h3
+          style={{
+            fontSize: '0.95rem',
+            marginTop: '0.9rem',
+            fontFamily: 'var(--font-body)',
+            fontWeight: 650,
+          }}
+        >
+          A plain list ranked by taste alone
+        </h3>
+        {example.plain.map((place) => (
+          <div
+            className={`vrow${place.reasons.length > 0 ? ' struck' : ''}`}
+            key={`plain-${place.name}`}
+          >
+            <span className="name">
+              {place.reasons.length > 0 ? (
+                <span className="visually-hidden">Breaks a requirement: </span>
+              ) : null}
+              {place.name}
+            </span>
+            {place.reasons.length > 0 ? (
+              <span className="pill bad">Breaks a requirement</span>
+            ) : (
+              <span className="pill ok">No known conflict</span>
+            )}
+            <span className="why">{place.reasons.join(', ')}</span>
+          </div>
+        ))}
+        <h3
+          style={{
+            fontSize: '0.95rem',
+            marginTop: '0.9rem',
+            fontFamily: 'var(--font-body)',
+            fontWeight: 650,
+          }}
+        >
+          What AFTERGLOW offers instead
+        </h3>
+        {example.afterglow.map((place) => (
+          <div className="vrow" key={`afterglow-${place.name}`}>
+            <span className="name">{place.name}</span>
+            {place.needsCheck ? (
+              <span className="pill warn">Needs a check</span>
+            ) : (
+              <span className="pill ok">Meets every requirement</span>
+            )}
+            <span className="why" />
+          </div>
+        ))}
+        <figcaption className="vignette-note">
+          Recorded on {when} from live Qloo data, {setName}. This is the first scenario in the file
+          where the plain list holds a place that breaks a requirement, so it was not picked by
+          hand. That happened in {example.plainBreaking.count} of {example.plainBreaking.total}{' '}
+          scenarios. A place is marked only where a fact is known to be against it.
+        </figcaption>
+      </div>
+    </figure>
+  );
+}
+
 export function Home() {
   const [showcase, setShowcase] = useState<Showcase | null>(null);
   const [showcaseFailed, setShowcaseFailed] = useState(false);
   const [presets, setPresets] = useState<ScenarioPreset[]>([]);
   const [report, setReport] = useState<EvaluationReportFile | null>(null);
+  const [recorded, setRecorded] = useState<RecordedExample | null>(null);
   const [launching, setLaunching] = useState(false);
   const [launchError, setLaunchError] = useState<string | null>(null);
   const [livePresets, setLivePresets] = useState<LivePreset[]>([]);
@@ -159,11 +237,11 @@ export function Home() {
       .catch(() => undefined);
     api
       .evaluation()
-      .then(
-        (result) =>
-          !cancelled &&
-          setReport(result.reports.find((r) => r.kind === 'offline_simulated') ?? null),
-      )
+      .then((result) => {
+        if (cancelled) return;
+        setReport(result.reports.find((r) => r.kind === 'offline_simulated') ?? null);
+        setRecorded(result.recordedExample);
+      })
       .catch(() => undefined);
     return () => {
       cancelled = true;
@@ -202,7 +280,9 @@ export function Home() {
             </p>
           ) : null}
         </div>
-        {showcase ? (
+        {recorded ? (
+          <RecordedVignette example={recorded} />
+        ) : showcase ? (
           <Vignette showcase={showcase} />
         ) : showcaseFailed ? (
           <p className="muted-text">The example could not be loaded right now.</p>
