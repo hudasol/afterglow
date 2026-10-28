@@ -21,7 +21,7 @@ import {
 } from '../../evaluation/live-report.js';
 import { buildShowcase, type Showcase } from '../../evaluation/showcase.js';
 import { scenarios } from '../../simulation/scenarios.js';
-import { rateLimit } from './rate-limit.js';
+import { rateLimit, windowLimiter } from './rate-limit.js';
 
 export interface ProbeResult {
   ok: boolean;
@@ -69,6 +69,11 @@ export interface AppOptions {
   accessToken?: string | undefined;
   allowedOrigins: string[];
   rateLimitPerMinute: number;
+  /**
+   * Actions on live cases that one address may take in an hour. Opening a case and anything that
+   * repeats its search count, because each can reach Qloo. Demo cases are not counted. 0 turns it off.
+   */
+  liveActionsPerHour: number;
   trustProxy: boolean;
   serveWeb: boolean;
   webRoot: string;
@@ -219,6 +224,28 @@ export function createApp(options: AppOptions): express.Express {
   const api = express.Router();
   const { service, integration } = options;
 
+  const liveBudget = windowLimiter({
+    limit: options.liveActionsPerHour,
+    windowMs: 60 * 60_000,
+    trustProxy: options.trustProxy,
+  });
+  /** Takes one unit from the caller's hourly allowance for live actions, or refuses with 429. */
+  const spendLive = (req: Request): void => {
+    const result = liveBudget.take(req);
+    if (!result.allowed) {
+      throw new AppError(
+        'live_budget',
+        `This server allows ${options.liveActionsPerHour} live actions an hour from one address, to protect the shared Qloo allowance. Demo mode is not limited. Try again in ${Math.ceil(result.retryAfterSeconds / 60)} minutes.`,
+        429,
+      );
+    }
+  };
+  /** Counts the action when the case is a live one. */
+  const spendIfLive = (req: Request): void => {
+    const view = service.getCase(sessionKeyOf(req), String(req.params['id']));
+    if (view.mode === 'live') spendLive(req);
+  };
+
   api.get('/health', (_req, res) => {
     res.json({ status: 'ok', version: options.version });
   });
@@ -350,6 +377,7 @@ export function createApp(options: AppOptions): express.Express {
     '/cases',
     wrap(async (req, res) => {
       const body = parseBody(openBody, req.body);
+      if (body.mode === 'live') spendLive(req);
       const view = await service.openCase(sessionKeyOf(req), body);
       res.status(201).json(view);
     }),
@@ -384,6 +412,7 @@ export function createApp(options: AppOptions): express.Express {
     '/cases/:id/choices',
     wrap(async (req, res) => {
       const body = parseBody(choiceBody, req.body);
+      spendIfLive(req);
       res.json(
         await service.chooseResolution(sessionKeyOf(req), String(req.params['id']), {
           key: body.key,
@@ -398,6 +427,7 @@ export function createApp(options: AppOptions): express.Express {
     '/cases/:id/disruptions',
     wrap(async (req, res) => {
       const body = parseBody(disruptionBody, req.body);
+      spendIfLive(req);
       res.json(
         await service.recordDisruption(
           sessionKeyOf(req),
@@ -410,9 +440,10 @@ export function createApp(options: AppOptions): express.Express {
 
   api.post(
     '/cases/:id/search',
-    wrap(async (req, res) =>
-      res.json(await service.rerunSearch(sessionKeyOf(req), String(req.params['id']))),
-    ),
+    wrap(async (req, res) => {
+      spendIfLive(req);
+      res.json(await service.rerunSearch(sessionKeyOf(req), String(req.params['id'])));
+    }),
   );
 
   api.post(

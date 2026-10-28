@@ -69,6 +69,8 @@ const ConfigSchema = z.object({
   AFTERGLOW_ACCESS_TOKEN: z.string().min(16).optional(),
   AFTERGLOW_ALLOWED_ORIGINS: z.string().default(''),
   AFTERGLOW_RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(0).max(100_000).default(120),
+  /** Live case actions one address may take in an hour. 0 turns the limit off. */
+  AFTERGLOW_LIVE_ACTIONS_PER_HOUR: z.coerce.number().int().min(0).max(100_000).default(12),
   AFTERGLOW_TRUST_PROXY: flag('false'),
   AFTERGLOW_CASE_TTL_HOURS: z.coerce
     .number()

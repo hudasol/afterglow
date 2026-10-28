@@ -16,6 +16,7 @@ const app = createApp({
     .map((origin) => origin.trim())
     .filter(Boolean),
   rateLimitPerMinute: config.AFTERGLOW_RATE_LIMIT_PER_MINUTE,
+  liveActionsPerHour: config.AFTERGLOW_LIVE_ACTIONS_PER_HOUR,
   trustProxy: config.AFTERGLOW_TRUST_PROXY,
   serveWeb: config.SERVE_WEB,
   webRoot: resolve(import.meta.dirname, '../web/dist'),

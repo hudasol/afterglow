@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { scenarioById } from '../../src/simulation/scenarios.js';
+import { SimulatedTasteProvider } from '../../src/simulation/provider.js';
 import { SESSION_HEADER, startServer, type TestResponse } from '../helpers/http.js';
+import { makeService } from '../helpers/service.js';
 
 let closer: (() => Promise<void>) | undefined;
 afterEach(async () => {
@@ -219,6 +221,70 @@ describe('http interface', () => {
     const statuses: number[] = [];
     for (let i = 0; i < 5; i += 1) statuses.push((await server.request('/api/health')).status);
     expect(statuses).toEqual([200, 200, 200, 429, 429]);
+  });
+
+  describe('live action budget', () => {
+    // The simulated catalogue stands in for a configured live provider, so no network is used.
+    const liveServer = (liveActionsPerHour: number) =>
+      startServer({
+        liveActionsPerHour,
+        service: makeService({ live: new SimulatedTasteProvider() }).service,
+      });
+    const liveBody = () =>
+      JSON.stringify({ mode: 'live', anchor: spec?.anchor, disruption: spec?.disruption });
+
+    it('refuses live actions beyond the hourly allowance and says why', async () => {
+      const server = await liveServer(2);
+      closer = server.close;
+      const open = () => server.request('/api/cases', { method: 'POST', body: liveBody() });
+      expect((await open()).status).toBe(201);
+      expect((await open()).status).toBe(201);
+      const refused = await open();
+      expect(refused.status).toBe(429);
+      const body = await refused.json();
+      expect(body.error.code).toBe('live_budget');
+      expect(body.error.message).toContain('2 live actions an hour');
+    });
+
+    it('does not count demo cases', async () => {
+      const server = await liveServer(1);
+      closer = server.close;
+      for (let i = 0; i < 3; i += 1) {
+        const response = await server.request('/api/cases', { method: 'POST', body: openBody() });
+        expect(response.status).toBe(201);
+      }
+    });
+
+    it('counts a repeated search on a live case but not on a demo case', async () => {
+      const server = await liveServer(2);
+      closer = server.close;
+      const live = await (
+        await server.request('/api/cases', { method: 'POST', body: liveBody() })
+      ).json();
+      const demo = await (
+        await server.request('/api/cases', { method: 'POST', body: openBody() })
+      ).json();
+      for (let i = 0; i < 3; i += 1) {
+        expect(
+          (await server.request(`/api/cases/${demo.id}/search`, { method: 'POST' })).status,
+        ).toBe(200);
+      }
+      expect(
+        (await server.request(`/api/cases/${live.id}/search`, { method: 'POST' })).status,
+      ).toBe(200);
+      expect(
+        (await server.request(`/api/cases/${live.id}/search`, { method: 'POST' })).status,
+      ).toBe(429);
+    });
+
+    it('is off when the allowance is zero', async () => {
+      const server = await liveServer(0);
+      closer = server.close;
+      for (let i = 0; i < 4; i += 1) {
+        const response = await server.request('/api/cases', { method: 'POST', body: liveBody() });
+        expect(response.status).toBe(201);
+      }
+    });
   });
 
   it('serves the featured scenarios and a missing probe as unavailable', async () => {

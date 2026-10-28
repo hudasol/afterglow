@@ -100,22 +100,23 @@ The key is read only by the server. It is never sent to the browser, logged, or 
 
 ## Configuration
 
-| Variable                          | Default                          | Purpose                                                                   |
-| --------------------------------- | -------------------------------- | ------------------------------------------------------------------------- |
-| `PORT`                            | `8788`                           | Port to listen on                                                         |
-| `HOST`                            | `127.0.0.1`                      | Address to bind. A non loopback address needs a token or public demo mode |
-| `DATABASE_PATH`                   | `var/afterglow.db`               | SQLite file for cases                                                     |
-| `QLOO_API_KEY`                    | empty                            | Personal Qloo key. Leave empty for demo mode only                         |
-| `QLOO_API_URL`                    | `https://hackathon.api.qloo.com` | Qloo API host                                                             |
-| `QLOO_TIMEOUT_MS`                 | `15000`                          | Per request timeout                                                       |
-| `QLOO_DAILY_CALL_CAP`             | `2000`                           | Protective cap on Qloo calls per UTC day. `0` turns it off                |
-| `AFTERGLOW_PUBLIC_DEMO`           | `false`                          | Allow a non loopback bind without a token, for the hosted demo            |
-| `AFTERGLOW_ACCESS_TOKEN`          | empty                            | Optional bearer token that protects `/api` (16 or more characters)        |
-| `AFTERGLOW_ALLOWED_ORIGINS`       | empty                            | Extra browser origins allowed to make write requests                      |
-| `AFTERGLOW_RATE_LIMIT_PER_MINUTE` | `120`                            | Requests per minute per client. `0` turns it off                          |
-| `AFTERGLOW_TRUST_PROXY`           | `false`                          | Trust the first proxy for client addresses                                |
-| `AFTERGLOW_CASE_TTL_HOURS`        | `48`                             | How long idle cases are kept                                              |
-| `SERVE_WEB`                       | `true`                           | Serve the built interface from the API server                             |
+| Variable                          | Default                          | Purpose                                                                                |
+| --------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------- |
+| `PORT`                            | `8788`                           | Port to listen on                                                                      |
+| `HOST`                            | `127.0.0.1`                      | Address to bind. A non loopback address needs a token or public demo mode              |
+| `DATABASE_PATH`                   | `var/afterglow.db`               | SQLite file for cases                                                                  |
+| `QLOO_API_KEY`                    | empty                            | Personal Qloo key. Leave empty for demo mode only                                      |
+| `QLOO_API_URL`                    | `https://hackathon.api.qloo.com` | Qloo API host                                                                          |
+| `QLOO_TIMEOUT_MS`                 | `15000`                          | Per request timeout                                                                    |
+| `QLOO_DAILY_CALL_CAP`             | `2000`                           | Protective cap on Qloo calls per UTC day. `0` turns it off                             |
+| `AFTERGLOW_PUBLIC_DEMO`           | `false`                          | Allow a non loopback bind without a token, for the hosted demo                         |
+| `AFTERGLOW_ACCESS_TOKEN`          | empty                            | Optional bearer token that protects `/api` (16 or more characters)                     |
+| `AFTERGLOW_ALLOWED_ORIGINS`       | empty                            | Extra browser origins allowed to make write requests                                   |
+| `AFTERGLOW_RATE_LIMIT_PER_MINUTE` | `120`                            | Requests per minute per client. `0` turns it off                                       |
+| `AFTERGLOW_LIVE_ACTIONS_PER_HOUR` | `12`                             | Live case actions per client per hour, to protect the Qloo allowance. `0` turns it off |
+| `AFTERGLOW_TRUST_PROXY`           | `false`                          | Trust the first proxy for client addresses                                             |
+| `AFTERGLOW_CASE_TTL_HOURS`        | `48`                             | How long idle cases are kept                                                           |
+| `SERVE_WEB`                       | `true`                           | Serve the built interface from the API server                                          |
 
 ## Commands
 

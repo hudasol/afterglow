@@ -38,6 +38,7 @@ export async function startServer(
     port: 0,
     allowedOrigins: [],
     rateLimitPerMinute: 0,
+    liveActionsPerHour: 0,
     trustProxy: false,
     serveWeb: false,
     webRoot: 'web/dist',
