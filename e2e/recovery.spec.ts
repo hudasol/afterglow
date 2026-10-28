@@ -193,6 +193,10 @@ test.describe('integration status honesty', () => {
       page.getByRole('heading', { name: 'Second run, after two product fixes' }),
     ).toBeVisible();
     await expect(page.getByText('9 predictions met, 3 missed').first()).toBeVisible();
+    const summary = page.getByRole('region', { name: 'What the recorded results show' });
+    await expect(summary).toContainText('13 of 14 predictions written before the test run');
+    await expect(summary).toContainText('Missed on the test scenarios');
+    await expect(summary).toContainText('No such baseline was run');
     await expect(page.getByRole('heading', { name: 'Against simpler approaches' })).toBeVisible();
     await expect(page.getByText('13 predictions met, 1 missed')).toBeVisible();
     await expect(
@@ -231,6 +235,18 @@ test.describe('evidence when the server cannot be reached', () => {
 
 test.describe('small screens', () => {
   test.use({ viewport: { width: 390, height: 844 } });
+
+  test('shows the order comparison as a table instead of a chart too small to read', async ({
+    page,
+  }) => {
+    await openPreset(page, 's02-vegan-date-budget');
+    await page.getByRole('link', { name: 'Taste on and off' }).click();
+    const table = page.getByRole('region', { name: /nearest first against with taste/i }).first();
+    await expect(table.getByRole('columnheader', { name: 'With taste' })).toBeVisible();
+    await expect(page.getByRole('img', { name: /nearest first against with taste/i })).toHaveCount(
+      0,
+    );
+  });
 
   for (const hash of ['/', '/#/new', '/#/evidence', '/#/cases']) {
     test(`does not scroll sideways at ${hash}`, async ({ page }) => {

@@ -5,7 +5,6 @@ import {
   ApiError,
   type BaselineRunView,
   type LivePreset,
-  type LiveRunView,
   type OrderedPlace,
   type RecordedExample,
   type RecordedOrder,
@@ -13,6 +12,7 @@ import {
   type Showcase,
   type ShowcaseEntry,
 } from '../lib/api';
+import { swapOverlap, twoPlaces } from '../lib/evidence';
 
 function VignetteRows({
   entries,
@@ -168,17 +168,6 @@ function RecordedVignette({ example }: { example: RecordedExample }) {
     </figure>
   );
 }
-
-/** The overlap of the top three when another group's signals were used, from the latest live run. */
-function swapOverlap(runs: LiveRunView[]): number | null {
-  const latest = runs[runs.length - 1];
-  const observed = latest?.predictions.find((p) => p.id === 'P4')?.observed;
-  const value = observed === undefined ? NaN : Number.parseFloat(observed);
-  return Number.isFinite(value) ? value : null;
-}
-
-const twoPlaces = (value: number | null): string =>
-  value === null ? 'not available' : value.toFixed(2);
 
 function HeldOutSummary({
   run,

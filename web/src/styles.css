@@ -1414,3 +1414,26 @@ code,
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.summary-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2.5rem;
+  margin-top: 0.75rem;
+}
+.summary-columns h3 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+}
+.summary-columns ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.summary-columns li + li {
+  margin-top: 0.55rem;
+}
+@media (max-width: 40rem) {
+  .summary-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

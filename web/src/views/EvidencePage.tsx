@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { EvidenceSummary } from '../components/EvidenceSummary';
 import {
   api,
   type EvaluationReportFile,
@@ -169,6 +170,11 @@ export function EvidencePage({ status }: { status: ServerStatus | null }) {
       <p className="lede" style={{ color: 'var(--ink-2)' }}>
         This page states what is connected, what has been tested, and what the tests do not prove.
       </p>
+
+      <EvidenceSummary
+        heldOut={baselineRuns.find((run) => run.set === 'test') ?? null}
+        liveRuns={liveRuns}
+      />
 
       <section className="panel" aria-labelledby="ev-status">
         <h2 id="ev-status">Qloo connection</h2>
