@@ -9,7 +9,7 @@ When a booking falls through, a venue closes or the weather turns, AFTERGLOW kee
 Hosted demo: https://afterglow-gsc4.onrender.com (free plan; the first request after a pause can take about half a minute).
 Built by Team Kanban (Huda Mueen Qureshi, Awaiz Ahmed) for the Qloo Agentic Hackathon.
 
-![The landing page with a recorded example from live Qloo data](docs/screenshots/01-landing.png)
+![The landing page with a recorded example and the held out results from live Qloo data](docs/screenshots/01-landing.png)
 
 ## Why it exists
 

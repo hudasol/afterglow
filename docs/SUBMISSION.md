@@ -60,7 +60,7 @@ The hosted demo has a demo mode on an invented city and a live mode on real Qloo
 
 | Screenshot                                            | What it shows                                                                            |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [Landing](screenshots/01-landing.png)                 | The product and a recorded gate result from live Qloo data, chosen by a stated rule      |
+| [Landing](screenshots/01-landing.png)                 | The product, a recorded gate result and the held out comparison, from live Qloo data     |
 | [Intake](screenshots/02-intake.png)                   | The intent anchor: plan, what must survive, taste, hard requirements                     |
 | [Recovery](screenshots/03-recovery.png)               | A shortlist of places that passed the gate, with source tags                             |
 | [Ruled out](screenshots/04-ruled-out.png)             | A place ruled out, with the exact requirement it failed                                  |

@@ -22,7 +22,13 @@ const page = await context.newPage();
 
 await page.goto(`${base}/`);
 await page.waitForSelector('.vignette');
-await page.screenshot({ path: `${out}01-landing.png` });
+await page.waitForSelector('#home-heldout');
+// The first screen and the two recorded comparisons that follow it.
+await page.screenshot({
+  path: `${out}01-landing.png`,
+  fullPage: true,
+  clip: { x: 0, y: 0, width: 1280, height: 1620 },
+});
 
 await page.goto(`${base}/#/new?scenario=s02-vegan-date-budget`);
 await expect(page.getByLabel('Title')).not.toHaveValue('');
