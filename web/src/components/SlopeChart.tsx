@@ -51,7 +51,7 @@ export function SlopeChart({
   return (
     <figure style={{ margin: 0 }}>
       <svg
-        className="slope"
+        className="slope slope-wide"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
         aria-label={`Order of the top ${rows.length} eligible places, ${BASELINE_TITLE[baseline].toLowerCase()} against with taste. ${description}.`}
@@ -87,9 +87,40 @@ export function SlopeChart({
           );
         })}
       </svg>
+      <div
+        className="table-wrap slope-narrow"
+        tabIndex={0}
+        role="region"
+        aria-label={`Order of the top ${rows.length} eligible places, ${BASELINE_TITLE[baseline].toLowerCase()} against with taste`}
+      >
+        <table className="data compact">
+          <thead>
+            <tr>
+              <th scope="col">Place</th>
+              <th scope="col">{BASELINE_TITLE[baseline]}</th>
+              <th scope="col">With taste</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((option, index) => {
+              const onIndex = onOrder.indexOf(option);
+              return (
+                <tr key={option.candidate.id}>
+                  <th scope="row">{option.candidate.name}</th>
+                  <td>{index + 1}</td>
+                  <td>
+                    {onIndex + 1}
+                    {onIndex === index ? '' : onIndex < index ? ', moved up' : ', moved down'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <figcaption className="small muted-text">
-        Both columns list the same eligible places, so only the order differs. A pink line marks a
-        place that moved.
+        Both columns list the same eligible places, so only the order differs. A pink line, or the
+        words moved up and moved down, marks a place that moved.
       </figcaption>
     </figure>
   );

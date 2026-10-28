@@ -32,7 +32,22 @@ function FactRow<T>({
   );
 }
 
-const VERDICT_MARK = { pass: 'Yes', fail: 'No', unknown: '?' } as const;
+const VERDICT_MARK = { pass: 'Met', fail: 'Not met', unknown: 'Not known' } as const;
+
+/** A drawn mark, so the outcome does not depend on how a font renders a symbol. */
+function VerdictIcon({ outcome }: { outcome: 'pass' | 'fail' | 'unknown' }) {
+  return (
+    <svg viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+      {outcome === 'pass' ? (
+        <path d="M3.5 8.5l3 3 6-7" />
+      ) : outcome === 'fail' ? (
+        <path d="M4 4l8 8M12 4l-8 8" />
+      ) : (
+        <path d="M6 6.2a2 2 0 1 1 3 1.7c-.7.4-1 .8-1 1.6M8 12.3v.2" />
+      )}
+    </svg>
+  );
+}
 
 export interface InspectorProps {
   view: CaseView;
@@ -146,7 +161,7 @@ export function Inspector({
             {option.gate.verdicts.map((verdict) => (
               <li className="verdict" key={verdict.key}>
                 <span className={`mark ${verdict.outcome}`} aria-hidden="true">
-                  {verdict.outcome === 'pass' ? '✓' : verdict.outcome === 'fail' ? '✕' : '?'}
+                  <VerdictIcon outcome={verdict.outcome} />
                 </span>
                 <span className="what">
                   <span className="visually-hidden">{VERDICT_MARK[verdict.outcome]}: </span>

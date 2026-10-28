@@ -820,6 +820,15 @@ details.ruled-out summary {
   font-size: 0.85rem;
   margin-top: 0.1rem;
 }
+.verdict .mark svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .verdict .mark.pass {
   background: var(--ok-bg);
   color: var(--ok);
@@ -1073,6 +1082,17 @@ fieldset {
 .slope .col-title {
   font-weight: 700;
   font-size: 13px;
+}
+.slope-narrow {
+  display: none;
+}
+@media (max-width: 40rem) {
+  .slope-wide {
+    display: none;
+  }
+  .slope-narrow {
+    display: block;
+  }
 }
 .stat-list {
   display: grid;
